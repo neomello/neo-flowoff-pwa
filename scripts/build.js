@@ -112,7 +112,7 @@ if (fs.existsSync(indexHtmlPath)) {
   const apiKeys = {
     OPENAI_API_KEY: process.env.OPENAI_API_KEY || '',
     GOOGLE_API_KEY: process.env.GOOGLE_API_KEY || '',
-    OPENAI_MODEL: process.env.OPENAI_MODEL || process.env.LLM_MODEL || 'gpt-4o-mini',
+    OPENAI_MODEL: process.env.OPENAI_MODEL || process.env.LLM_MODEL || 'gpt-4o',
     GEMINI_MODEL: process.env.GEMINI_MODEL || process.env.LLM_MODEL_FALLBACK || 'gemini-2.0-flash-exp'
   };
   

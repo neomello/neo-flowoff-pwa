@@ -55,7 +55,7 @@ exports.handler = async (event, context) => {
     const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
     const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
     // Modelos via variáveis de ambiente (configurados no netlify.toml)
-    const OPENAI_MODEL = process.env.OPENAI_MODEL || process.env.LLM_MODEL || 'gpt-4o-mini';
+    const OPENAI_MODEL = process.env.OPENAI_MODEL || process.env.LLM_MODEL || 'gpt-4o';
     const GEMINI_MODEL = process.env.GEMINI_MODEL || process.env.LLM_MODEL_FALLBACK || 'gemini-2.0-flash-exp';
 
     // Ⅰ. CLASSIFICAÇÃO AUTOMÁTICA DE INTENÇÃO

@@ -26,7 +26,7 @@ const log = (...args) => {
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY || '';
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
 // Modelos via variáveis de ambiente (valores padrão seguros)
-const OPENAI_MODEL = process.env.OPENAI_MODEL || process.env.LLM_MODEL || 'gpt-4o-mini';
+const OPENAI_MODEL = process.env.OPENAI_MODEL || process.env.LLM_MODEL || 'gpt-4o';
 const GEMINI_MODEL = process.env.GEMINI_MODEL || process.env.LLM_MODEL_FALLBACK || 'gemini-2.0-flash-exp';
 
 // MIME types
@@ -133,6 +133,22 @@ const server = http.createServer((req, res) => {
         offlineQueue: "✅ Ativo",
         formValidation: "✅ Ativo"
       }
+    }));
+    return;
+  }
+
+  // API endpoint para config (API keys) - apenas em desenvolvimento
+  if (cleanPath === '/api/config' && !isProduction) {
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.writeHead(200);
+    res.end(JSON.stringify({
+      OPENAI_API_KEY: OPENAI_API_KEY || '',
+      GOOGLE_API_KEY: GOOGLE_API_KEY || '',
+      OPENAI_MODEL: OPENAI_MODEL,
+      GEMINI_MODEL: GEMINI_MODEL,
+      LLM_MODEL: OPENAI_MODEL,
+      LLM_MODEL_FALLBACK: GEMINI_MODEL
     }));
     return;
   }

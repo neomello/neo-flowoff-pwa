@@ -222,17 +222,22 @@ async function publishToIPNS(cid, ucanToken) {
   console.log(`🌐 IPNS ID: ${IPNS_KEY_ID}`);
 
   // Para CID v1, faz pin primeiro para garantir que está disponível localmente
+  // O pin vai buscar o conteúdo da rede IPFS automaticamente
   if (cid.startsWith('bafy')) {
     console.log('\n📌 Fazendo pin do CID v1 no IPFS local...');
+    console.log('   (O IPFS vai buscar o conteúdo da rede automaticamente)');
     try {
       execSync(`ipfs pin add ${cid} --progress=false`, {
         stdio: 'inherit',
-        cwd: PROJECT_ROOT
+        cwd: PROJECT_ROOT,
+        timeout: 60000 // 60 segundos timeout (pode demorar para buscar da rede)
       });
-      console.log('✅ Pin concluído\n');
+      console.log('✅ Pin concluído - conteúdo disponível localmente\n');
     } catch (pinError) {
-      console.log('⚠️  Aviso: Não foi possível fazer pin (o conteúdo já está na rede IPFS via Storacha)');
-      console.log('   Tentando publicar mesmo assim...\n');
+      // Se pin falhar, tenta publicar mesmo assim (IPFS pode resolver remotamente com --allow-offline)
+      console.log('⚠️  Aviso: Não foi possível fazer pin local');
+      console.log('   O conteúdo está na rede IPFS via Storacha');
+      console.log('   Tentando publicar no IPNS com --allow-offline...\n');
     }
   }
 

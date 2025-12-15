@@ -376,10 +376,28 @@ Tom:
   async fetchDirectAI(message, history, systemPrompt, intent = null) {
     // Obter API keys do window.config ou variáveis de ambiente do build
     // As keys podem ser injetadas no build via script ou configuradas no index.html
-    const config = window.APP_CONFIG || {};
+    let config = window.APP_CONFIG || {};
+    
+    // Se não houver keys e estiver em desenvolvimento local, buscar do servidor
+    if ((!config.OPENAI_API_KEY && !config.GOOGLE_API_KEY) && 
+        (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+      try {
+        window.Logger?.info('🔄 Buscando API keys do servidor (modo desenvolvimento)...');
+        const response = await fetch('/api/config');
+        if (response.ok) {
+          const serverConfig = await response.json();
+          config = { ...config, ...serverConfig };
+          window.APP_CONFIG = config; // Cache para próximas chamadas
+          window.Logger?.info('✅ API keys carregadas do servidor');
+        }
+      } catch (error) {
+        window.Logger?.warn('⚠️ Não foi possível carregar API keys do servidor:', error.message);
+      }
+    }
+    
     const OPENAI_API_KEY = config.OPENAI_API_KEY || '';
     const GOOGLE_API_KEY = config.GOOGLE_API_KEY || '';
-    const OPENAI_MODEL = config.OPENAI_MODEL || config.LLM_MODEL || 'gpt-4o-mini';
+    const OPENAI_MODEL = config.OPENAI_MODEL || config.LLM_MODEL || 'gpt-4o';
     const GEMINI_MODEL = config.GEMINI_MODEL || config.LLM_MODEL_FALLBACK || 'gemini-2.0-flash-exp';
 
     // Se não houver keys configuradas, retornar null silenciosamente
@@ -387,7 +405,7 @@ Tom:
     if (!OPENAI_API_KEY && !GOOGLE_API_KEY) {
       // Verificar se é desenvolvimento local (sem keys injetadas)
       if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        window.Logger?.info('ℹ️ Modo desenvolvimento: API keys não configuradas. Use fallback local ou configure em window.APP_CONFIG');
+        window.Logger?.warn('⚠️ Modo desenvolvimento: API keys não configuradas. Verifique se o servidor está rodando e tem acesso ao .env');
       }
       return null;
     }
@@ -431,11 +449,20 @@ Tom:
           }
         } else if (response.status === 401) {
           window.Logger?.warn('⚠️ OpenAI API key inválida ou expirada');
+          const errorData = await response.json().catch(() => ({}));
+          window.Logger?.warn('   Detalhes:', errorData);
+        } else if (response.status === 403) {
+          window.Logger?.warn(`⚠️ OpenAI retornou erro HTTP 403 (acesso negado)`);
+          const errorData = await response.json().catch(() => ({}));
+          window.Logger?.warn('   Detalhes:', errorData);
         } else {
           window.Logger?.warn(`⚠️ OpenAI retornou erro HTTP ${response.status}`);
+          const errorData = await response.json().catch(() => ({}));
+          window.Logger?.warn('   Detalhes:', errorData);
         }
       } catch (error) {
         window.Logger?.warn('❌ Erro ao chamar OpenAI:', error.message);
+        window.Logger?.warn('   Stack:', error.stack);
       }
     }
 
