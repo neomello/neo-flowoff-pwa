@@ -3067,11 +3067,48 @@ canvas {
 }
 
 .chat-message.user .message-content {
-  background: linear-gradient(135deg, var(--neon), var(--blue));
-  color: #ffffff;
-  border: none;
-  font-weight: 500;
+  background: linear-gradient(135deg, var(--neon), var(--blue)) !important;
+  color: #ffffff !important;
+  border: none !important;
+  font-weight: 600 !important;
   box-shadow: 0 2px 8px rgba(255, 47, 179, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.chat-message.user .message-content p {
+  color: #ffffff !important;
+  margin: 0 !important;
+}
+
+.chat-message.user .message-content * {
+  color: #ffffff !important;
+}
+
+.chat-message.user .message-content,
+.chat-message.user .message-content p,
+.chat-message.user .message-content span,
+.chat-message.user .message-content div {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* Garantir que o texto do usuário seja sempre branco e visível */
+.chat-message.user .message-content p,
+.chat-message.user .message-content span,
+.chat-message.user .message-content div,
+.chat-message.user .message-content * {
+  color: #ffffff !important;
+  opacity: 1 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Override qualquer cor cinza que possa estar sendo aplicada */
+.chat-message.user {
+  color: #ffffff !important;
+}
+
+.chat-message.user * {
+  color: #ffffff !important;
 }
 
 .message-content p {

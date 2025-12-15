@@ -56,7 +56,7 @@ const server = http.createServer((req, res) => {
   let pathname = decodeURIComponent(parsedUrl.pathname);
   
   // Remove query parameters for file serving
-  const cleanPath = pathname.split('?')[0];
+  let cleanPath = pathname.split('?')[0];
 
   // Messenger webhook (GET verification, POST events)
   if (cleanPath === '/webhook/messenger') {
@@ -137,8 +137,23 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // API endpoint para config (API keys) - apenas em desenvolvimento
-  if (cleanPath === '/api/config' && !isProduction) {
+  // API endpoint para config (API keys) - apenas em desenvolvimento local
+  // Permite em localhost mesmo se NODE_ENV=production
+  if (cleanPath === '/api/config') {
+    const host = req.headers.host || '';
+    const isLocalhost = host.includes('localhost') || host.includes('127.0.0.1');
+    
+    // Debug log (apenas em desenvolvimento)
+    if (!isProduction) {
+      log('🔧 /api/config chamado - host:', host, 'isLocalhost:', isLocalhost);
+    }
+    
+    // Só permite se for localhost ou se não estiver em produção
+    if (!isLocalhost && isProduction) {
+      res.writeHead(403, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Forbidden: API config only available in development' }));
+      return;
+    }
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.writeHead(200);
