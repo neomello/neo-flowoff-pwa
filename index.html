@@ -652,25 +652,10 @@
 
 
 
-      <!-- Offline banner -->
-      <div id="offline" class="offline">Sem conexão. Funcionalidades limitadas.</div>
     </main>
 
     <!-- Glass Morphism Overlay -->
     <div class="glass-morphism-overlay" id="glass-overlay"></div>
-
-    <!-- Update Notification Banner -->
-    <div id="update-banner" class="update-banner">
-      <div class="update-content">
-        <div class="update-icon">↻</div>
-        <div class="update-text">
-          <strong>Nova versão disponível!</strong>
-          <span>Atualize para ter acesso às últimas funcionalidades</span>
-        </div>
-        <button id="update-btn" class="update-btn">Atualizar</button>
-        <button id="update-dismiss" class="update-dismiss">×</button>
-      </div>
-    </div>
 
     <!-- Glass Morphism Bottom Bar -->
     <nav class="glass-morphism-tabbar">
@@ -739,6 +724,50 @@
       <p class="footer-text">Agência de Marketing na blockchain | Desenvolvimento de sistemas, WebApp's e IAs</p>
     </footer>
 
+  </div>
+
+  <!-- Toast Notifications Container (Fora do #app para não ser afetado por modais) -->
+  <div class="toast-notifications-container" id="toast-container">
+    <!-- Offline Toast -->
+    <div id="offline" class="toast-notification toast-offline">
+      <div class="toast-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="1" y1="1" x2="23" y2="23"/>
+          <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/>
+          <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/>
+          <path d="M10.71 5.05A16 16 0 0 1 22.58 9"/>
+          <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/>
+          <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+          <line x1="12" y1="20" x2="12.01" y2="20"/>
+        </svg>
+      </div>
+      <div class="toast-content">
+        <span class="toast-title">Sem conexão</span>
+        <span class="toast-subtitle">Modo offline ativo</span>
+      </div>
+    </div>
+
+    <!-- Update Toast -->
+    <div id="update-banner" class="toast-notification toast-update">
+      <div class="toast-icon toast-icon-spin">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+          <path d="M3 3v5h5"/>
+          <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+          <path d="M16 16h5v5"/>
+        </svg>
+      </div>
+      <div class="toast-content">
+        <span class="toast-title">Nova versão</span>
+        <span class="toast-subtitle">Toque para atualizar</span>
+      </div>
+      <button id="update-btn" class="toast-action-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M12 5v14M5 12l7 7 7-7"/>
+        </svg>
+      </button>
+      <button id="update-dismiss" class="toast-dismiss">×</button>
+    </div>
   </div>
 
   <!-- Logger (deve ser carregado primeiro) -->

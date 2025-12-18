@@ -295,10 +295,9 @@
   border:1px solid rgba(255,255,255,.08); border-radius:18px; padding:16px;
 }
 
-.offline{
-  position:fixed; left:12px; right:12px; bottom: calc(64px + env(safe-area-inset-bottom) + 12px);
-  background:#54102d; color:#ffd9ef; padding:10px 12px; border-radius:12px; border:1px solid #ff2fb360;
-  display:none; text-align:center; z-index:40
+/* Toast Notifications - usar novo sistema em styles.css */
+.offline {
+  display: none !important;
 }
 
 /* Tab bar iOS-like */

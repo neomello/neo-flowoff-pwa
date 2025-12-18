@@ -252,11 +252,6 @@ let updateAvailable = false;
 let updateWorker = null;
 let bannerShown = false;
 
-// Verificar se já foi dispensado
-if (localStorage.getItem('update-dismissed') === 'true') {
-  updateBanner.style.display = 'none';
-}
-
 // Detectar atualizações do Service Worker
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.addEventListener('controllerchange', () => {
@@ -278,52 +273,81 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// Função para mostrar banner de atualização
+// Função para mostrar toast de atualização
 function showUpdateBanner() {
   if (bannerShown || localStorage.getItem('update-dismissed') === 'true') {
     return;
   }
   
-  updateBanner.style.display = 'block';
-  updateBanner.classList.add('show');
-  bannerShown = true;
-  
-  // Vibração se disponível
-  navigator.vibrate?.(100);
+  if (updateBanner) {
+    updateBanner.classList.add('show');
+    updateBanner.classList.remove('hiding');
+    bannerShown = true;
+    
+    // Vibração se disponível
+    navigator.vibrate?.(100);
+  }
 }
 
-// Botão atualizar
-updateBtn.addEventListener('click', () => {
-  // Recarregar a página para aplicar atualizações
-  window.location.reload();
-});
-
-// Botão dispensar
-updateDismiss.addEventListener('click', () => {
-  updateBanner.style.display = 'none';
-  updateBanner.classList.remove('show');
-  bannerShown = false;
-  localStorage.setItem('update-dismissed', 'true');
-});
-
-// Auto-hide após 10 segundos
-setTimeout(() => {
-  if (bannerShown && updateBanner.style.display !== 'none') {
-    updateBanner.style.opacity = '0';
+// Função para esconder toast de atualização
+function hideUpdateBanner() {
+  if (updateBanner) {
+    updateBanner.classList.add('hiding');
     setTimeout(() => {
-      updateBanner.style.display = 'none';
-      updateBanner.classList.remove('show');
+      updateBanner.classList.remove('show', 'hiding');
       bannerShown = false;
     }, 300);
   }
-}, 10000);
+}
 
-// Função para testar o banner manualmente (debug)
+// Botão atualizar
+if (updateBtn) {
+  updateBtn.addEventListener('click', () => {
+    window.location.reload();
+  });
+}
+
+// Botão dispensar
+if (updateDismiss) {
+  updateDismiss.addEventListener('click', (e) => {
+    e.stopPropagation();
+    hideUpdateBanner();
+    localStorage.setItem('update-dismissed', 'true');
+  });
+}
+
+// Clicar no toast também atualiza
+if (updateBanner) {
+  updateBanner.addEventListener('click', (e) => {
+    if (e.target !== updateDismiss) {
+      window.location.reload();
+    }
+  });
+}
+
+// Auto-hide após 15 segundos
+setTimeout(() => {
+  if (bannerShown) {
+    hideUpdateBanner();
+  }
+}, 15000);
+
+// Função para testar o toast manualmente (debug)
 window.testUpdateBanner = () => {
   if (updateBanner) {
-    updateBanner.style.display = 'block';
+    localStorage.removeItem('update-dismissed');
     updateBanner.classList.add('show');
+    updateBanner.classList.remove('hiding');
     bannerShown = true;
+  }
+};
+
+// Função para testar offline toast (debug)
+window.testOfflineBanner = () => {
+  const offline = document.getElementById('offline');
+  if (offline) {
+    offline.classList.add('show');
+    offline.classList.remove('hiding');
   }
 };
 

@@ -124,11 +124,19 @@ document.querySelectorAll('[data-open]').forEach(el=>{
   el.addEventListener('click', ()=> document.getElementById(el.dataset.open).showModal());
 });
 
-// Offline UI
+// Offline UI - Toast notification style
 function setOffline(flag){
   const el = document.getElementById('offline');
   if (el) {
-    el.style.display = flag ? 'block' : 'none';
+    if (flag) {
+      el.classList.add('show');
+      el.classList.remove('hiding');
+    } else {
+      el.classList.add('hiding');
+      setTimeout(() => {
+        el.classList.remove('show', 'hiding');
+      }, 300);
+    }
   }
   
   // Notificar validador de formulário sobre mudança de status
