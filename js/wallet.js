@@ -379,20 +379,40 @@ class WalletManager {
     }
   }
 
-  // Atualiza botão do header
+  // Atualiza botão do header (desktop e mobile)
   updateButton() {
+    // Botão Desktop
     const btn = document.getElementById('wallet-btn');
-    const textEl = btn.querySelector('.wallet-btn-text');
-    const iconEl = btn.querySelector('.wallet-btn-icon');
+    if (btn) {
+      const textEl = btn.querySelector('.wallet-btn-text');
+      const iconEl = btn.querySelector('.wallet-btn-icon');
+      
+      if (this.connected) {
+        btn.classList.add('connected');
+        textEl.textContent = this.formatAddress(this.address);
+        iconEl.textContent = '✓';
+      } else {
+        btn.classList.remove('connected');
+        textEl.textContent = 'ACESSAR';
+        iconEl.textContent = '→';
+      }
+    }
     
-    if (this.connected) {
-      btn.classList.add('connected');
-      textEl.textContent = this.formatAddress(this.address);
-      iconEl.textContent = '✓';
-    } else {
-      btn.classList.remove('connected');
-      textEl.textContent = 'ACESSAR';
-      iconEl.textContent = '→';
+    // Botão Mobile
+    const btnMobile = document.getElementById('wallet-btn-mobile');
+    if (btnMobile) {
+      const textElMobile = btnMobile.querySelector('.wallet-btn-text-mobile');
+      const arrowElMobile = btnMobile.querySelector('.wallet-btn-arrow');
+      
+      if (this.connected) {
+        btnMobile.classList.add('connected');
+        textElMobile.textContent = this.formatAddress(this.address);
+        arrowElMobile.textContent = '✓';
+      } else {
+        btnMobile.classList.remove('connected');
+        textElMobile.textContent = 'ACESSAR WALLET';
+        arrowElMobile.textContent = '→';
+      }
     }
   }
 

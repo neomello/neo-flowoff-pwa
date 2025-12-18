@@ -1,12 +1,17 @@
 {
   "name": "NEØ.FLOWOFF",
   "short_name": "NEØ.FLOW",
-  "description": "Agência de Marketing na blockchain ",
-  "version": "2.2.0",
-  "start_url": ".",
+  "description": "Agência de Marketing na blockchain. Ecossistema com token $NEOFLW na Base Network. Desenvolvimento de WebApps, IAs e tokenização.",
+  "version": "2.3.0",
+  "start_url": "./",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "portrait-primary",
   "background_color": "#0a0a0f",
   "theme_color": "#0a0a0f",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "categories": ["business", "productivity", "finance"],
   "icons": [
     { "src": "/public/icons/icon-48x48.webp", "sizes": "48x48", "type": "image/webp" },
     { "src": "/public/icons/icon-72x72.webp", "sizes": "72x72", "type": "image/webp" },
@@ -14,10 +19,50 @@
     { "src": "/public/icons/icon-128x128.webp", "sizes": "128x128", "type": "image/webp" },
     { "src": "/public/icons/icon-144x144.webp", "sizes": "144x144", "type": "image/webp" },
     { "src": "/public/icons/icon-152x152.webp", "sizes": "152x152", "type": "image/webp" },
-    { "src": "/public/icons/icon-192x192.webp", "sizes": "192x192", "type": "image/webp" },
+    { "src": "/public/icons/icon-192x192.webp", "sizes": "192x192", "type": "image/webp", "purpose": "any" },
     { "src": "/public/icons/icon-256x256.webp", "sizes": "256x256", "type": "image/webp" },
     { "src": "/public/icons/icon-384x384.webp", "sizes": "384x384", "type": "image/webp" },
-    { "src": "/public/icons/icon-512x512.webp", "sizes": "512x512", "type": "image/webp" },
-    { "src": "/public/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable any" }
-  ]
+    { "src": "/public/icons/icon-512x512.webp", "sizes": "512x512", "type": "image/webp", "purpose": "any" },
+    { "src": "/public/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "$NEOFLW Wallet",
+      "short_name": "Wallet",
+      "description": "Acessar sua wallet e saldo $NEOFLW",
+      "url": "./#wallet",
+      "icons": [{ "src": "/public/neo_ico.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Chat com NEO IA",
+      "short_name": "Chat IA",
+      "description": "Conversar com a assistente NEO",
+      "url": "./#chat",
+      "icons": [{ "src": "/public/neo_ico.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Projetos",
+      "short_name": "Projetos",
+      "description": "Ver serviços e GPTs",
+      "url": "./#projects",
+      "icons": [{ "src": "/public/flowoff logo.png", "sizes": "96x96" }]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/public/images/capa_neo_flowoff_webapp.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "NEØ.FLOWOFF - Agência de Marketing na Blockchain"
+    }
+  ],
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://basescan.org/token/0x6575933669e530dC25aaCb496cD8e402B8f26Ff5",
+      "id": "$NEOFLW Token"
+    }
+  ],
+  "prefer_related_applications": false
 }

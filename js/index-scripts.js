@@ -1,5 +1,85 @@
 // index-scripts.js - Scripts específicos do index.html
 
+// === MOBILE MENU TOGGLE ===
+const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+const mobileMenuDropdown = document.getElementById('mobile-menu-dropdown');
+const walletBtnMobile = document.getElementById('wallet-btn-mobile');
+
+// Toggle do menu mobile
+function toggleMobileMenu() {
+  const isOpen = mobileMenuDropdown.classList.contains('show');
+  
+  if (isOpen) {
+    closeMobileMenu();
+  } else {
+    openMobileMenu();
+  }
+}
+
+function openMobileMenu() {
+  mobileMenuDropdown.classList.add('show');
+  mobileMenuToggle.classList.add('active');
+  mobileMenuDropdown.style.display = 'block';
+  
+  // Sincronizar estado do botão mobile com a wallet
+  syncMobileWalletButton();
+}
+
+function closeMobileMenu() {
+  mobileMenuDropdown.classList.remove('show');
+  mobileMenuToggle.classList.remove('active');
+  
+  // Delay para animação
+  setTimeout(() => {
+    if (!mobileMenuDropdown.classList.contains('show')) {
+      mobileMenuDropdown.style.display = 'none';
+    }
+  }, 350);
+}
+
+// Sincroniza estado do botão mobile com WalletManager
+function syncMobileWalletButton() {
+  if (!walletBtnMobile) return;
+  
+  const textEl = walletBtnMobile.querySelector('.wallet-btn-text-mobile');
+  const arrowEl = walletBtnMobile.querySelector('.wallet-btn-arrow');
+  
+  if (window.WalletManager && window.WalletManager.connected) {
+    walletBtnMobile.classList.add('connected');
+    textEl.textContent = window.WalletManager.formatAddress(window.WalletManager.address);
+    arrowEl.textContent = '✓';
+  } else {
+    walletBtnMobile.classList.remove('connected');
+    textEl.textContent = 'ACESSAR WALLET';
+    arrowEl.textContent = '→';
+  }
+}
+
+// Event listeners
+if (mobileMenuToggle) {
+  mobileMenuToggle.addEventListener('click', toggleMobileMenu);
+}
+
+// Fechar menu ao clicar fora
+document.addEventListener('click', (e) => {
+  if (mobileMenuDropdown && mobileMenuDropdown.classList.contains('show')) {
+    if (!mobileMenuToggle.contains(e.target) && !mobileMenuDropdown.contains(e.target)) {
+      closeMobileMenu();
+    }
+  }
+});
+
+// Fechar menu ao redimensionar para desktop
+window.addEventListener('resize', () => {
+  if (window.innerWidth > 600 && mobileMenuDropdown) {
+    closeMobileMenu();
+  }
+});
+
+// Expor funções globalmente
+window.closeMobileMenu = closeMobileMenu;
+window.syncMobileWalletButton = syncMobileWalletButton;
+
 // === DETECÇÃO DE DESKTOP COM PREVENÇÃO DE LOOPS ===
 function detectDesktop() {
   // Verificar se usuário forçou modo desktop

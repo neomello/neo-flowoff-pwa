@@ -97,7 +97,7 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="manifest" href="manifest.webmanifest">
   <title>NEØ.FLOWOFF</title>
-  <link rel="stylesheet" href="styles.css?v=2.1.4">
+  <link rel="stylesheet" href="styles.css?v=2.3.0">
   <link rel="stylesheet" href="bento-grid.css?v=1.1.0">
   <link rel="stylesheet" href="glass-morphism-bottom-bar.css">
 
@@ -117,9 +117,33 @@
             </div>
           </div>
         </div>
-        <button id="wallet-btn" class="wallet-connect-btn" onclick="window.WalletManager?.toggle()">
+        
+        <!-- Desktop: Botão direto | Mobile: Menu hambúrguer -->
+        <button id="wallet-btn" class="wallet-connect-btn desktop-only" onclick="window.WalletManager?.toggle()">
           <span class="wallet-btn-text">ACESSAR</span>
           <span class="wallet-btn-icon">→</span>
+        </button>
+        
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Menu">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </div>
+      
+      <!-- Mobile Dropdown Menu -->
+      <div class="mobile-menu-dropdown" id="mobile-menu-dropdown">
+        <button id="wallet-btn-mobile" class="wallet-connect-btn-mobile" onclick="window.WalletManager?.toggle(); closeMobileMenu();">
+          <span class="wallet-btn-icon-mobile">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/>
+              <path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/>
+              <circle cx="18" cy="12" r="2"/>
+            </svg>
+          </span>
+          <span class="wallet-btn-text-mobile">ACESSAR WALLET</span>
+          <span class="wallet-btn-arrow">→</span>
         </button>
       </div>
     </header>
@@ -789,11 +813,11 @@
 <script>window.THIRDWEB_CLIENT_ID = 'a70d3d6d2ec826511ff9e31b0db2d0fc';</script>
 
 <!-- Wallet Manager -->
-<script src="js/wallet.js?v=2.2.0"></script>
+<script src="js/wallet.js?v=2.3.0"></script>
 
 <!-- App principal -->
-<script src="js/app.js?v=2.2.0" type="module"></script>
-<script src="js/index-scripts.js?v=2.2.0"></script>
+<script src="js/app.js?v=2.3.0" type="module"></script>
+<script src="js/index-scripts.js?v=2.3.0"></script>
 
 <!-- Configuração de API Keys para Chat AI (Client-Side) -->
 <!-- As API keys podem ser injetadas no build via variáveis de ambiente do Netlify -->
@@ -813,7 +837,7 @@
   // scripts/build.js usando variáveis de ambiente do Netlify
   // Isso mantém as keys seguras e não expostas no código fonte
 </script>
-<script src="js/chat-ai.js?v=2.1.4"></script>
+<script src="js/chat-ai.js?v=2.3.0"></script>
 
   <!-- Modais dos Projetos -->
   <dialog id="modal-site-webapp" class="project-modal">
