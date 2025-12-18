@@ -105,9 +105,9 @@ dist/
 # optimize*.js
 # extract-*.js
 
-# Local Netlify folder
-.netlify
+# IDE
 .idea/
+.vscode/
 
 # Documentação interna (não deve ser commitada)
 docs/

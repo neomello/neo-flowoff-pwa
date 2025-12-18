@@ -10,7 +10,7 @@ NODE_ENV=development
 PORT=3000
 
 # ----------------------------------------------------------------------------
-# APIs DE IA (LLM) - Configure no Netlify UI para produção
+# APIs DE IA (LLM) - Configure no painel Vercel para produção
 # ----------------------------------------------------------------------------
 # OPENAI_API_KEY=seu_token_aqui
 # GOOGLE_API_KEY=seu_token_aqui

@@ -16,7 +16,7 @@ Disallow: /node_modules/
 Disallow: /dist/
 Disallow: /*.log
 Disallow: /api/
-Disallow: /netlify/
+Disallow: /api/functions/
 Disallow: /pages/
 
 # Permitir acesso a arquivos específicos importantes

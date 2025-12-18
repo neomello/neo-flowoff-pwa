@@ -1,18 +1,11 @@
 # NEØ.FLOWOFF PWA - Makefile
 # Node validado do Protocolo NΞØ
 
-.PHONY: help build deploy deploy-ipfs check-storacha get-agent-did token-info dev clean install test test-ui test-run validate
+.PHONY: help build deploy-ipfs check-storacha get-agent-did token-info dev clean install test test-ui test-run validate
 
 # Variáveis
 SITE_NAME = neo-flowoff-pwa
 PORT ?= 3000
-NETLIFY_SITE_ID ?= $(shell \
-	if [ -f .netlify/state.json ]; then \
-		node -e "const fs=require('fs');const state=JSON.parse(fs.readFileSync('.netlify/state.json','utf8'));process.stdout.write(state.siteId||'');" 2>/dev/null; \
-	elif command -v netlify >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then \
-		netlify sites:list --json | jq -r '.[] | select(.name=="'"$(SITE_NAME)"'") | .site_id'; \
-	fi)
-NETLIFY_SITE_ARG := $(if $(strip $(NETLIFY_SITE_ID)),--site=$(NETLIFY_SITE_ID))
 
 # Comandos principais
 help: ## Mostra comandos disponíveis
@@ -30,7 +23,6 @@ build: ## Build da PWA (otimiza assets)
 	@test -f index.html || (echo "❌ index.html não encontrado" && exit 1)
 	@test -f styles.css || (echo "❌ styles.css não encontrado" && exit 1)
 	@test -f js/app.js || (echo "❌ js/app.js não encontrado" && exit 1)
-	@# app.js na raiz foi removido (era apenas wrapper)
 	@test -f manifest.webmanifest || (echo "❌ manifest.webmanifest não encontrado" && exit 1)
 	@test -f sw.js || (echo "❌ sw.js não encontrado" && exit 1)
 	@# Cria diretório dist se não existir
@@ -40,7 +32,6 @@ build: ## Build da PWA (otimiza assets)
 	@# Copia arquivos principais
 	@cp index.html dist/
 	@cp styles.css dist/styles.css
-	@# app.js na raiz apenas importa js/app.js, não precisa copiar
 	@cp manifest.webmanifest dist/
 	@cp sw.js dist/
 	@cp favicon.ico dist/
@@ -54,30 +45,15 @@ build: ## Build da PWA (otimiza assets)
 	@cp blog-styles.css dist/ 2>/dev/null || true
 	@cp blog.js dist/ 2>/dev/null || true
 	@cp desktop.html dist/ 2>/dev/null || true
-	@# Copia diretório public (se existir) ou publicj
+	@# Copia diretório public (se existir)
 	@if [ -d "public" ]; then \
 		cp -r public dist/; \
-	elif [ -d "publicj" ]; then \
-		cp -r publicj dist/public; \
 	fi
 	@# Otimiza HTML (remove apenas comentários, preserva atributos style)
 	@sed 's/<!--.*-->//g' dist/index.html > dist/index.tmp && mv dist/index.tmp dist/index.html
 	@echo "✅ Build concluído em ./dist/"
 
-deploy: build ## Deploy para Netlify
-	@echo "🚀 Deploying para Netlify..."
-	@# Verifica se netlify CLI está instalado
-	@command -v netlify >/dev/null 2>&1 || (echo "❌ Netlify CLI não encontrado. Instale com: npm i -g netlify-cli" && exit 1)
-	@# Deploy
-	@netlify deploy --prod --dir=dist $(NETLIFY_SITE_ARG)
-	@echo "✅ Deploy concluído!"
-
-deploy-preview: build ## Deploy preview para Netlify
-	@echo "👀 Deploying preview..."
-	@netlify deploy --dir=dist $(NETLIFY_SITE_ARG)
-	@echo "✅ Preview deploy concluído!"
-
-deploy-ipfs: ## Deploy completo para IPFS/IPNS via Storacha (Web3) - build + upload + publish + commit + push
+deploy-ipfs: ## Deploy completo para IPFS/IPNS via Storacha (Web3)
 	@echo "🌐 Deploying para IPFS/IPNS via Storacha (Web3 descentralizado)..."
 	@npm run deploy:ipfs
 	@echo "✅ Deploy IPFS/IPNS concluído!"
@@ -133,9 +109,9 @@ clean: ## Limpa arquivos de build
 	@rm -rf dist/
 	@echo "✅ Limpeza concluída!"
 
-install: ## Instala dependências (Netlify CLI)
+install: ## Instala dependências do projeto
 	@echo "📦 Instalando dependências..."
-	@command -v netlify >/dev/null 2>&1 || npm install -g netlify-cli
+	@npm install
 	@echo "✅ Dependências instaladas!"
 
 # Comandos de teste
