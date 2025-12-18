@@ -76,6 +76,71 @@ body{
   gap: 0;
 }
 
+/* Botão Wallet Connect */
+.wallet-connect-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.9), rgba(59, 130, 246, 0.9));
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+  text-transform: uppercase;
+}
+
+.wallet-connect-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 1), rgba(59, 130, 246, 1));
+}
+
+.wallet-connect-btn:active {
+  transform: translateY(0);
+}
+
+.wallet-connect-btn.connected {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.9), rgba(16, 185, 129, 0.9));
+  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+}
+
+.wallet-connect-btn.connected:hover {
+  box-shadow: 0 8px 25px rgba(34, 197, 94, 0.5);
+}
+
+.wallet-btn-icon {
+  font-size: 16px;
+  transition: transform 0.3s ease;
+}
+
+.wallet-connect-btn:hover .wallet-btn-icon {
+  transform: translateX(3px);
+}
+
+.wallet-connect-btn.connected .wallet-btn-icon {
+  transform: none;
+}
+
+/* Responsivo */
+@media (max-width: 480px) {
+  .wallet-connect-btn {
+    padding: 8px 14px;
+    font-size: 11px;
+  }
+  
+  .wallet-btn-text {
+    display: inline;
+  }
+}
+
 /* Container isolado para a logo */
 .header-logo-container {
   flex-shrink: 0;

@@ -117,6 +117,10 @@
             </div>
           </div>
         </div>
+        <button id="wallet-btn" class="wallet-connect-btn" onclick="window.WalletManager?.toggle()">
+          <span class="wallet-btn-text">ACESSAR</span>
+          <span class="wallet-btn-icon">→</span>
+        </button>
       </div>
     </header>
 
@@ -752,9 +756,12 @@
 <!-- Suporte WebP com Fallback -->
 <script src="js/webp-support.js?v=1.0.0"></script>
 
+<!-- Wallet Manager -->
+<script src="js/wallet.js?v=2.2.0"></script>
+
 <!-- App principal -->
-<script src="js/app.js?v=2.1.4" type="module"></script>
-<script src="js/index-scripts.js?v=1.0.0"></script>
+<script src="js/app.js?v=2.2.0" type="module"></script>
+<script src="js/index-scripts.js?v=2.2.0"></script>
 
 <!-- Configuração de API Keys para Chat AI (Client-Side) -->
 <!-- As API keys podem ser injetadas no build via variáveis de ambiente do Netlify -->

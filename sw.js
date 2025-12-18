@@ -5,7 +5,7 @@ const RETRY_DELAYS = [1000, 2000, 5000, 10000, 30000]; // Exponential backoff em
 
 const ASSETS = [
   './', './index.html', './styles.css', 
-  './js/app.js', './js/p5-background.js', './js/logger.js', './js/form-validator.js',
+  './js/app.js', './js/wallet.js', './js/p5-background.js', './js/logger.js', './js/form-validator.js',
   './js/webp-support.js', './js/index-scripts.js', './js/offline-queue.js',
   './js/glass-morphism-bottom-bar.js', './js/chat-ai.js',
   './blog.html', './blog-styles.css', './blog.js', './data/blog-articles.json',
