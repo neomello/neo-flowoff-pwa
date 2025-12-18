@@ -109,5 +109,8 @@ dist/
 .idea/
 .vscode/
 
+# Vercel
+.vercel
+
 # Documentação interna (não deve ser commitada)
 docs/

@@ -1,7 +1,7 @@
 # NEØ.FLOWOFF PWA - Makefile
 # Node validado do Protocolo NΞØ
 
-.PHONY: help build deploy-ipfs check-storacha get-agent-did token-info dev clean install test test-ui test-run validate
+.PHONY: help build deploy deploy-preview deploy-ipfs check-storacha get-agent-did token-info dev clean install test test-ui test-run validate
 
 # Variáveis
 SITE_NAME = neo-flowoff-pwa
@@ -52,6 +52,18 @@ build: ## Build da PWA (otimiza assets)
 	@# Otimiza HTML (remove apenas comentários, preserva atributos style)
 	@sed 's/<!--.*-->//g' dist/index.html > dist/index.tmp && mv dist/index.tmp dist/index.html
 	@echo "✅ Build concluído em ./dist/"
+
+deploy: build ## Deploy para Vercel (produção)
+	@echo "🚀 Deploying para Vercel..."
+	@command -v vercel >/dev/null 2>&1 || (echo "❌ Vercel CLI não encontrado. Instale com: npm i -g vercel" && exit 1)
+	@vercel --prod
+	@echo "✅ Deploy concluído!"
+
+deploy-preview: build ## Deploy preview para Vercel
+	@echo "👀 Deploying preview..."
+	@command -v vercel >/dev/null 2>&1 || (echo "❌ Vercel CLI não encontrado. Instale com: npm i -g vercel" && exit 1)
+	@vercel
+	@echo "✅ Preview deploy concluído!"
 
 deploy-ipfs: ## Deploy completo para IPFS/IPNS via Storacha (Web3)
 	@echo "🌐 Deploying para IPFS/IPNS via Storacha (Web3 descentralizado)..."
