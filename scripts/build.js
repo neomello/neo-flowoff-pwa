@@ -60,7 +60,12 @@ const filesToCopy = [
   'blog.js',
   'desktop.html',
   'glass-morphism-bottom-bar.css',
-  'bento-grid.css'
+  'bento-grid.css',
+  // SEO e PWA
+  'sitemap.xml',
+  'robots.txt',
+  // Documentação (se existir)
+  'WALLET-AUTH-FLOW.md'
 ];
 
 for (const file of filesToCopy) {
