@@ -1,4 +1,4 @@
-const CACHE = 'neo-flowoff-v2.1.4-sync';
+const CACHE = 'neo-flowoff-v2.2.0';
 const QUEUE_NAME = 'form-submissions';
 const MAX_RETRIES = 5;
 const RETRY_DELAYS = [1000, 2000, 5000, 10000, 30000]; // Exponential backoff em ms
@@ -19,7 +19,6 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', e=>{
-  // Log removido - Service Worker silencioso em produção
   e.waitUntil(
     caches.open(CACHE).then(cache => {
       return Promise.allSettled(
@@ -32,7 +31,14 @@ self.addEventListener('install', e=>{
       );
     })
   );
-  self.skipWaiting(); // Força atualização imediata
+  // Não usa skipWaiting() aqui para permitir controle do usuário
+});
+
+// Listener para mensagem SKIP_WAITING do cliente
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 self.addEventListener('activate', e=>{

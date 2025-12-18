@@ -1,6 +1,6 @@
 {
   "name": "neo-flowoff-pwa",
-  "version": "2.1.4",
+  "version": "2.2.0",
   "description": "PWA da NEØ.FLOWOFF",
   "type": "module",
   "main": "server.js",
@@ -15,7 +15,8 @@
     "ipns:publish": "node scripts/ipns-publisher.js",
     "deploy:ipfs": "node scripts/deploy-ipfs.js",
     "check:storacha": "node scripts/check-storacha.js",
-    "token:info": "node scripts/token-info.js"
+    "token:info": "node scripts/token-info.js",
+    "version:bump": "node scripts/bump-version.js"
   },
   "dependencies": {
     "@storacha/client": "^1.8.23",
