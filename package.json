@@ -14,7 +14,8 @@
     "test:run": "vitest run",
     "ipns:publish": "node scripts/ipns-publisher.js",
     "deploy:ipfs": "node scripts/deploy-ipfs.js",
-    "check:storacha": "node scripts/check-storacha.js"
+    "check:storacha": "node scripts/check-storacha.js",
+    "token:info": "node scripts/token-info.js"
   },
   "dependencies": {
     "@storacha/client": "^1.8.23",

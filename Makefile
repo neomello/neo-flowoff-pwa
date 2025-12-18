@@ -1,7 +1,7 @@
 # NEØ.FLOWOFF PWA - Makefile
 # Node validado do Protocolo NΞØ
 
-.PHONY: help build deploy deploy-ipfs check-storacha get-agent-did dev clean install test test-ui test-run
+.PHONY: help build deploy deploy-ipfs check-storacha get-agent-did token-info dev clean install test test-ui test-run validate
 
 # Variáveis
 SITE_NAME = neo-flowoff-pwa
@@ -91,6 +91,10 @@ get-agent-did: ## Obtém o Agent DID do cliente Storacha (útil para gerar deleg
 	@echo "🔍 Obtendo Agent DID do cliente Storacha..."
 	@node scripts/get-agent-did.js
 	@echo "✅ Agent DID obtido!"
+
+token-info: ## Exibe informações do token $NEOFLW (Base)
+	@echo "🪙 Buscando informações do token $NEOFLW..."
+	@npm run token:info
 
 dev: ## Servidor local para desenvolvimento (recomendado)
 	@echo "🚀 Iniciando servidor Node.js..."

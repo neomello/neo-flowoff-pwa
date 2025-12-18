@@ -65,6 +65,16 @@ STORACHA_SPACE_DID=did:key:z6Mkjee3CCaP6q2vhRnE3wRBGNqMxEq645EvnYocsbbeZiBR
 # STORACHA_PRIVATE_KEY=sua_chave_privada_aqui
 
 # ----------------------------------------------------------------------------
+# THIRDWEB (Token $NEOFLW)
+# ----------------------------------------------------------------------------
+# Client ID para acesso à API Thirdweb (frontend)
+# Obtenha em: https://thirdweb.com/dashboard/settings/api-keys
+THIRDWEB_CLIENT_ID=seu_client_id_aqui
+
+# Secret Key para acesso backend (NUNCA exponha publicamente)
+# THIRDWEB_SECRET_KEY=sua_secret_key_aqui
+
+# ----------------------------------------------------------------------------
 # INSTRUÇÕES DE CONFIGURAÇÃO
 # ----------------------------------------------------------------------------
 # 1. Copie este arquivo para .env
