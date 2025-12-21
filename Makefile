@@ -53,20 +53,31 @@ build: ## Build da PWA (otimiza assets)
 	@sed 's/<!--.*-->//g' dist/index.html > dist/index.tmp && mv dist/index.tmp dist/index.html
 	@echo "✅ Build concluído em ./dist/"
 
-deploy: build ## Deploy para Vercel (produção)
+build-with-version: ## Build da PWA com atualização automática de versão (patch)
+	@echo "🔄 Atualizando versão (patch)..."
+	@npm run version:bump -- patch || (echo "⚠️  Falha ao atualizar versão. Continuando build..." && true)
+	@$(MAKE) build
+
+build-with-version-minor: ## Build da PWA com atualização automática de versão (minor)
+	@echo "🔄 Atualizando versão (minor)..."
+	@npm run version:bump -- minor || (echo "⚠️  Falha ao atualizar versão. Continuando build..." && true)
+	@$(MAKE) build
+
+deploy: build-with-version ## Deploy para Vercel (produção) - atualiza versão automaticamente
 	@echo "🚀 Deploying para Vercel..."
 	@command -v vercel >/dev/null 2>&1 || (echo "❌ Vercel CLI não encontrado. Instale com: npm i -g vercel" && exit 1)
 	@vercel --prod
 	@echo "✅ Deploy concluído!"
 
-deploy-preview: build ## Deploy preview para Vercel
+deploy-preview: build ## Deploy preview para Vercel (sem atualizar versão)
 	@echo "👀 Deploying preview..."
 	@command -v vercel >/dev/null 2>&1 || (echo "❌ Vercel CLI não encontrado. Instale com: npm i -g vercel" && exit 1)
 	@vercel
 	@echo "✅ Preview deploy concluído!"
 
-deploy-ipfs: ## Deploy completo para IPFS/IPNS via Storacha (Web3)
+deploy-ipfs: ## Deploy completo para IPFS/IPNS via Storacha (Web3) - atualiza versão automaticamente
 	@echo "🌐 Deploying para IPFS/IPNS via Storacha (Web3 descentralizado)..."
+	@echo "ℹ️  Nota: O script deploy-ipfs.js já atualiza a versão automaticamente antes do build"
 	@npm run deploy:ipfs
 	@echo "✅ Deploy IPFS/IPNS concluído!"
 
