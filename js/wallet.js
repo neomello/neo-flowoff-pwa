@@ -381,7 +381,7 @@ class WalletManager {
       connected.style.display = 'block';
       document.getElementById('wallet-address-display').textContent = this.formatAddress(this.address);
       if (this.balance !== null) {
-        document.getElementById('wallet-balance').textContent = this.formatBalance(this.balance);
+        this.updateBalanceDisplay();
       }
     } else {
       disconnected.style.display = 'block';
@@ -511,40 +511,124 @@ class WalletManager {
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
-  // Busca balance do token
+  // Busca balance do token usando Thirdweb API ou RPC direto
   async fetchBalance() {
     if (!this.address) return;
     
+    // Tenta usar Thirdweb API primeiro (mais confiável)
+    if (THIRDWEB_CLIENT_ID) {
+      try {
+        // Usa a API pública do Thirdweb para buscar balance de token
+        const response = await fetch(
+          `https://pay.thirdweb.com/v1/wallets/${this.address}/balance?chainId=${TOKEN_CONFIG.chainId}&tokenAddress=${TOKEN_CONFIG.address}`,
+          {
+            headers: {
+              'x-client-id': THIRDWEB_CLIENT_ID
+            }
+          }
+        );
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.result) {
+            // A API pode retornar em diferentes formatos
+            const balanceValue = data.result.balance || data.result.value || data.result;
+            if (balanceValue) {
+              const balance = typeof balanceValue === 'string' 
+                ? BigInt(balanceValue.startsWith('0x') ? balanceValue : `0x${balanceValue}`)
+                : BigInt(balanceValue);
+              const decimals = BigInt(10 ** TOKEN_CONFIG.decimals);
+              const intPart = balance / decimals;
+              const decPart = (balance % decimals) / BigInt(10 ** (TOKEN_CONFIG.decimals - 2));
+              this.balance = `${intPart}.${decPart.toString().padStart(2, '0')}`;
+              this.updateBalanceDisplay();
+              return;
+            }
+          }
+        }
+      } catch (error) {
+        // Silenciosamente tenta RPC direto se Thirdweb falhar
+        window.Logger?.debug('Thirdweb API não disponível, usando RPC direto');
+      }
+    }
+    
+    // Fallback: RPC direto da Base usando endpoint público
     try {
-      const response = await fetch('https://mainnet.base.org', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          id: 1,
-          method: 'eth_call',
-          params: [{
-            to: TOKEN_CONFIG.address,
-            data: '0x70a08231000000000000000000000000' + this.address.slice(2).toLowerCase()
-          }, 'latest']
-        })
-      });
+      // Tenta múltiplos endpoints públicos da Base
+      const rpcEndpoints = [
+        'https://base-mainnet.g.alchemy.com/v2/demo',
+        'https://base.llamarpc.com',
+        'https://base.publicnode.com',
+        'https://mainnet.base.org'
+      ];
       
-      const json = await response.json();
-      if (json.result && json.result !== '0x') {
-        const balance = BigInt(json.result);
-        const decimals = BigInt(10 ** TOKEN_CONFIG.decimals);
-        const intPart = balance / decimals;
-        const decPart = (balance % decimals) / BigInt(10 ** (TOKEN_CONFIG.decimals - 2));
-        this.balance = `${intPart}.${decPart.toString().padStart(2, '0')}`;
-      } else {
-        this.balance = '0.00';
+      let lastError = null;
+      for (const rpcUrl of rpcEndpoints) {
+        try {
+          const response = await fetch(rpcUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              jsonrpc: '2.0',
+              id: 1,
+              method: 'eth_call',
+              params: [{
+                to: TOKEN_CONFIG.address,
+                data: '0x70a08231000000000000000000000000' + this.address.slice(2).toLowerCase()
+              }, 'latest']
+            })
+          });
+          
+          if (!response.ok) {
+            throw new Error(`RPC error: ${response.status}`);
+          }
+          
+          const json = await response.json();
+          
+          // Verifica se há erro na resposta
+          if (json.error) {
+            throw new Error(json.error.message || 'RPC error');
+          }
+          
+          if (json.result && json.result !== '0x' && json.result !== '0x0') {
+            const balance = BigInt(json.result);
+            const decimals = BigInt(10 ** TOKEN_CONFIG.decimals);
+            const intPart = balance / decimals;
+            const decPart = (balance % decimals) / BigInt(10 ** (TOKEN_CONFIG.decimals - 2));
+            this.balance = `${intPart}.${decPart.toString().padStart(2, '0')}`;
+            this.updateBalanceDisplay();
+            return; // Sucesso, sai do loop
+          } else {
+            this.balance = '0.00';
+            this.updateBalanceDisplay();
+            return; // Saldo zero é válido
+          }
+        } catch (error) {
+          lastError = error;
+          // Continua tentando próximo endpoint
+          continue;
+        }
       }
       
-      document.getElementById('wallet-balance').textContent = this.formatBalance(this.balance);
+      // Se todos os endpoints falharam
+      throw lastError || new Error('Todos os endpoints RPC falharam');
     } catch (error) {
       console.error('Erro ao buscar balance:', error);
       this.balance = '0.00';
+      this.updateBalanceDisplay();
+      
+      // Log apenas erros não relacionados a CORS
+      if (error.message && !error.message.includes('CORS') && !error.message.includes('Failed to fetch')) {
+        window.Logger?.warn('Não foi possível buscar saldo do token. Verifique sua conexão.');
+      }
+    }
+  }
+
+  // Atualiza display do balance
+  updateBalanceDisplay() {
+    const balanceEl = document.getElementById('wallet-balance');
+    if (balanceEl) {
+      balanceEl.textContent = this.formatBalance(this.balance);
     }
   }
 
