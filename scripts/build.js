@@ -13,6 +13,20 @@ if (!process.env.NODE_ENV) {
   process.env.NODE_ENV = 'production';
 }
 
+// Atualiza versão automaticamente se BUILD_BUMP_VERSION estiver definido
+if (process.env.BUILD_BUMP_VERSION) {
+  console.log(`🔄 Atualizando versão (${process.env.BUILD_BUMP_VERSION})...`);
+  try {
+    execSync(`npm run version:bump -- ${process.env.BUILD_BUMP_VERSION}`, {
+      cwd: rootDir,
+      stdio: 'inherit'
+    });
+    console.log('✅ Versão atualizada!\n');
+  } catch (error) {
+    console.warn('⚠️  Falha ao atualizar versão. Continuando build...\n');
+  }
+}
+
 console.log('🔨 Building PWA...');
 
 // Valida estrutura mínima

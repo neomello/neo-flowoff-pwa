@@ -71,7 +71,23 @@ async function runCommand(command, options = {}) {
 
 async function build() {
   console.log('\n🔨 Passo 1: Build da PWA...\n');
-  const result = await runCommand('npm run build');
+  // Atualiza versão automaticamente antes do build (patch)
+  // Nota: Se BUILD_BUMP_VERSION estiver definido, build.js também atualizará
+  // Mas fazemos aqui para garantir que sempre aconteça antes do build
+  console.log('🔄 Atualizando versão (patch) antes do build...\n');
+  const bumpResult = await runCommand('npm run version:bump -- patch', {
+    stdio: 'pipe'
+  });
+  if (bumpResult.success) {
+    console.log('✅ Versão atualizada!\n');
+  } else {
+    console.warn('⚠️  Falha ao atualizar versão. Continuando build...\n');
+  }
+  
+  // Desabilita atualização duplicada no build.js
+  const result = await runCommand('npm run build', {
+    env: { ...process.env, BUILD_BUMP_VERSION: '' }
+  });
   if (!result.success) {
     console.error('❌ Erro no build');
     process.exit(1);
