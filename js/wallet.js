@@ -2,7 +2,17 @@
  * Wallet Manager - Thirdweb Integration
  * Gerencia conexão de wallet com abstração (embedded wallet)
  * 
- * Token: $NEOFLW na Base
+ * Token: $NEOFLW na Base Network (Chain ID: 8453)
+ * Contrato: 0x6575933669e530dC25aaCb496cD8e402B8f26Ff5
+ * 
+ * Integração:
+ * - Usa Thirdweb API quando disponível (via THIRDWEB_CLIENT_ID)
+ * - Fallback para RPC direto da Base Network
+ * - Suporta conexão via Email, Google OAuth e MetaMask
+ * 
+ * MCP Thirdweb:
+ * - O MCP thirdweb pode ser usado via servidor para operações backend
+ * - Frontend usa API pública do Thirdweb para balance e operações básicas
  */
 
 // Configuração do Token
