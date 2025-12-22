@@ -15,7 +15,7 @@ help: ## Mostra comandos disponíveis
 
 analyze: ## Executa análise de código PWA
 	@echo "🔍 Executando análise de código PWA..."
-	@node code-analysis.js
+	@node scripts/code-analysis.js
 
 build: ## Build da PWA (otimiza assets)
 	@echo "🔨 Building PWA..."
