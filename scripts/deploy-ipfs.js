@@ -233,9 +233,28 @@ async function uploadToStoracha() {
         console.log(`   UCAN preview: ${STORACHA_UCAN.substring(0, 50)}...${STORACHA_UCAN.substring(STORACHA_UCAN.length - 20)}\n`);
         
         // O proof gerado pelo CLI é um CAR file em base64
-        // Proof.parse() espera receber o base64 diretamente como string
-        // Não precisa decodificar para Buffer primeiro
-        const proof = await Proof.parse(STORACHA_UCAN);
+        // Proof.parse() pode esperar bytes decodificados ou base64 string
+        // Tenta primeiro como string base64, se falhar, tenta decodificar para bytes
+        let proof;
+        try {
+          // Tenta parsear diretamente como string base64
+          proof = await Proof.parse(STORACHA_UCAN);
+        } catch (parseError) {
+          // Se falhar, tenta decodificar para bytes primeiro
+          console.log('   Tentando decodificar base64 para bytes...');
+          try {
+            const decodedBytes = Buffer.from(STORACHA_UCAN, 'base64');
+            console.log(`   Bytes decodificados: ${decodedBytes.length} bytes`);
+            // Tenta parsear os bytes decodificados
+            proof = await Proof.parse(decodedBytes);
+          } catch (bytesError) {
+            // Se ainda falhar, tenta como base64url
+            console.log('   Tentando como base64url...');
+            const base64urlUCAN = STORACHA_UCAN.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+            const decodedFromUrl = Buffer.from(base64urlUCAN, 'base64url');
+            proof = await Proof.parse(decodedFromUrl);
+          }
+        }
         
         // Adiciona o espaço usando o proof parseado
         const addedSpace = await client.addSpace(proof);
