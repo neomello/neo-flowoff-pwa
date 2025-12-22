@@ -50,7 +50,7 @@ function syncMobileWalletButton() {
     arrowEl.textContent = '✓';
   } else {
     walletBtnMobile.classList.remove('connected');
-    textEl.textContent = 'ACESSAR WALLET';
+    textEl.textContent = 'ACESSAR';
     arrowEl.textContent = '→';
   }
 }

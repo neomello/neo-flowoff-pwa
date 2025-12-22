@@ -1,7 +1,7 @@
 # NEØ.FLOWOFF PWA - Makefile
 # Node validado do Protocolo NΞØ
 
-.PHONY: help build deploy deploy-preview deploy-ipfs check-storacha get-agent-did token-info dev clean install test test-ui test-run validate
+.PHONY: help build deploy deploy-preview deploy-ipfs check-storacha get-agent-did token-info dev clean install test test-ui test-run validate validate-production
 
 # Variáveis
 SITE_NAME = neo-flowoff-pwa
@@ -163,6 +163,11 @@ validate: ## Valida estrutura da PWA
 	@echo "  ✓ sw.js: $(shell test -f sw.js && echo 'OK' || echo 'FALTANDO')"
 	@echo "  ✓ public/: $(shell test -d public && echo 'OK' || echo 'FALTANDO')"
 	@echo "✅ Validação concluída!"
+
+validate-production: ## Valida produção completa (token, thirdweb, layout, wallet)
+	@echo "🔍 Validando produção completa..."
+	@command -v node >/dev/null 2>&1 || (echo "❌ Node.js não encontrado" && exit 1)
+	@node scripts/validate-production.js
 
 # Comando padrão
 .DEFAULT_GOAL := help

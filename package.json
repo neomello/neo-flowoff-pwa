@@ -1,6 +1,6 @@
 {
   "name": "neo-flowoff-pwa",
-  "version": "2.4.0",
+  "version": "2.4.6",
   "description": "PWA da NEØ.FLOWOFF",
   "type": "module",
   "main": "server.js",
@@ -15,6 +15,7 @@
     "ipns:publish": "node scripts/ipns-publisher.js",
     "deploy:ipfs": "node scripts/deploy-ipfs.js",
     "check:storacha": "node scripts/check-storacha.js",
+    "check:thirdweb": "node scripts/check-thirdweb-mcp.js",
     "token:info": "node scripts/token-info.js",
     "version:bump": "node scripts/bump-version.js"
   },
