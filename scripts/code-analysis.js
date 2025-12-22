@@ -223,7 +223,14 @@ class PWACodeAnalyzer {
       });
     }
     
-    if (!content.includes('serviceWorker')) {
+    // Verificar se há script que carrega app.js (pode ser js/app.js)
+    const hasAppJs = content.match(/<script[^>]*src\s*=\s*["'][^"']*app\.js/i);
+    // Verificar se há script que registra serviceWorker (pode estar no JS externo)
+    const hasServiceWorkerScript = content.match(/<script[^>]*src\s*=\s*["'][^"']*(app\.js|index-scripts\.js)/i);
+    
+    // Service Worker pode estar registrado no JavaScript externo, não precisa estar no HTML
+    // Apenas reporta erro se não há nenhum script que possa registrar o SW
+    if (!content.includes('serviceWorker') && !hasServiceWorkerScript) {
       this.stats.issues.pwa.push({
         file: filePath,
         issue: 'Service Worker não registrado',
@@ -416,13 +423,28 @@ class PWACodeAnalyzer {
   // Verificar arquivos PWA essenciais
   checkPWAFiles() {
     CONFIG.pwaFiles.forEach(file => {
-      if (!fs.existsSync(file)) {
-        this.stats.files.pwa.missing.push(file);
-        this.stats.issues.pwa.push({
-          file: file,
-          issue: 'Arquivo PWA essencial ausente',
-          suggestion: `Crie o arquivo ${file}`
-        });
+      // Para app.js, verificar se existe na raiz OU em js/app.js
+      if (file === 'app.js') {
+        const existsInRoot = fs.existsSync(file);
+        const existsInJs = fs.existsSync(`js/${file}`);
+        if (!existsInRoot && !existsInJs) {
+          this.stats.files.pwa.missing.push(file);
+          this.stats.issues.pwa.push({
+            file: file,
+            issue: 'Arquivo PWA essencial ausente',
+            suggestion: `Crie o arquivo ${file} ou js/${file}`
+          });
+        }
+      } else {
+        // Para outros arquivos, verificar normalmente
+        if (!fs.existsSync(file)) {
+          this.stats.files.pwa.missing.push(file);
+          this.stats.issues.pwa.push({
+            file: file,
+            issue: 'Arquivo PWA essencial ausente',
+            suggestion: `Crie o arquivo ${file}`
+          });
+        }
       }
     });
   }
