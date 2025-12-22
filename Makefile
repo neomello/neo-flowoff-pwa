@@ -38,6 +38,9 @@ build: ## Build da PWA (otimiza assets)
 	@# Copia pasta js/
 	@mkdir -p dist/js
 	@cp -r js/* dist/js/ 2>/dev/null || true
+	@# Copia pasta css/modules/ para dist (para thirdweb-widgets.css)
+	@mkdir -p dist/css/modules
+	@cp css/modules/thirdweb-widgets.css dist/css/modules/ 2>/dev/null || true
 	@# Copia arquivos CSS adicionais
 	@cp glass-morphism-bottom-bar.css dist/ 2>/dev/null || true
 	@cp bento-grid.css dist/ 2>/dev/null || true
