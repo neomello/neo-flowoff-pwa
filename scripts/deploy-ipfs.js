@@ -45,29 +45,47 @@ function readMultiLineUCAN(envPath) {
     let ucanKey = '';
     
     for (let i = 0; i < lines.length; i++) {
-      const line = lines[i].trim();
+      const line = lines[i];
+      const trimmedLine = line.trim();
       
       // Detecta início de STORACHA_UCAN ou UCAN_TOKEN
-      if (line.startsWith('STORACHA_UCAN=') || line.startsWith('UCAN_TOKEN=')) {
+      if (trimmedLine.startsWith('STORACHA_UCAN=') || trimmedLine.startsWith('UCAN_TOKEN=')) {
         inUCAN = true;
-        ucanKey = line.split('=')[0];
-        const valuePart = line.substring(line.indexOf('=') + 1);
+        ucanKey = trimmedLine.split('=')[0];
+        const valuePart = trimmedLine.substring(trimmedLine.indexOf('=') + 1);
         if (valuePart) {
           ucanValue = valuePart;
         }
         continue;
       }
       
-      // Se estamos dentro de um UCAN e a linha não é um comentário ou nova variável
+      // Se estamos dentro de um UCAN
       if (inUCAN) {
-        // Para se encontrar uma nova variável (linha com =) ou comentário (#)
-        if (line.includes('=') && !line.startsWith(' ')) {
+        // Para se encontrar uma nova variável (linha que começa com letra maiúscula seguida de =)
+        // ou comentário (#) no início da linha
+        if (trimmedLine.startsWith('#')) {
+          // Comentário - para de ler
           inUCAN = false;
           break;
         }
-        // Ignora linhas vazias e comentários
-        if (line && !line.startsWith('#')) {
-          ucanValue += line;
+        
+        // Se a linha tem = e não é continuação (não começa com espaço ou tab)
+        // e não parece ser parte do base64 (contém apenas base64 chars)
+        if (trimmedLine.includes('=') && !trimmedLine.match(/^[A-Z_]+=/)) {
+          // Linha vazia ou linha que não parece ser continuação
+          if (trimmedLine.length === 0) {
+            continue; // Linha vazia, continua
+          }
+          // Verifica se parece ser uma nova variável (começa com letra maiúscula)
+          if (trimmedLine.match(/^[A-Z_][A-Z0-9_]*=/)) {
+            inUCAN = false;
+            break;
+          }
+        }
+        
+        // Adiciona a linha ao UCAN (remove espaços iniciais/finais mas mantém conteúdo)
+        if (trimmedLine && !trimmedLine.startsWith('#')) {
+          ucanValue += trimmedLine;
         }
       }
     }
@@ -83,13 +101,15 @@ function readMultiLineUCAN(envPath) {
 // Converte de base64url para base64 padrão (Storacha espera base64 padrão)
 let rawUCAN = process.env.STORACHA_UCAN || process.env.UCAN_TOKEN;
 
-// Se não encontrou no env padrão, tenta ler multi-linha manualmente
-if (!rawUCAN || rawUCAN.length < 100) {
+// Se não encontrou no env padrão ou está muito curto, tenta ler multi-linha manualmente
+if (!rawUCAN || rawUCAN.length < 500) {
   const envPath = join(PROJECT_ROOT, '.env');
   const multiLineUCAN = readMultiLineUCAN(envPath);
-  if (multiLineUCAN && multiLineUCAN.length > rawUCAN?.length) {
+  if (multiLineUCAN && multiLineUCAN.length > (rawUCAN?.length || 0)) {
     rawUCAN = multiLineUCAN;
-    console.log('📝 UCAN lido de formato multi-linha do .env');
+    console.log(`📝 UCAN lido de formato multi-linha do .env (${multiLineUCAN.length} chars)`);
+  } else if (rawUCAN && rawUCAN.length < 500) {
+    console.warn(`⚠️  UCAN muito curto (${rawUCAN.length} chars). Tentando ler multi-linha...`);
   }
 }
 
