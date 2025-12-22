@@ -98,6 +98,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <title>NEØ.FLOWOFF</title>
   <link rel="stylesheet" href="styles.css?v=2.3.0">
+  <link rel="stylesheet" href="css/modules/thirdweb-widgets.css?v=1.0.0">
   <link rel="stylesheet" href="bento-grid.css?v=1.1.0">
   <link rel="stylesheet" href="glass-morphism-bottom-bar.css">
 
@@ -818,6 +819,9 @@
 <!-- Wallet Manager -->
 <script src="js/wallet.js?v=2.4.0"></script>
 
+<!-- Thirdweb Widgets (ConnectEmbed + BuyWidget) -->
+<script src="js/thirdweb-widgets.js?v=1.0.0"></script>
+
 <!-- App principal -->
 <script src="js/app.js?v=2.3.0" type="module"></script>
 <script src="js/index-scripts.js?v=2.3.0"></script>
@@ -889,6 +893,20 @@
         <p>Com tokenização, cada ponto, moeda ou ação vira um ativo real, com rastreabilidade e valor simbólico ou financeiro.</p>
         <p>Dá pra lançar pré-vendas validadas, criar engajamento com escassez real e estruturar um ecossistema de fidelização que vira comunidade.</p>
         <p>Do jogo ao negócio, a tokenização é a ponte entre engajamento e faturamento. E o melhor: já fazemos isso.</p>
+
+        <!-- Seção Token NEOFLW com Widgets Thirdweb -->
+        <div class="token-neoflw-section" style="margin-top: 32px; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.1);">
+          <h4 style="margin-bottom: 16px; color: #fff;">🪙 Token $NEOFLW na Base</h4>
+          <p style="margin-bottom: 24px; color: rgba(255,255,255,0.8); font-size: 14px;">
+            Cadastro ultra-simples • Compre tokens diretamente • Sem MetaMask necessário
+          </p>
+          
+          <!-- ConnectEmbed Widget -->
+          <div id="connect-embed-container" style="margin-bottom: 24px;"></div>
+          
+          <!-- BuyWidget -->
+          <div id="buy-widget-container"></div>
+        </div>
       </div>
       <div class="modal-footer">
         <button class="btn primary" data-close="modal-tokenizacao">Entendi</button>
