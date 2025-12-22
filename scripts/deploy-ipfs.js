@@ -52,10 +52,21 @@ function readMultiLineUCAN(envPath, keyName = null) {
       
       // Detecta início da variável específica
       if (trimmedLine.startsWith(`${targetKey}=`)) {
-        inUCAN = true;
-        const valuePart = trimmedLine.substring(trimmedLine.indexOf('=') + 1);
-        if (valuePart) {
+        const valuePart = trimmedLine.substring(trimmedLine.indexOf('=') + 1).trim();
+        // Se o valor após = parece ser um DID key base58 (começa com z seguido de base58),
+        // ignora essa linha e continua procurando pelo UCAN real na próxima linha
+        if (valuePart.match(/^z[1-9A-HJ-NP-Za-km-z]{40,}$/)) {
+          // É um DID key, não o UCAN - continua procurando
+          inUCAN = true;
+          ucanValue = ''; // Começa vazio, vai ler da próxima linha
+        } else if (valuePart && valuePart.match(/^[A-Za-z0-9+/=_-]+$/)) {
+          // Parece ser base64/base64url válido - é o UCAN
+          inUCAN = true;
           ucanValue = valuePart;
+        } else {
+          // Linha vazia ou inválida após =, continua procurando
+          inUCAN = true;
+          ucanValue = '';
         }
         continue;
       }
@@ -134,11 +145,21 @@ if (STORACHA_UCAN_ORIGINAL) {
   // Remove prefixos comuns que não são parte do base64:
   // - "did:key:..." seguido de espaço ou fim
   // - "--can ..." (comandos)
+  // - Sequências base58 (DID keys) que podem estar misturadas
   // - Qualquer texto antes do primeiro caractere base64 válido
   let cleanedUCAN = STORACHA_UCAN_ORIGINAL.replace(/^did:key:[A-Za-z0-9]+[\s-]*/, ''); // Remove did:key:...
   cleanedUCAN = cleanedUCAN.replace(/--can\s+[^\s]+\s*/g, ''); // Remove --can commands
+  
+  // Remove sequências base58 no início (DID keys começam com z seguido de base58)
+  // Base58 usa: 123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz (sem 0, O, I, l)
+  // Se começa com z seguido de base58, pode ser um DID key prefix
+  cleanedUCAN = cleanedUCAN.replace(/^z[1-9A-HJ-NP-Za-km-z]{50,}[\s-]*/, ''); // Remove DID key base58 no início
+  
   cleanedUCAN = cleanedUCAN.replace(/^[^A-Za-z0-9+/=_-]+/, ''); // Remove outros prefixos não-base64
   cleanedUCAN = cleanedUCAN.replace(/[^A-Za-z0-9+/=_-]+$/, ''); // Remove sufixos não-base64
+  
+  // Remove espaços e quebras de linha restantes
+  cleanedUCAN = cleanedUCAN.replace(/\s+/g, '').trim();
   
   // Detecta formato: base64url tem - e _, base64 padrão tem + e /
   const isBase64Url = cleanedUCAN.includes('-') || cleanedUCAN.includes('_');
@@ -247,8 +268,10 @@ async function uploadToStoracha() {
       try {
         console.log('🔐 Adicionando espaço usando proof/UCAN...');
         
-        // Valida se o UCAN parece ser base64 válido (já foi convertido e limpo acima)
-        const base64Regex = /^[A-Za-z0-9+/=]+$/;
+        // Valida se o UCAN parece ser base64 válido (aceita base64 padrão e base64url)
+        // Base64 padrão: A-Za-z0-9+/=
+        // Base64url: A-Za-z0-9-_ (usa - e _ em vez de + e /)
+        const base64Regex = /^[A-Za-z0-9+/=_-]+$/;
         if (!base64Regex.test(STORACHA_UCAN)) {
           throw new Error(`UCAN contém caracteres inválidos após conversão. Tamanho: ${STORACHA_UCAN.length} chars. Primeiros 50: ${STORACHA_UCAN.substring(0, 50)}...`);
         }
