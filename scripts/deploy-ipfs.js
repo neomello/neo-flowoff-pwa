@@ -261,42 +261,44 @@ async function uploadToStoracha() {
         console.log(`   UCAN tamanho: ${STORACHA_UCAN.length} caracteres`);
         console.log(`   UCAN preview: ${STORACHA_UCAN.substring(0, 50)}...${STORACHA_UCAN.substring(STORACHA_UCAN.length - 20)}\n`);
         
-        // Segundo o guia, o proof gerado pelo CLI é um CAR file em base64
-        // Proof.parse() geralmente espera bytes decodificados (Buffer), não string
-        // Tenta múltiplos formatos na ordem mais provável
+        // Segundo o guia Storacha (linha 182), Proof.parse() aceita string diretamente:
+        // const proof = await Proof.parse(STORACHA_UCAN);
+        // Mas o UCAN precisa estar limpo (sem quebras de linha) e em formato base64 válido
+        // O guia também menciona converter base64url para base64 padrão se necessário
+        
+        // Prepara UCAN conforme guia: limpo, convertido para base64 padrão, com padding
+        const ucanForParse = STORACHA_UCAN_BASE64 || STORACHA_UCAN;
+        
+        // Tenta múltiplos formatos conforme documentação e prática comum
         let proof;
         const attempts = [];
         
-        // Tentativa 1: Bytes decodificados de base64 padrão (mais comum para --base64)
-        if (STORACHA_UCAN_BASE64) {
-          try {
-            const decodedBase64 = Buffer.from(STORACHA_UCAN_BASE64, 'base64');
-            attempts.push({ name: 'base64 bytes (padrão)', value: decodedBase64 });
-          } catch (e) {
-            console.log(`   ⚠️  Erro ao decodificar base64: ${e.message.substring(0, 50)}`);
-          }
-        }
+        // Tentativa 1: String base64 padrão (conforme guia linha 182)
+        // O guia mostra: const proof = await Proof.parse(STORACHA_UCAN);
+        attempts.push({ name: 'base64 string (conforme guia)', value: ucanForParse });
         
-        // Tentativa 2: Bytes decodificados de base64url (formato alternativo)
+        // Tentativa 2: Bytes decodificados de base64 (CAR files geralmente são bytes)
+        // O proof é um CAR file, que pode precisar ser decodificado
         try {
-          // Adiciona padding para base64url se necessário
-          let base64urlPadded = STORACHA_UCAN;
-          while (base64urlPadded.length % 4 !== 0) {
-            base64urlPadded += '=';
-          }
-          const decodedBase64Url = Buffer.from(base64urlPadded, 'base64url');
-          attempts.push({ name: 'base64url bytes', value: decodedBase64Url });
+          const decodedBase64 = Buffer.from(ucanForParse, 'base64');
+          attempts.push({ name: 'base64 bytes (CAR file)', value: decodedBase64 });
         } catch (e) {
-          console.log(`   ⚠️  Erro ao decodificar base64url: ${e.message.substring(0, 50)}`);
+          console.log(`   ⚠️  Não foi possível decodificar base64: ${e.message.substring(0, 50)}`);
         }
         
-        // Tentativa 3: String base64 padrão (fallback)
-        if (STORACHA_UCAN_BASE64 && STORACHA_UCAN_BASE64 !== STORACHA_UCAN) {
-          attempts.push({ name: 'base64 string', value: STORACHA_UCAN_BASE64 });
+        // Tentativa 3: Bytes decodificados de base64url (se formato original era base64url)
+        if (STORACHA_UCAN !== ucanForParse) {
+          try {
+            let base64urlPadded = STORACHA_UCAN;
+            while (base64urlPadded.length % 4 !== 0) {
+              base64urlPadded += '=';
+            }
+            const decodedBase64Url = Buffer.from(base64urlPadded, 'base64url');
+            attempts.push({ name: 'base64url bytes', value: decodedBase64Url });
+          } catch (e) {
+            // Ignora erro
+          }
         }
-        
-        // Tentativa 4: String base64url original (último recurso)
-        attempts.push({ name: 'base64url string', value: STORACHA_UCAN });
         
         // Tenta cada formato até um funcionar
         let lastError = null;
@@ -316,7 +318,7 @@ async function uploadToStoracha() {
         
         if (!proof) {
           const errorDetails = lastError ? `\n   Último erro: ${lastError.message}` : '';
-          throw new Error(`Todas as tentativas de parse falharam.${errorDetails}\n   Verifique se o UCAN está completo e foi gerado com --base64 para o Agent DID correto.`);
+          throw new Error(`Todas as tentativas de parse falharam.${errorDetails}\n   Verifique se o UCAN está completo e foi gerado com --base64 para o Agent DID correto.\n   Agent DID atual: ${client.agent?.did?.() || 'N/A'}`);
         }
         
         // Adiciona o espaço usando o proof parseado
