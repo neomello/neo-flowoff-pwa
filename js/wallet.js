@@ -1,19 +1,19 @@
 /**
- * Wallet Manager - Thirdweb Integration
+ * Wallet Manager - Thirdweb SDK v5 Integration
  * Gerencia conexão de wallet com abstração (embedded wallet)
  * 
  * Token: $NEOFLW na Base Network (Chain ID: 8453)
  * Contrato: 0x6575933669e530dC25aaCb496cD8e402B8f26Ff5
  * 
  * Integração:
- * - Usa Thirdweb API quando disponível (via THIRDWEB_CLIENT_ID)
+ * - Usa Thirdweb SDK v5 com inAppWallet
+ * - Suporta: Email, Google, Apple, X (Twitter), Telegram, MetaMask
+ * - Configuração de metadata (nome, ícone, imagem)
  * - Fallback para RPC direto da Base Network
- * - Suporta conexão via Email, Google OAuth e MetaMask
- * 
- * MCP Thirdweb:
- * - O MCP thirdweb pode ser usado via servidor para operações backend
- * - Frontend usa API pública do Thirdweb para balance e operações básicas
  */
+
+// Importa SDK Thirdweb v5 (via CDN ou módulo ES6)
+// Nota: Se usar módulo ES6, importe no topo: import { createThirdwebClient, inAppWallet } from "thirdweb";
 
 // Configuração do Token
 const TOKEN_CONFIG = {
@@ -28,18 +28,123 @@ const TOKEN_CONFIG = {
 // Thirdweb Client ID (público, pode ficar no frontend)
 const THIRDWEB_CLIENT_ID = window.THIRDWEB_CLIENT_ID || '';
 
+// Verifica se o SDK está disponível (carregado via CDN ou módulo)
+let thirdwebSDK = null;
+if (typeof window !== 'undefined') {
+  // Tenta carregar do CDN se não estiver disponível
+  if (!window.thirdweb) {
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/thirdweb@latest/dist/thirdweb.umd.js';
+    script.async = true;
+    script.onload = () => {
+      thirdwebSDK = window.thirdweb;
+      console.log('✅ Thirdweb SDK carregado via CDN');
+    };
+    document.head.appendChild(script);
+  } else {
+    thirdwebSDK = window.thirdweb;
+  }
+}
+
 class WalletManager {
   constructor() {
     this.connected = false;
     this.address = null;
     this.balance = null;
     this.modal = null;
+    this.client = null;
+    this.wallet = null;
+    this.account = null;
     this.init();
   }
 
-  init() {
+  async init() {
     this.createModal();
     this.loadState();
+    await this.initThirdwebSDK();
+  }
+
+  // Inicializa Thirdweb SDK v5
+  async initThirdwebSDK() {
+    if (!THIRDWEB_CLIENT_ID) {
+      console.warn('⚠️ THIRDWEB_CLIENT_ID não configurado. Funcionalidades limitadas.');
+      return;
+    }
+
+    // Aguarda SDK carregar se necessário
+    if (!thirdwebSDK && typeof window !== 'undefined') {
+      await new Promise((resolve) => {
+        const checkSDK = setInterval(() => {
+          if (window.thirdweb) {
+            thirdwebSDK = window.thirdweb;
+            clearInterval(checkSDK);
+            resolve();
+          }
+        }, 100);
+        setTimeout(() => {
+          clearInterval(checkSDK);
+          resolve();
+        }, 5000); // Timeout após 5s
+      });
+    }
+
+    if (!thirdwebSDK) {
+      console.warn('⚠️ Thirdweb SDK não disponível. Usando fallback.');
+      return;
+    }
+
+    try {
+      // Cria client Thirdweb (frontend usa clientId)
+      this.client = thirdwebSDK.createThirdwebClient({
+        clientId: THIRDWEB_CLIENT_ID
+      });
+
+      // Define Base Network (Chain ID: 8453)
+      const baseChain = thirdwebSDK.defineChain(8453);
+
+      // Configura inAppWallet com metadata (URLs absolutas para compatibilidade OAuth)
+      const baseUrl = window.location.origin;
+      this.wallet = thirdwebSDK.inAppWallet({
+        client: this.client,
+        chain: baseChain,
+        metadata: {
+          name: "NEØ.FLOWOFF",
+          icon: `${baseUrl}/public/icons/icon-512x512.webp`, // URL absoluta
+          image: {
+            src: "https://flowoff.xyz/public/images/capa_neo_flowoff_webapp.png",
+            alt: "Banner NEØ.FLOWOFF",
+            width: 1200,
+            height: 630
+          }
+        },
+        hidePrivateKeyExport: true // Segurança adicional
+      });
+
+      console.log('✅ Thirdweb SDK inicializado com sucesso');
+    } catch (error) {
+      console.error('❌ Erro ao inicializar Thirdweb SDK:', error);
+      // Fallback: tenta usar método alternativo se defineChain não existir
+      try {
+        const baseUrl = window.location.origin;
+        this.wallet = thirdwebSDK.inAppWallet({
+          client: this.client,
+          chainId: 8453, // Base Network
+          metadata: {
+            name: "NEØ.FLOWOFF",
+            icon: `${baseUrl}/public/icons/icon-512x512.webp`, // URL absoluta
+            image: {
+              src: "https://flowoff.xyz/public/images/capa_neo_flowoff_webapp.png",
+              alt: "Banner NEØ.FLOWOFF",
+              width: 1200,
+              height: 630
+            }
+          }
+        });
+        console.log('✅ Thirdweb SDK inicializado (fallback)');
+      } catch (fallbackError) {
+        console.error('❌ Erro no fallback:', fallbackError);
+      }
+    }
   }
 
   // Carrega estado salvo
@@ -101,9 +206,21 @@ class WalletManager {
                 <span class="wallet-option-icon">G</span>
                 <span>Google</span>
               </button>
+              <button class="wallet-option" onclick="WalletManager.connectApple()">
+                <span class="wallet-option-icon">🍎</span>
+                <span>Apple</span>
+              </button>
+              <button class="wallet-option" onclick="WalletManager.connectX()">
+                <span class="wallet-option-icon">𝕏</span>
+                <span>X (Twitter)</span>
+              </button>
+              <button class="wallet-option" onclick="WalletManager.connectTelegram()">
+                <span class="wallet-option-icon">✈️</span>
+                <span>Telegram</span>
+              </button>
               <button class="wallet-option" onclick="WalletManager.connectWallet()">
                 <span class="wallet-option-icon">🦊</span>
-                <span>Wallet</span>
+                <span>MetaMask</span>
               </button>
             </div>
             
@@ -440,25 +557,219 @@ class WalletManager {
     return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
-  // Conexão via Email (Embedded Wallet)
+  // Conexão via Email (Embedded Wallet) - SDK v5
   async connectEmail() {
+    if (!this.wallet) {
+      await this.initThirdwebSDK();
+      if (!this.wallet) {
+        alert('SDK Thirdweb não disponível. Tente novamente.');
+        return;
+      }
+    }
+
     const email = prompt('Digite seu email:');
     if (!email || !email.includes('@')) {
       alert('Email inválido');
       return;
     }
-    
-    await this.simulateConnect(email);
+
+    try {
+      const account = await this.wallet.connect({
+        strategy: "email",
+        email: email
+      });
+
+      if (account && account.address) {
+        this.address = account.address;
+        this.connected = true;
+        this.account = account;
+        this.saveState();
+        this.updateButton();
+        this.updateModalState();
+        await this.fetchBalance();
+        this.close();
+        this.showToast('✅ Wallet conectada com sucesso!');
+        await this.onWalletConnected('email', email);
+      }
+    } catch (error) {
+      console.error('Erro ao conectar via email:', error);
+      const errorMsg = this.getErrorMessage(error);
+      alert(`Erro ao conectar: ${errorMsg}`);
+      // Reporta erro internamente (não crítico)
+      this.reportError('email', error);
+    }
   }
 
-  // Conexão via Google
+  // Conexão via Google - SDK v5
   async connectGoogle() {
-    // Redireciona para OAuth do Thirdweb
-    if (THIRDWEB_CLIENT_ID) {
-      const redirectUrl = encodeURIComponent(window.location.href);
-      window.location.href = `https://embedded-wallet.thirdweb.com/auth/google?clientId=${THIRDWEB_CLIENT_ID}&redirectUrl=${redirectUrl}`;
-    } else {
-      await this.simulateConnect('google');
+    if (!this.wallet) {
+      await this.initThirdwebSDK();
+      if (!this.wallet) {
+        alert('SDK Thirdweb não disponível. Tente novamente.');
+        return;
+      }
+    }
+
+    try {
+      const account = await this.wallet.connect({
+        strategy: "google"
+        // identifier não necessário para OAuth - SDK gerencia popup
+      });
+
+      if (account && account.address) {
+        this.address = account.address;
+        this.connected = true;
+        this.account = account;
+        this.saveState();
+        this.updateButton();
+        this.updateModalState();
+        await this.fetchBalance();
+        this.close();
+        this.showToast('✅ Wallet conectada com sucesso!');
+        await this.onWalletConnected('google');
+      }
+    } catch (error) {
+      console.error('Erro ao conectar via Google:', error);
+      const errorMsg = this.getErrorMessage(error);
+      alert(`Erro ao conectar: ${errorMsg}`);
+      this.reportError('google', error);
+    }
+  }
+
+  // Conexão via Apple - SDK v5
+  async connectApple() {
+    if (!this.wallet) {
+      await this.initThirdwebSDK();
+      if (!this.wallet) {
+        alert('SDK Thirdweb não disponível. Tente novamente.');
+        return;
+      }
+    }
+
+    try {
+      const account = await this.wallet.connect({
+        strategy: "apple"
+      });
+
+      if (account && account.address) {
+        this.address = account.address;
+        this.connected = true;
+        this.account = account;
+        this.saveState();
+        this.updateButton();
+        this.updateModalState();
+        await this.fetchBalance();
+        this.close();
+        this.showToast('✅ Wallet conectada com sucesso!');
+        await this.onWalletConnected('apple');
+      }
+    } catch (error) {
+      console.error('Erro ao conectar via Apple:', error);
+      const errorMsg = this.getErrorMessage(error);
+      alert(`Erro ao conectar: ${errorMsg}`);
+      this.reportError('apple', error);
+    }
+  }
+
+  // Conexão via X (Twitter) - SDK v5
+  async connectX() {
+    if (!this.wallet) {
+      await this.initThirdwebSDK();
+      if (!this.wallet) {
+        alert('SDK Thirdweb não disponível. Tente novamente.');
+        return;
+      }
+    }
+
+    try {
+      const account = await this.wallet.connect({
+        strategy: "x"
+      });
+
+      if (account && account.address) {
+        this.address = account.address;
+        this.connected = true;
+        this.account = account;
+        this.saveState();
+        this.updateButton();
+        this.updateModalState();
+        await this.fetchBalance();
+        this.close();
+        this.showToast('✅ Wallet conectada com sucesso!');
+        await this.onWalletConnected('x');
+      }
+    } catch (error) {
+      console.error('Erro ao conectar via X:', error);
+      const errorMsg = this.getErrorMessage(error);
+      alert(`Erro ao conectar: ${errorMsg}`);
+      this.reportError('x', error);
+    }
+  }
+
+  // Conexão via Telegram - SDK v5
+  async connectTelegram() {
+    if (!this.wallet) {
+      await this.initThirdwebSDK();
+      if (!this.wallet) {
+        alert('SDK Thirdweb não disponível. Tente novamente.');
+        return;
+      }
+    }
+
+    try {
+      const account = await this.wallet.connect({
+        strategy: "telegram"
+      });
+
+      if (account && account.address) {
+        this.address = account.address;
+        this.connected = true;
+        this.account = account;
+        this.saveState();
+        this.updateButton();
+        this.updateModalState();
+        await this.fetchBalance();
+        this.close();
+        this.showToast('✅ Wallet conectada com sucesso!');
+        await this.onWalletConnected('telegram');
+      }
+    } catch (error) {
+      console.error('Erro ao conectar via Telegram:', error);
+      const errorMsg = this.getErrorMessage(error);
+      alert(`Erro ao conectar: ${errorMsg}`);
+      this.reportError('telegram', error);
+    }
+  }
+
+  // Callback quando wallet é conectada (para criar lead automaticamente)
+  async onWalletConnected(strategy, identifier = null) {
+    try {
+      // Cria lead automaticamente quando wallet é criada/conectada
+      const leadData = {
+        name: identifier || strategy,
+        email: strategy === 'email' ? identifier : null,
+        whats: null,
+        type: 'wallet_connect',
+        wallet_address: this.address,
+        auth_strategy: strategy,
+        timestamp: Date.now()
+      };
+
+      // Envia para API de leads (opcional - pode ser desabilitado)
+      if (typeof fetch !== 'undefined') {
+        fetch('/api/lead', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Wallet-Connection': 'true'
+          },
+          body: JSON.stringify(leadData)
+        }).catch(err => {
+          console.debug('Lead não enviado (opcional):', err);
+        });
+      }
+    } catch (error) {
+      console.debug('Erro ao criar lead (não crítico):', error);
     }
   }
 
@@ -485,40 +796,121 @@ class WalletManager {
     }
   }
 
-  // Simula conexão (para demo sem Thirdweb configurado)
-  async simulateConnect(method) {
-    // Gera endereço mock baseado no método
-    const hash = await this.hashString(method + Date.now());
-    this.address = '0x' + hash.slice(0, 40);
-    this.connected = true;
-    this.balance = '100.00';
-    
-    this.saveState();
-    this.updateButton();
-    this.updateModalState();
-    this.close();
-    
-    // Mostra feedback
-    this.showToast('✅ Wallet conectada com sucesso!');
+  // Desconecta wallet do Thirdweb SDK (sempre chamar para limpar autenticação)
+  async disconnectWallet() {
+    if (this.wallet) {
+      try {
+        // Verifica se está conectado antes de desconectar
+        const isConnected = await this.wallet.isConnected?.() || this.account !== null;
+        if (isConnected) {
+          await this.wallet.disconnect();
+          console.log('✅ Wallet desconectada do SDK');
+        }
+      } catch (error) {
+        console.debug('Erro ao desconectar wallet SDK (não crítico):', error);
+        // Continua mesmo se desconexão SDK falhar
+      }
+    }
   }
 
-  // Hash string para endereço mock
-  async hashString(str) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(str);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  // Extrai mensagem de erro amigável para o usuário
+  getErrorMessage(error) {
+    if (!error) return 'Erro desconhecido';
+    
+    const errorStr = error.message || error.toString() || '';
+    
+    // Mensagens específicas de OAuth
+    if (errorStr.includes('popup') || errorStr.includes('blocked')) {
+      return 'Popup bloqueado. Permita popups para este site.';
+    }
+    if (errorStr.includes('cancelled') || errorStr.includes('canceled')) {
+      return 'Conexão cancelada pelo usuário.';
+    }
+    if (errorStr.includes('network') || errorStr.includes('fetch')) {
+      return 'Erro de conexão. Verifique sua internet.';
+    }
+    if (errorStr.includes('timeout')) {
+      return 'Tempo esgotado. Tente novamente.';
+    }
+    
+    // Mensagem genérica se não identificar tipo específico
+    return errorStr.length > 100 ? 'Erro ao conectar. Tente novamente.' : errorStr;
   }
 
-  // Busca balance do token usando Thirdweb API ou RPC direto
+  // Reporta erro internamente (para analytics/monitoramento)
+  reportError(strategy, error) {
+    try {
+      // Pode enviar para serviço de analytics, logging, etc.
+      const errorData = {
+        strategy,
+        error: error?.message || error?.toString(),
+        timestamp: Date.now(),
+        userAgent: navigator.userAgent,
+        url: window.location.href
+      };
+      
+      // Log interno (pode ser expandido para enviar a serviço externo)
+      window.Logger?.error('Wallet connection error:', errorData);
+      
+      // Opcional: enviar para endpoint de erro (se existir)
+      if (typeof fetch !== 'undefined' && window.location.hostname !== 'localhost') {
+        fetch('/api/error', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(errorData)
+        }).catch(() => {
+          // Ignora erros de reporte (não crítico)
+        });
+      }
+    } catch (reportError) {
+      // Ignora erros de reporte (não crítico)
+      console.debug('Erro ao reportar erro:', reportError);
+    }
+  }
+
+  // Busca balance do token usando SDK (quando disponível), Thirdweb API ou RPC direto
   async fetchBalance() {
     if (!this.address) return;
     
-    // Tenta usar Thirdweb API primeiro (mais confiável)
+    // Prioridade 1: Tenta usar SDK Thirdweb extensions/erc20 (mais robusto)
+    // Nota: Requer import ESM: import { getContract, balanceOf } from "thirdweb/extensions/erc20"
+    // Por enquanto, usa API REST (mais compatível com CDN)
+    // Para migração futura ESM, descomente e ajuste:
+    /*
+    if (this.client && thirdwebSDK && this.account) {
+      try {
+        const { getContract } = thirdwebSDK;
+        const { balanceOf } = thirdwebSDK.extensions?.erc20 || {};
+        
+        if (getContract && balanceOf) {
+          const baseChain = thirdwebSDK.defineChain?.(8453) || { id: 8453 };
+          const contract = getContract({
+            client: this.client,
+            chain: baseChain,
+            address: TOKEN_CONFIG.address
+          });
+          
+          const balance = await balanceOf({
+            contract,
+            address: this.address
+          });
+          
+          const decimals = BigInt(10 ** TOKEN_CONFIG.decimals);
+          const intPart = balance / decimals;
+          const decPart = (balance % decimals) / BigInt(10 ** (TOKEN_CONFIG.decimals - 2));
+          this.balance = `${intPart}.${decPart.toString().padStart(2, '0')}`;
+          this.updateBalanceDisplay();
+          return;
+        }
+      } catch (error) {
+        window.Logger?.debug('SDK balanceOf não disponível, tentando API:', error);
+      }
+    }
+    */
+    
+    // Prioridade 2: Tenta usar Thirdweb API REST (mais confiável que RPC direto)
     if (THIRDWEB_CLIENT_ID) {
       try {
-        // Usa a API pública do Thirdweb para buscar balance de token
         const response = await fetch(
           `https://pay.thirdweb.com/v1/wallets/${this.address}/balance?chainId=${TOKEN_CONFIG.chainId}&tokenAddress=${TOKEN_CONFIG.address}`,
           {
@@ -531,9 +923,8 @@ class WalletManager {
         if (response.ok) {
           const data = await response.json();
           if (data.result) {
-            // A API pode retornar em diferentes formatos
             const balanceValue = data.result.balance || data.result.value || data.result;
-            if (balanceValue) {
+            if (balanceValue !== undefined && balanceValue !== null) {
               const balance = typeof balanceValue === 'string' 
                 ? BigInt(balanceValue.startsWith('0x') ? balanceValue : `0x${balanceValue}`)
                 : BigInt(balanceValue);
@@ -547,7 +938,6 @@ class WalletManager {
           }
         }
       } catch (error) {
-        // Silenciosamente tenta RPC direto se Thirdweb falhar
         window.Logger?.debug('Thirdweb API não disponível, usando RPC direto');
       }
     }
@@ -647,11 +1037,15 @@ class WalletManager {
     }
   }
 
-  // Desconecta
-  disconnect() {
+  // Desconecta (sempre chama disconnectWallet para limpar autenticação persistente)
+  async disconnect() {
+    // IMPORTANTE: Sempre desconectar do SDK para limpar autenticação persistente
+    await this.disconnectWallet();
+    
     this.connected = false;
     this.address = null;
     this.balance = null;
+    this.account = null;
     localStorage.removeItem('wallet_state');
     this.updateButton();
     this.updateModalState();
@@ -708,6 +1102,9 @@ WalletManager.toggle = () => window.WalletManager.toggle();
 WalletManager.close = () => window.WalletManager.close();
 WalletManager.connectEmail = () => window.WalletManager.connectEmail();
 WalletManager.connectGoogle = () => window.WalletManager.connectGoogle();
+WalletManager.connectApple = () => window.WalletManager.connectApple();
+WalletManager.connectX = () => window.WalletManager.connectX();
+WalletManager.connectTelegram = () => window.WalletManager.connectTelegram();
 WalletManager.connectWallet = () => window.WalletManager.connectWallet();
 WalletManager.copyAddress = () => window.WalletManager.copyAddress();
 WalletManager.viewOnExplorer = () => window.WalletManager.viewOnExplorer();

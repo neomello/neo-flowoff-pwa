@@ -24,7 +24,8 @@
     "cbor": "^10.0.11",
     "dotenv": "^17.2.2",
     "files-from-path": "^1.1.4",
-    "openai": "^6.10.0"
+    "openai": "^6.10.0",
+    "thirdweb": "^5.116.1"
   },
   "devDependencies": {
     "@vitest/ui": "^1.0.0",

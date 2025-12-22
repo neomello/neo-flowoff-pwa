@@ -118,18 +118,21 @@
           </div>
         </div>
         
-        <!-- Desktop: Botão direto | Mobile: Menu hambúrguer -->
-        <button id="wallet-btn" class="wallet-connect-btn desktop-only" onclick="window.WalletManager?.toggle()">
-          <span class="wallet-btn-text">ACESSAR</span>
-          <span class="wallet-btn-icon">→</span>
-        </button>
-        
-        <!-- Mobile Menu Toggle -->
-        <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Menu">
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-        </button>
+        <!-- Container do menu à direita -->
+        <div class="header-menu-container">
+          <!-- Desktop: Botão direto -->
+          <button id="wallet-btn" class="wallet-connect-btn desktop-only" onclick="window.WalletManager?.toggle()">
+            <span class="wallet-btn-text">ACESSAR</span>
+            <span class="wallet-btn-icon">→</span>
+          </button>
+          
+          <!-- Mobile: Menu hambúrguer -->
+          <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Menu">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+          </button>
+        </div>
       </div>
       
       <!-- Mobile Dropdown Menu -->
@@ -177,9 +180,6 @@
           <!-- FlowOFF Card - Médio -->
           <div class="bento-item bento-flowoff">
             <div class="flowoff-header">
-              <div class="flowoff-logo">
-                <img src="public/flowoff logo.png" alt="FlowOFF" class="flowoff-logo-img">
-              </div>
               <div class="flowoff-title">
                 <h2>Transformamos estratégia em tecnologia.</h2>
                 <span class="flowoff-subtitle">E tecnologia em resultado.</span>
@@ -812,8 +812,11 @@
 <!-- Thirdweb Config -->
 <script>window.THIRDWEB_CLIENT_ID = 'a70d3d6d2ec826511ff9e31b0db2d0fc';</script>
 
+<!-- Thirdweb SDK v5 (via CDN) -->
+<script src="https://unpkg.com/thirdweb@latest/dist/thirdweb.umd.js"></script>
+
 <!-- Wallet Manager -->
-<script src="js/wallet.js?v=2.3.0"></script>
+<script src="js/wallet.js?v=2.4.0"></script>
 
 <!-- App principal -->
 <script src="js/app.js?v=2.3.0" type="module"></script>
