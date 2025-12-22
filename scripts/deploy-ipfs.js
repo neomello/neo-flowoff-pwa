@@ -128,6 +128,7 @@ if (!rawUCAN || rawUCAN.length < 500) {
 // Mantém formato original e versão limpa para tentativas
 let STORACHA_UCAN_ORIGINAL = rawUCAN ? rawUCAN.replace(/\s+/g, '').trim() : null;
 let STORACHA_UCAN = null;
+let STORACHA_UCAN_BASE64 = null;
 
 if (STORACHA_UCAN_ORIGINAL) {
   // Remove prefixos comuns que não são parte do base64:
