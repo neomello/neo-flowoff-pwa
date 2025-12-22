@@ -34,18 +34,87 @@ const IPNS_KEY_NAME = process.env.IPNS_KEY_NAME || 'neo-flowoff-pwa';
 // Configuração Storacha (Web3 descentralizado)
 const STORACHA_DID = process.env.STORACHA_DID || 'did:key:z4MXj1wBzi9jUstyPWmomSd1pFwszvphKndMbzxrAdxYPNYpEhdHeDWvtULKgrWfbbSXFeQZbpnSPihq2NFL1GaqvFGRPYRRKzap12r57RdqvUEBdvbravLoKd5ZTsU6AwfoE6qfn8cGvCkxeZTwSAH5ob3frxH85px2TGYDJ9hPGFnkFo5Ysoc2gk9fvK9Q1Esod5Mv6CMDbnT3icR2jYZWsaBNzzfB5vhd4YQtkghxuzZABtyJYYz54FbjD6AXuogZksorduWuZT4f8wKoinsZ86UqsKPHxquSDSfLjGiVaT8BTGoRg7kri8fZGKA2tukYug4TiQVDprgGEbL6N85XHDJ2RQ6EVwscrhLG38aSzqms1Mjjv';
 const STORACHA_SPACE_DID = process.env.STORACHA_SPACE_DID || 'did:key:z6Mkjee3CCaP6q2vhRnE3wRBGNqMxEq645EvnYocsbbeZiBR';
+
+// Função para ler UCAN multi-linha do .env manualmente
+function readMultiLineUCAN(envPath) {
+  try {
+    const envContent = fs.readFileSync(envPath, 'utf-8');
+    const lines = envContent.split('\n');
+    let ucanValue = '';
+    let inUCAN = false;
+    let ucanKey = '';
+    
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      
+      // Detecta início de STORACHA_UCAN ou UCAN_TOKEN
+      if (line.startsWith('STORACHA_UCAN=') || line.startsWith('UCAN_TOKEN=')) {
+        inUCAN = true;
+        ucanKey = line.split('=')[0];
+        const valuePart = line.substring(line.indexOf('=') + 1);
+        if (valuePart) {
+          ucanValue = valuePart;
+        }
+        continue;
+      }
+      
+      // Se estamos dentro de um UCAN e a linha não é um comentário ou nova variável
+      if (inUCAN) {
+        // Para se encontrar uma nova variável (linha com =) ou comentário (#)
+        if (line.includes('=') && !line.startsWith(' ')) {
+          inUCAN = false;
+          break;
+        }
+        // Ignora linhas vazias e comentários
+        if (line && !line.startsWith('#')) {
+          ucanValue += line;
+        }
+      }
+    }
+    
+    return ucanValue || null;
+  } catch (error) {
+    console.debug('Erro ao ler UCAN multi-linha:', error.message);
+    return null;
+  }
+}
+
 // Limpa o UCAN removendo espaços, quebras de linha e outros caracteres inválidos
 // Converte de base64url para base64 padrão (Storacha espera base64 padrão)
-const rawUCAN = process.env.STORACHA_UCAN || process.env.UCAN_TOKEN;
+let rawUCAN = process.env.STORACHA_UCAN || process.env.UCAN_TOKEN;
+
+// Se não encontrou no env padrão, tenta ler multi-linha manualmente
+if (!rawUCAN || rawUCAN.length < 100) {
+  const envPath = join(PROJECT_ROOT, '.env');
+  const multiLineUCAN = readMultiLineUCAN(envPath);
+  if (multiLineUCAN && multiLineUCAN.length > rawUCAN?.length) {
+    rawUCAN = multiLineUCAN;
+    console.log('📝 UCAN lido de formato multi-linha do .env');
+  }
+}
+
 let STORACHA_UCAN = rawUCAN ? rawUCAN.replace(/\s+/g, '').trim() : null;
+
 if (STORACHA_UCAN) {
+  // Remove qualquer prefixo que não seja base64 (ex: "did:key:..." ou "--can ...")
+  // Mantém apenas a parte base64/base64url
+  STORACHA_UCAN = STORACHA_UCAN.replace(/^[^A-Za-z0-9+/=_-]+/, ''); // Remove prefixos não-base64
+  STORACHA_UCAN = STORACHA_UCAN.replace(/[^A-Za-z0-9+/=_-]+$/, ''); // Remove sufixos não-base64
+  
   // Converte base64url para base64 padrão
   STORACHA_UCAN = STORACHA_UCAN.replace(/-/g, '+').replace(/_/g, '/');
+  
   // Adiciona padding se necessário
   while (STORACHA_UCAN.length % 4 !== 0) {
     STORACHA_UCAN += '=';
   }
+  
+  // Validação básica: deve ter pelo menos 100 caracteres para ser um UCAN válido
+  if (STORACHA_UCAN.length < 100) {
+    console.warn(`⚠️  UCAN parece muito curto (${STORACHA_UCAN.length} chars). Pode estar incompleto.`);
+  }
 }
+
 const USE_STORACHA = STORACHA_UCAN && STORACHA_DID;
 
 // Função para mascarar valores sensíveis nos logs
@@ -130,6 +199,14 @@ async function uploadToStoracha() {
         if (!base64Regex.test(STORACHA_UCAN)) {
           throw new Error(`UCAN contém caracteres inválidos após conversão. Tamanho: ${STORACHA_UCAN.length} chars. Primeiros 50: ${STORACHA_UCAN.substring(0, 50)}...`);
         }
+        
+        // Valida tamanho mínimo (UCAN válido deve ter pelo menos alguns KB)
+        if (STORACHA_UCAN.length < 500) {
+          throw new Error(`UCAN parece muito curto (${STORACHA_UCAN.length} chars). Pode estar incompleto ou truncado. Verifique o .env.`);
+        }
+        
+        console.log(`   UCAN tamanho: ${STORACHA_UCAN.length} caracteres`);
+        console.log(`   UCAN preview: ${STORACHA_UCAN.substring(0, 50)}...${STORACHA_UCAN.substring(STORACHA_UCAN.length - 20)}\n`);
         
         // O proof gerado pelo CLI é um CAR file em base64
         // Proof.parse() espera receber o base64 diretamente como string
