@@ -1,6 +1,6 @@
 {
   "name": "neo-flowoff-pwa",
-  "version": "2.4.6",
+  "version": "2.4.7",
   "description": "PWA da NEØ.FLOWOFF",
   "type": "module",
   "main": "server.js",

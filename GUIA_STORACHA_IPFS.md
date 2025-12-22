@@ -93,6 +93,7 @@ storacha delegation create <AGENT_DID> \
 ```
 
 **Onde:**
+
 - `<AGENT_DID>` é o DID do seu agente (obtido no Passo 1)
 - `--can space/blob/add` - permissão para adicionar blobs
 - `--can space/index/add` - permissão para adicionar ao índice

@@ -10,8 +10,6 @@
       "arquitetura": "SPA com router hashless",
       "deploy": "Netlify",
       "dominio_oficial": "flowoff.xyz",
-      "deploy_badge": "https://api.netlify.com/api/v1/badges/720bef8f-9a14-4807-ae2f-b41fbdb6cd44/deploy-status",
-      "deploy_url": "https://app.netlify.com/projects/flowoff",
       "pasta_raiz": "/Users/nettomello/CODIGOS/neo-flowoff-pwa/",
       "arquivos_principais": {
         "html": "index.html",
