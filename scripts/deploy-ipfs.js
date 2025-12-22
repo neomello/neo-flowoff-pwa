@@ -69,14 +69,26 @@ function readMultiLineUCAN(envPath, keyName = null) {
         }
         
         // Para se encontrar uma nova variável (começa com letra maiúscula seguida de =)
-        if (trimmedLine.match(/^[A-Z_][A-Z0-9_]*=/)) {
+        // Mas só para se não parecer ser continuação de base64
+        const looksLikeNewVar = trimmedLine.match(/^[A-Z_][A-Z0-9_]*=/);
+        const looksLikeBase64 = trimmedLine.match(/^[A-Za-z0-9+/=_-]+$/); // Linha inteira parece base64
+        
+        if (looksLikeNewVar && !looksLikeBase64) {
+          // É uma nova variável e não parece base64
           inUCAN = false;
           break;
         }
         
-        // Adiciona a linha ao UCAN (remove espaços iniciais/finais mas mantém conteúdo)
+        // Se parece base64 válido OU não parece ser uma nova variável, adiciona como continuação
         if (trimmedLine && !trimmedLine.startsWith('#')) {
-          ucanValue += trimmedLine;
+          // Se a linha parece ser base64 válido ou não é uma variável, adiciona
+          if (looksLikeBase64 || !looksLikeNewVar) {
+            ucanValue += trimmedLine;
+          } else {
+            // Linha vazia ou não parece continuação, para
+            inUCAN = false;
+            break;
+          }
         }
       }
     }
