@@ -36,22 +36,23 @@ const STORACHA_DID = process.env.STORACHA_DID || 'did:key:z4MXj1wBzi9jUstyPWmomS
 const STORACHA_SPACE_DID = process.env.STORACHA_SPACE_DID || 'did:key:z6Mkjee3CCaP6q2vhRnE3wRBGNqMxEq645EvnYocsbbeZiBR';
 
 // Função para ler UCAN multi-linha do .env manualmente
-function readMultiLineUCAN(envPath) {
+// @param {string} envPath - Caminho do arquivo .env
+// @param {string} keyName - Nome da variável a ler ('STORACHA_UCAN' ou 'UCAN_TOKEN')
+function readMultiLineUCAN(envPath, keyName = null) {
   try {
     const envContent = fs.readFileSync(envPath, 'utf-8');
     const lines = envContent.split('\n');
     let ucanValue = '';
     let inUCAN = false;
-    let ucanKey = '';
+    let targetKey = keyName || 'STORACHA_UCAN';
     
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
       const trimmedLine = line.trim();
       
-      // Detecta início de STORACHA_UCAN ou UCAN_TOKEN
-      if (trimmedLine.startsWith('STORACHA_UCAN=') || trimmedLine.startsWith('UCAN_TOKEN=')) {
+      // Detecta início da variável específica
+      if (trimmedLine.startsWith(`${targetKey}=`)) {
         inUCAN = true;
-        ucanKey = trimmedLine.split('=')[0];
         const valuePart = trimmedLine.substring(trimmedLine.indexOf('=') + 1);
         if (valuePart) {
           ucanValue = valuePart;
@@ -61,26 +62,16 @@ function readMultiLineUCAN(envPath) {
       
       // Se estamos dentro de um UCAN
       if (inUCAN) {
-        // Para se encontrar uma nova variável (linha que começa com letra maiúscula seguida de =)
-        // ou comentário (#) no início da linha
+        // Para se encontrar um comentário no início da linha
         if (trimmedLine.startsWith('#')) {
-          // Comentário - para de ler
           inUCAN = false;
           break;
         }
         
-        // Se a linha tem = e não é continuação (não começa com espaço ou tab)
-        // e não parece ser parte do base64 (contém apenas base64 chars)
-        if (trimmedLine.includes('=') && !trimmedLine.match(/^[A-Z_]+=/)) {
-          // Linha vazia ou linha que não parece ser continuação
-          if (trimmedLine.length === 0) {
-            continue; // Linha vazia, continua
-          }
-          // Verifica se parece ser uma nova variável (começa com letra maiúscula)
-          if (trimmedLine.match(/^[A-Z_][A-Z0-9_]*=/)) {
-            inUCAN = false;
-            break;
-          }
+        // Para se encontrar uma nova variável (começa com letra maiúscula seguida de =)
+        if (trimmedLine.match(/^[A-Z_][A-Z0-9_]*=/)) {
+          inUCAN = false;
+          break;
         }
         
         // Adiciona a linha ao UCAN (remove espaços iniciais/finais mas mantém conteúdo)
@@ -99,12 +90,21 @@ function readMultiLineUCAN(envPath) {
 
 // Limpa o UCAN removendo espaços, quebras de linha e outros caracteres inválidos
 // Converte de base64url para base64 padrão (Storacha espera base64 padrão)
+// Prioriza STORACHA_UCAN sobre UCAN_TOKEN
 let rawUCAN = process.env.STORACHA_UCAN || process.env.UCAN_TOKEN;
 
 // Se não encontrou no env padrão ou está muito curto, tenta ler multi-linha manualmente
 if (!rawUCAN || rawUCAN.length < 500) {
   const envPath = join(PROJECT_ROOT, '.env');
-  const multiLineUCAN = readMultiLineUCAN(envPath);
+  // Tenta ler STORACHA_UCAN primeiro, depois UCAN_TOKEN
+  const storachaUCAN = readMultiLineUCAN(envPath, 'STORACHA_UCAN');
+  const ucanToken = readMultiLineUCAN(envPath, 'UCAN_TOKEN');
+  
+  // Prioriza STORACHA_UCAN se existir e for maior
+  const multiLineUCAN = (storachaUCAN && storachaUCAN.length > 500) 
+    ? storachaUCAN 
+    : (ucanToken && ucanToken.length > 500) ? ucanToken : null;
+  
   if (multiLineUCAN && multiLineUCAN.length > (rawUCAN?.length || 0)) {
     rawUCAN = multiLineUCAN;
     console.log(`📝 UCAN lido de formato multi-linha do .env (${multiLineUCAN.length} chars)`);
@@ -116,9 +116,13 @@ if (!rawUCAN || rawUCAN.length < 500) {
 let STORACHA_UCAN = rawUCAN ? rawUCAN.replace(/\s+/g, '').trim() : null;
 
 if (STORACHA_UCAN) {
-  // Remove qualquer prefixo que não seja base64 (ex: "did:key:..." ou "--can ...")
-  // Mantém apenas a parte base64/base64url
-  STORACHA_UCAN = STORACHA_UCAN.replace(/^[^A-Za-z0-9+/=_-]+/, ''); // Remove prefixos não-base64
+  // Remove prefixos comuns que não são parte do base64:
+  // - "did:key:..." seguido de espaço ou fim
+  // - "--can ..." (comandos)
+  // - Qualquer texto antes do primeiro caractere base64 válido
+  STORACHA_UCAN = STORACHA_UCAN.replace(/^did:key:[A-Za-z0-9]+[\s-]*/, ''); // Remove did:key:...
+  STORACHA_UCAN = STORACHA_UCAN.replace(/--can\s+[^\s]+\s*/g, ''); // Remove --can commands
+  STORACHA_UCAN = STORACHA_UCAN.replace(/^[^A-Za-z0-9+/=_-]+/, ''); // Remove outros prefixos não-base64
   STORACHA_UCAN = STORACHA_UCAN.replace(/[^A-Za-z0-9+/=_-]+$/, ''); // Remove sufixos não-base64
   
   // Converte base64url para base64 padrão
