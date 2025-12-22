@@ -125,24 +125,40 @@ if (!rawUCAN || rawUCAN.length < 500) {
   }
 }
 
-let STORACHA_UCAN = rawUCAN ? rawUCAN.replace(/\s+/g, '').trim() : null;
+// Mantém formato original e versão limpa para tentativas
+let STORACHA_UCAN_ORIGINAL = rawUCAN ? rawUCAN.replace(/\s+/g, '').trim() : null;
+let STORACHA_UCAN = null;
 
-if (STORACHA_UCAN) {
+if (STORACHA_UCAN_ORIGINAL) {
   // Remove prefixos comuns que não são parte do base64:
   // - "did:key:..." seguido de espaço ou fim
   // - "--can ..." (comandos)
   // - Qualquer texto antes do primeiro caractere base64 válido
-  STORACHA_UCAN = STORACHA_UCAN.replace(/^did:key:[A-Za-z0-9]+[\s-]*/, ''); // Remove did:key:...
-  STORACHA_UCAN = STORACHA_UCAN.replace(/--can\s+[^\s]+\s*/g, ''); // Remove --can commands
-  STORACHA_UCAN = STORACHA_UCAN.replace(/^[^A-Za-z0-9+/=_-]+/, ''); // Remove outros prefixos não-base64
-  STORACHA_UCAN = STORACHA_UCAN.replace(/[^A-Za-z0-9+/=_-]+$/, ''); // Remove sufixos não-base64
+  let cleanedUCAN = STORACHA_UCAN_ORIGINAL.replace(/^did:key:[A-Za-z0-9]+[\s-]*/, ''); // Remove did:key:...
+  cleanedUCAN = cleanedUCAN.replace(/--can\s+[^\s]+\s*/g, ''); // Remove --can commands
+  cleanedUCAN = cleanedUCAN.replace(/^[^A-Za-z0-9+/=_-]+/, ''); // Remove outros prefixos não-base64
+  cleanedUCAN = cleanedUCAN.replace(/[^A-Za-z0-9+/=_-]+$/, ''); // Remove sufixos não-base64
   
-  // Converte base64url para base64 padrão
-  STORACHA_UCAN = STORACHA_UCAN.replace(/-/g, '+').replace(/_/g, '/');
+  // Detecta formato: base64url tem - e _, base64 padrão tem + e /
+  const isBase64Url = cleanedUCAN.includes('-') || cleanedUCAN.includes('_');
   
-  // Adiciona padding se necessário
-  while (STORACHA_UCAN.length % 4 !== 0) {
-    STORACHA_UCAN += '=';
+  if (isBase64Url) {
+    // Mantém base64url original para tentativas
+    STORACHA_UCAN = cleanedUCAN;
+    // Também cria versão base64 padrão para tentativas alternativas
+    STORACHA_UCAN_BASE64 = cleanedUCAN.replace(/-/g, '+').replace(/_/g, '/');
+    // Adiciona padding se necessário
+    while (STORACHA_UCAN_BASE64.length % 4 !== 0) {
+      STORACHA_UCAN_BASE64 += '=';
+    }
+  } else {
+    // Já é base64 padrão
+    STORACHA_UCAN = cleanedUCAN;
+    // Adiciona padding se necessário
+    while (STORACHA_UCAN.length % 4 !== 0) {
+      STORACHA_UCAN += '=';
+    }
+    STORACHA_UCAN_BASE64 = STORACHA_UCAN;
   }
   
   // Validação básica: deve ter pelo menos 100 caracteres para ser um UCAN válido
@@ -244,28 +260,60 @@ async function uploadToStoracha() {
         console.log(`   UCAN tamanho: ${STORACHA_UCAN.length} caracteres`);
         console.log(`   UCAN preview: ${STORACHA_UCAN.substring(0, 50)}...${STORACHA_UCAN.substring(STORACHA_UCAN.length - 20)}\n`);
         
-        // O proof gerado pelo CLI é um CAR file em base64
-        // Proof.parse() pode esperar bytes decodificados ou base64 string
-        // Tenta primeiro como string base64, se falhar, tenta decodificar para bytes
+        // O proof gerado pelo CLI é um CAR file
+        // Proof.parse() pode esperar bytes decodificados ou diferentes formatos
+        // Tenta múltiplos formatos na ordem mais provável
         let proof;
-        try {
-          // Tenta parsear diretamente como string base64
-          proof = await Proof.parse(STORACHA_UCAN);
-        } catch (parseError) {
-          // Se falhar, tenta decodificar para bytes primeiro
-          console.log('   Tentando decodificar base64 para bytes...');
+        const attempts = [];
+        
+        // Tentativa 1: String base64 padrão (se foi convertido)
+        if (STORACHA_UCAN_BASE64 && STORACHA_UCAN_BASE64 !== STORACHA_UCAN) {
+          attempts.push({ name: 'base64 string', value: STORACHA_UCAN_BASE64 });
+        }
+        
+        // Tentativa 2: String base64url original
+        attempts.push({ name: 'base64url string', value: STORACHA_UCAN });
+        
+        // Tentativa 3: Bytes decodificados de base64
+        if (STORACHA_UCAN_BASE64) {
           try {
-            const decodedBytes = Buffer.from(STORACHA_UCAN, 'base64');
-            console.log(`   Bytes decodificados: ${decodedBytes.length} bytes`);
-            // Tenta parsear os bytes decodificados
-            proof = await Proof.parse(decodedBytes);
-          } catch (bytesError) {
-            // Se ainda falhar, tenta como base64url
-            console.log('   Tentando como base64url...');
-            const base64urlUCAN = STORACHA_UCAN.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
-            const decodedFromUrl = Buffer.from(base64urlUCAN, 'base64url');
-            proof = await Proof.parse(decodedFromUrl);
+            const decodedBase64 = Buffer.from(STORACHA_UCAN_BASE64, 'base64');
+            attempts.push({ name: 'base64 bytes', value: decodedBase64 });
+          } catch (e) {
+            // Ignora erro de decodificação
           }
+        }
+        
+        // Tentativa 4: Bytes decodificados de base64url
+        try {
+          // Adiciona padding para base64url se necessário
+          let base64urlPadded = STORACHA_UCAN;
+          while (base64urlPadded.length % 4 !== 0) {
+            base64urlPadded += '=';
+          }
+          const decodedBase64Url = Buffer.from(base64urlPadded, 'base64url');
+          attempts.push({ name: 'base64url bytes', value: decodedBase64Url });
+        } catch (e) {
+          // Ignora erro de decodificação
+        }
+        
+        // Tenta cada formato até um funcionar
+        let lastError = null;
+        for (const attempt of attempts) {
+          try {
+            console.log(`   Tentando formato: ${attempt.name}...`);
+            proof = await Proof.parse(attempt.value);
+            console.log(`   ✅ Sucesso com formato: ${attempt.name}\n`);
+            break;
+          } catch (error) {
+            lastError = error;
+            console.log(`   ❌ Falhou: ${error.message.substring(0, 50)}...`);
+            continue;
+          }
+        }
+        
+        if (!proof) {
+          throw lastError || new Error('Todas as tentativas de parse falharam');
         }
         
         // Adiciona o espaço usando o proof parseado
