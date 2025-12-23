@@ -97,6 +97,13 @@ class WalletManager {
               </button>
             </div>
             
+            <div class="wallet-terms">
+              <label class="wallet-terms-checkbox">
+                <input type="checkbox" id="wallet-terms-accept" required>
+                <span>Eu aceito os <a href="terms.html" target="_blank" rel="noopener">Termos e Condições</a> e a <a href="privacy.html" target="_blank" rel="noopener">Política de Privacidade</a></span>
+              </label>
+            </div>
+            
             <p class="wallet-network">
               <span class="network-dot"></span>
               Base Network
@@ -234,6 +241,48 @@ class WalletManager {
         font-size: 20px;
         width: 28px;
         text-align: center;
+      }
+      
+      .wallet-terms {
+        margin: 20px 0;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      .wallet-terms-checkbox {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        cursor: pointer;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.7);
+        line-height: 1.5;
+      }
+      
+      .wallet-terms-checkbox input[type="checkbox"] {
+        margin-top: 2px;
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+        accent-color: #8b5cf6;
+        flex-shrink: 0;
+      }
+      
+      .wallet-terms-checkbox a {
+        color: #8b5cf6;
+        text-decoration: underline;
+        transition: color 0.2s;
+      }
+      
+      .wallet-terms-checkbox a:hover {
+        color: #a78bfa;
+      }
+      
+      .wallet-option:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
       }
       
       .wallet-network {
@@ -436,33 +485,158 @@ class WalletManager {
     return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
+  // Verifica se termos foram aceitos
+  checkTermsAccepted() {
+    const checkbox = document.getElementById('wallet-terms-accept');
+    if (!checkbox || !checkbox.checked) {
+      alert('Por favor, aceite os Termos e Condições e a Política de Privacidade para continuar.');
+      return false;
+    }
+    return true;
+  }
+
   // Conexão via Email (Embedded Wallet)
   async connectEmail() {
+    if (!this.checkTermsAccepted()) return;
+    
     const email = prompt('Digite seu email:');
     if (!email || !email.includes('@')) {
       alert('Email inválido');
       return;
     }
     
+    // Tenta usar Thirdweb SDK primeiro (se disponível)
+    if (THIRDWEB_CLIENT_ID && typeof thirdweb !== 'undefined') {
+      try {
+        await this.connectWithThirdwebEmail(email);
+        return;
+      } catch (error) {
+        window.Logger?.warn('Thirdweb falhou, usando fallback:', error);
+        // Continua para fallback
+      }
+    }
+    
+    // Fallback: Simula conexão
     await this.simulateConnect(email);
+  }
+
+  // Conexão via Thirdweb Email (tentativa principal)
+  async connectWithThirdwebEmail(email) {
+    try {
+      // Inicializa Thirdweb client
+      const client = thirdweb.createThirdwebClient({
+        clientId: THIRDWEB_CLIENT_ID
+      });
+      
+      const chain = thirdweb.defineChain(8453); // Base
+      
+      // Conecta via email usando Thirdweb SDK
+      const wallet = await thirdweb.connect({
+        client,
+        strategy: 'email',
+        email
+      });
+      
+      if (wallet && wallet.getAddress) {
+        this.address = await wallet.getAddress();
+        this.connected = true;
+        this.saveState();
+        this.updateButton();
+        this.updateModalState();
+        this.fetchBalance();
+        this.close();
+        this.showToast('✅ Wallet conectada com sucesso!');
+        return;
+      }
+      
+      throw new Error('Wallet não retornada pelo Thirdweb');
+    } catch (error) {
+      window.Logger?.error('Erro ao conectar via Thirdweb Email:', error);
+      throw error; // Re-lança para que o fallback seja usado
+    }
   }
 
   // Conexão via Google
   async connectGoogle() {
-    // Redireciona para OAuth do Thirdweb
+    if (!this.checkTermsAccepted()) return;
+    // Tenta usar Thirdweb SDK primeiro (se disponível)
+    if (THIRDWEB_CLIENT_ID && typeof thirdweb !== 'undefined') {
+      try {
+        await this.connectWithThirdwebGoogle();
+        return;
+      } catch (error) {
+        window.Logger?.warn('Thirdweb Google falhou, tentando redirect:', error);
+        // Continua para redirect OAuth
+      }
+    }
+    
+    // Fallback 1: Redirect OAuth do Thirdweb
     if (THIRDWEB_CLIENT_ID) {
       const redirectUrl = encodeURIComponent(window.location.href);
       window.location.href = `https://embedded-wallet.thirdweb.com/auth/google?clientId=${THIRDWEB_CLIENT_ID}&redirectUrl=${redirectUrl}`;
-    } else {
-      await this.simulateConnect('google');
+      return;
+    }
+    
+    // Fallback 2: Simula conexão
+    await this.simulateConnect('google');
+  }
+
+  // Conexão via Thirdweb Google (tentativa principal)
+  async connectWithThirdwebGoogle() {
+    try {
+      const client = thirdweb.createThirdwebClient({
+        clientId: THIRDWEB_CLIENT_ID
+      });
+      
+      const chain = thirdweb.defineChain(8453); // Base
+      
+      // Conecta via Google usando Thirdweb SDK
+      const wallet = await thirdweb.connect({
+        client,
+        strategy: 'google',
+        redirectUrl: window.location.href
+      });
+      
+      if (wallet && wallet.getAddress) {
+        this.address = await wallet.getAddress();
+        this.connected = true;
+        this.saveState();
+        this.updateButton();
+        this.updateModalState();
+        this.fetchBalance();
+        this.close();
+        this.showToast('✅ Wallet conectada com sucesso!');
+        return;
+      }
+      
+      throw new Error('Wallet não retornada pelo Thirdweb');
+    } catch (error) {
+      window.Logger?.error('Erro ao conectar via Thirdweb Google:', error);
+      throw error;
     }
   }
 
-  // Conexão via Wallet externa
+  // Conexão via Wallet externa (MetaMask, WalletConnect, etc)
   async connectWallet() {
-    if (typeof window.ethereum !== 'undefined') {
+    if (!this.checkTermsAccepted()) return;
+    // Tenta detectar múltiplos providers
+    const providers = this.detectWalletProviders();
+    
+    if (providers.length === 0) {
+      // Fallback: Oferece opção de usar Email/Google
+      const useFallback = confirm('Nenhuma wallet detectada.\n\nDeseja usar Email ou Google para criar uma wallet?');
+      if (useFallback) {
+        this.open();
+        return;
+      }
+      alert('Nenhuma wallet detectada. Instale MetaMask, Coinbase Wallet ou similar.');
+      return;
+    }
+    
+    // Tenta conectar com o primeiro provider disponível
+    for (const provider of providers) {
       try {
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const accounts = await provider.request({ method: 'eth_requestAccounts' });
         if (accounts && accounts[0]) {
           this.address = accounts[0];
           this.connected = true;
@@ -471,14 +645,45 @@ class WalletManager {
           this.updateModalState();
           this.fetchBalance();
           this.close();
+          this.showToast('✅ Wallet conectada com sucesso!');
+          return;
         }
       } catch (error) {
-        console.error('Erro ao conectar wallet:', error);
-        alert('Erro ao conectar. Tente novamente.');
+        window.Logger?.warn(`Erro ao conectar com ${provider.name}:`, error);
+        // Tenta próximo provider
+        continue;
       }
-    } else {
-      alert('Nenhuma wallet detectada. Instale MetaMask ou similar.');
     }
+    
+    // Se todos falharam
+    alert('Erro ao conectar wallet. Tente novamente ou use Email/Google.');
+  }
+
+  // Detecta múltiplos providers de wallet
+  detectWalletProviders() {
+    const providers = [];
+    
+    // MetaMask
+    if (window.ethereum) {
+      providers.push(window.ethereum);
+    }
+    
+    // Coinbase Wallet
+    if (window.coinbaseWalletExtension) {
+      providers.push(window.coinbaseWalletExtension);
+    }
+    
+    // WalletConnect (se disponível)
+    if (window.walletConnect) {
+      providers.push(window.walletConnect);
+    }
+    
+    // Brave Wallet
+    if (window.ethereum && window.ethereum.isBraveWallet) {
+      providers.push(window.ethereum);
+    }
+    
+    return providers;
   }
 
   // Simula conexão (para demo sem Thirdweb configurado)
@@ -507,60 +712,120 @@ class WalletManager {
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
-  // Busca balance do token
+  // Busca balance do token com fallback de RPC
   async fetchBalance() {
     if (!this.address) return;
     
+    // Lista de RPCs da Base (com fallback)
+    const rpcEndpoints = [
+      'https://mainnet.base.org',
+      'https://base-mainnet.g.alchemy.com/v2/demo',
+      'https://base.publicnode.com',
+      'https://1rpc.io/base'
+    ];
+    
+    // Tenta usar Thirdweb SDK primeiro (se disponível)
+    if (THIRDWEB_CLIENT_ID && typeof thirdweb !== 'undefined') {
+      try {
+        await this.fetchBalanceWithThirdweb();
+        return;
+      } catch (error) {
+        window.Logger?.warn('Thirdweb balance fetch falhou, usando RPC:', error);
+        // Continua para fallback RPC
+      }
+    }
+    
+    // Fallback: Tenta múltiplos RPCs
+    for (const rpcUrl of rpcEndpoints) {
+      try {
+        const balance = await this.fetchBalanceFromRPC(rpcUrl);
+        if (balance !== null) {
+          this.balance = balance;
+          this.updateBalanceUI();
+          return;
+        }
+      } catch (error) {
+        window.Logger?.warn(`RPC ${rpcUrl} falhou:`, error);
+        continue; // Tenta próximo RPC
+      }
+    }
+    
+    // Se todos os RPCs falharam
+    window.Logger?.error('Todos os RPCs falharam ao buscar balance');
+    this.balance = '0.00';
+    this.updateBalanceUI();
+  }
+
+  // Busca balance via Thirdweb SDK
+  async fetchBalanceWithThirdweb() {
     try {
-      const response = await fetch('https://mainnet.base.org', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          id: 1,
-          method: 'eth_call',
-          params: [{
-            to: TOKEN_CONFIG.address,
-            data: '0x70a08231000000000000000000000000' + this.address.slice(2).toLowerCase()
-          }, 'latest']
-        })
+      const client = thirdweb.createThirdwebClient({
+        clientId: THIRDWEB_CLIENT_ID
       });
       
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
+      const contract = thirdweb.getContract({
+        client,
+        chain: thirdweb.defineChain(8453),
+        address: TOKEN_CONFIG.address
+      });
       
-      const json = await response.json();
+      const balance = await contract.call('balanceOf', [this.address]);
       
-      if (json.error) {
-        throw new Error(json.error.message || 'Erro na resposta RPC');
-      }
-      
-      if (json.result && json.result !== '0x' && json.result !== '0x0') {
-        const balance = BigInt(json.result);
+      if (balance) {
+        const balanceBigInt = BigInt(balance.toString());
         const decimals = BigInt(10 ** TOKEN_CONFIG.decimals);
-        const intPart = balance / decimals;
-        const decPart = (balance % decimals) / BigInt(10 ** (TOKEN_CONFIG.decimals - 2));
+        const intPart = balanceBigInt / decimals;
+        const decPart = (balanceBigInt % decimals) / BigInt(10 ** (TOKEN_CONFIG.decimals - 2));
         this.balance = `${intPart}.${decPart.toString().padStart(2, '0')}`;
-      } else {
-        this.balance = '0.00';
-      }
-      
-      // Atualiza UI apenas se o elemento existir
-      const balanceEl = document.getElementById('wallet-balance');
-      if (balanceEl) {
-        balanceEl.textContent = this.formatBalance(this.balance);
+        this.updateBalanceUI();
       }
     } catch (error) {
-      window.Logger?.error('Erro ao buscar balance:', error);
-      console.error('Erro ao buscar balance:', error);
-      this.balance = '0.00';
-      
-      // Atualiza UI mesmo em caso de erro
-      const balanceEl = document.getElementById('wallet-balance');
-      if (balanceEl) {
-        balanceEl.textContent = this.formatBalance(this.balance);
-      }
+      throw error;
+    }
+  }
+
+  // Busca balance via RPC direto
+  async fetchBalanceFromRPC(rpcUrl) {
+    const response = await fetch(rpcUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'eth_call',
+        params: [{
+          to: TOKEN_CONFIG.address,
+          data: '0x70a08231000000000000000000000000' + this.address.slice(2).toLowerCase()
+        }, 'latest']
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    const json = await response.json();
+    
+    if (json.error) {
+      throw new Error(json.error.message || 'Erro na resposta RPC');
+    }
+    
+    if (json.result && json.result !== '0x' && json.result !== '0x0') {
+      const balance = BigInt(json.result);
+      const decimals = BigInt(10 ** TOKEN_CONFIG.decimals);
+      const intPart = balance / decimals;
+      const decPart = (balance % decimals) / BigInt(10 ** (TOKEN_CONFIG.decimals - 2));
+      return `${intPart}.${decPart.toString().padStart(2, '0')}`;
+    }
+    
+    return '0.00';
+  }
+
+  // Atualiza UI do balance
+  updateBalanceUI() {
+    const balanceEl = document.getElementById('wallet-balance');
+    if (balanceEl) {
+      balanceEl.textContent = this.formatBalance(this.balance);
     }
   }
 

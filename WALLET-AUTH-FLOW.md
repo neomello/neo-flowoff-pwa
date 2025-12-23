@@ -40,7 +40,9 @@ flowchart TD
         P[/"prompt() Email"/]
         Q{{"Validar @"}}
         R["❌ Email inválido"]
-        S["✅ Criar Embedded<br/>Wallet"]
+        S1{{"Thirdweb SDK<br/>disponível?"}}
+        S2["✅ Criar Embedded<br/>via Thirdweb"]
+        S3["⚡ Simulate Connect<br/>(fallback)"]
     end
 
     subgraph GOOGLE_FLOW["G Fluxo Google"]
@@ -49,10 +51,11 @@ flowchart TD
         V["⚡ Simulate Connect<br/>(fallback)"]
     end
 
-    subgraph METAMASK_FLOW["🦊 Fluxo MetaMask"]
-        W{{"window.ethereum?"}}
+    subgraph METAMASK_FLOW["🦊 Fluxo Wallet Externa"]
+        W{{"Detecta Providers<br/>(MetaMask, Coinbase, etc)"}}
         X["eth_requestAccounts"]
-        Y["❌ Wallet não detectada"]
+        Y["❌ Nenhuma wallet"]
+        Y2["💡 Oferece Email/Google"]
         Z["✅ Conectar conta"]
     end
 
@@ -65,7 +68,10 @@ flowchart TD
     end
 
     subgraph BALANCE_FETCH["📊 Busca de Saldo"]
-        AF["🌐 RPC: mainnet.base.org"]
+        AF1{{"Thirdweb SDK<br/>disponível?"}}
+        AF2["🌐 Thirdweb API<br/>balanceOf()"]
+        AF3["🌐 RPC: mainnet.base.org"]
+        AF4["🌐 RPC Fallback<br/>(Alchemy, PublicNode, etc)"]
         AG["📝 eth_call<br/>balanceOf(address)"]
         AH["🔢 Parse Wei → Token"]
         AI["💰 Atualizar UI"]
@@ -106,8 +112,11 @@ flowchart TD
     P --> Q
     Q -->|"❌ Inválido"| R
     R --> P
-    Q -->|"✅ Válido"| S
-    S --> SUCCESS
+    Q -->|"✅ Válido"| S1
+    S1 -->|"✅ SDK disponível"| S2
+    S1 -->|"❌ SDK não disponível"| S3
+    S2 --> SUCCESS
+    S3 --> SUCCESS
     
     %% Google Flow
     N --> T
@@ -118,7 +127,10 @@ flowchart TD
     
     %% MetaMask Flow
     O --> W
-    W -->|"❌ Não detectado"| Y
+    W -->|"❌ Nenhuma detectada"| Y
+    Y --> Y2
+    Y2 -->|"Usuário aceita"| L
+    Y2 -->|"Usuário recusa"| [*]
     W -->|"✅ Detectado"| X
     X --> Z
     Z --> SUCCESS
@@ -131,7 +143,12 @@ flowchart TD
     AD --> AE
     
     %% Balance Fetch
-    AF --> AG
+    AF1 -->|"✅ SDK disponível"| AF2
+    AF1 -->|"❌ SDK não disponível"| AF3
+    AF2 --> AH
+    AF3 --> AG
+    AF3 -->|"❌ Falhou"| AF4
+    AF4 --> AG
     AG --> AH
     AH --> AI
     
@@ -150,10 +167,10 @@ flowchart TD
     classDef storage fill:#f59e0b,stroke:#d97706,color:#fff
     
     class A,M,N,O action
-    class D,Q,T,W check
-    class S,Z,AA,AE,AM success
+    class D,Q,T,W,S1,AF1 check
+    class S2,S3,Z,AA,AE,AM success
     class R,Y error
-    class B,C,E,F,G,H,I,J,K,L,P,U,V,X,AB,AC,AD,AF,AG,AH,AI,AJ,AK,AL process
+    class B,C,E,F,G,H,I,J,K,L,P,U,V,X,AB,AC,AD,AF2,AF3,AF4,AG,AH,AI,AJ,AK,AL,Y2 process
 ```
 
 ## Diagrama de Sequência
@@ -193,8 +210,15 @@ sequenceDiagram
         UI->>WM: connectEmail()
         WM->>U: prompt("Digite email")
         U-->>WM: email@exemplo.com
-        WM->>TW: Criar Embedded Wallet
-        TW-->>WM: Endereço gerado
+        
+        alt Thirdweb SDK disponível
+            WM->>TW: Criar Embedded Wallet (SDK)
+            TW-->>WM: Endereço gerado
+        else Fallback
+            WM->>WM: simulateConnect()
+            WM->>WM: Gera endereço mock
+        end
+        
         WM->>LS: saveState()
         WM->>UI: updateButton()
         WM->>BC: fetchBalance()
@@ -212,14 +236,27 @@ sequenceDiagram
     end
 
     rect rgb(249, 115, 22, 0.1)
-        Note over U,BC: 🦊 Conexão via MetaMask
+        Note over U,BC: 🦊 Conexão via Wallet Externa
         U->>UI: Seleciona Wallet
         UI->>WM: connectWallet()
-        WM->>U: eth_requestAccounts
-        U-->>WM: Aprova conexão
-        WM->>LS: saveState()
-        WM->>UI: updateButton()
-        WM->>BC: fetchBalance()
+        WM->>WM: detectWalletProviders()
+        
+        alt Wallet detectada
+            WM->>U: eth_requestAccounts
+            U-->>WM: Aprova conexão
+            WM->>LS: saveState()
+            WM->>UI: updateButton()
+            WM->>BC: fetchBalance()
+        else Nenhuma wallet
+            WM->>U: "Usar Email/Google?"
+            alt Usuário aceita
+                U-->>WM: Sim
+                WM->>UI: Mostra Opções Conexão
+            else Usuário recusa
+                U-->>WM: Não
+                WM->>UI: Mensagem de erro
+            end
+        end
     end
 
     rect rgb(239, 68, 68, 0.1)
@@ -362,15 +399,18 @@ graph TB
 ## 📝 Notas Técnicas
 
 ### Token $NEOFLW
+
 - **Contrato**: `0x6575933669e530dC25aaCb496cD8e402B8f26Ff5`
 - **Rede**: Base (Chain ID: 8453)
 - **Decimais**: 18
 - **RPC**: `https://mainnet.base.org`
 
 ### localStorage Keys
+
 - `wallet_state`: `{ address: string, timestamp: number }`
 
 ### Thirdweb Integration
+
 - **Client ID**: Configurado via `window.THIRDWEB_CLIENT_ID`
 - **Embedded Wallet**: Suporta Email e Google OAuth
 - **External Wallet**: MetaMask via `window.ethereum`
@@ -378,4 +418,31 @@ graph TB
 ---
 
 *Documentação gerada em: 2025-12-18*
-*Versão: 2.3.0*
+*Atualizada em: 2025-12-23*
+*Versão: 2.4.11*
+
+## 🔄 Fallbacks Implementados
+
+### Email Connection
+
+1. **Primário**: Thirdweb SDK (embedded wallet real)
+2. **Fallback**: Simulate Connect (demo mode)
+
+### Google Connection
+
+1. **Primário**: Thirdweb SDK (OAuth via SDK)
+2. **Fallback 1**: Redirect OAuth (embedded-wallet.thirdweb.com)
+3. **Fallback 2**: Simulate Connect (demo mode)
+
+### External Wallet Connection
+
+1. **Detecção múltipla**: MetaMask, Coinbase Wallet, Brave, WalletConnect
+2. **Fallback**: Oferece Email/Google se nenhuma wallet detectada
+
+### Balance Fetch
+
+1. **Primário**: Thirdweb SDK API
+2. **Fallback 1**: RPC mainnet.base.org
+3. **Fallback 2**: RPC Alchemy
+4. **Fallback 3**: RPC PublicNode
+5. **Fallback 4**: RPC 1RPC.io

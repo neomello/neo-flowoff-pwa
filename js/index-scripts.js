@@ -509,3 +509,127 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
+
+// === NEOFLW CARD INTERATIVO ===
+document.addEventListener('DOMContentLoaded', function() {
+  const neoflwCard = document.getElementById('neoflw-card');
+  const neoflwToggle = neoflwCard?.querySelector('.neoflw-toggle');
+  const neoflwHeader = neoflwCard?.querySelector('.neoflw-header');
+
+  if (!neoflwCard || !neoflwToggle) return;
+
+  // Função para alternar estado expandido/colapsado
+  function toggleNeoflwCard() {
+    const isExpanded = neoflwCard.classList.contains('expanded');
+    
+    if (isExpanded) {
+      neoflwCard.classList.remove('expanded');
+      // Salvar estado no localStorage
+      localStorage.setItem('neoflw-expanded', 'false');
+    } else {
+      neoflwCard.classList.add('expanded');
+      // Salvar estado no localStorage
+      localStorage.setItem('neoflw-expanded', 'true');
+      
+      // Scroll suave para o card quando expandir
+      setTimeout(() => {
+        neoflwCard.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'nearest' 
+        });
+      }, 100);
+    }
+  }
+
+  // Event listeners
+  if (neoflwToggle) {
+    neoflwToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleNeoflwCard();
+    });
+  }
+
+  if (neoflwHeader) {
+    neoflwHeader.addEventListener('click', (e) => {
+      // Não expandir se clicar no toggle (já tem seu próprio handler)
+      if (!e.target.closest('.neoflw-toggle')) {
+        toggleNeoflwCard();
+      }
+    });
+  }
+
+  // Restaurar estado salvo
+  const savedState = localStorage.getItem('neoflw-expanded');
+  if (savedState === 'true') {
+    // Pequeno delay para garantir que o CSS está carregado
+    setTimeout(() => {
+      neoflwCard.classList.add('expanded');
+    }, 100);
+  }
+
+  // Animações de entrada para os elementos internos quando expandir
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+        const isExpanded = neoflwCard.classList.contains('expanded');
+        
+        if (isExpanded) {
+          // Animar elementos internos com delay escalonado
+          const sections = neoflwCard.querySelectorAll('.neoflw-section, .neoflw-journey, .neoflw-when, .neoflw-cta');
+          sections.forEach((section, index) => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+              section.style.transition = 'all 0.4s ease';
+              section.style.opacity = '1';
+              section.style.transform = 'translateY(0)';
+            }, index * 100);
+          });
+        }
+      }
+    });
+  });
+
+  observer.observe(neoflwCard, {
+    attributes: true,
+    attributeFilter: ['class']
+  });
+
+  // === FAQ ACCORDION ===
+  const faqQuestions = neoflwCard?.querySelectorAll('.faq-question');
+  
+  if (faqQuestions) {
+    faqQuestions.forEach(question => {
+      question.addEventListener('click', () => {
+        const faqItem = question.closest('.faq-item');
+        const isActive = faqItem.classList.contains('active');
+        
+        // Fechar todos os outros itens (accordion behavior)
+        document.querySelectorAll('.faq-item').forEach(item => {
+          if (item !== faqItem) {
+            item.classList.remove('active');
+            item.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+          }
+        });
+        
+        // Toggle do item clicado
+        if (isActive) {
+          faqItem.classList.remove('active');
+          question.setAttribute('aria-expanded', 'false');
+        } else {
+          faqItem.classList.add('active');
+          question.setAttribute('aria-expanded', 'true');
+          
+          // Scroll suave para o item expandido
+          setTimeout(() => {
+            faqItem.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'nearest' 
+            });
+          }, 100);
+        }
+      });
+    });
+  }
+});

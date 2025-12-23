@@ -1,171 +1,75 @@
-# 🚀 NEØ.FLOWOFF PWA
+# NEOFLW
 
-**Agência de Marketing na Blockchain**  
-Desenvolvimento de sistemas, WebApp's, IAs e tokenização.
+Token de infraestrutura da NEØ·FlowOFF, operando na Base Network.
 
----
+NEOFLW não é um token promocional.
+É um instrumento operacional para coordenar pagamentos, incentivos, governança e automações on-chain.
 
-## 📋 Sobre
-
-PWA (Progressive Web App) da NEØ.FLOWOFF, uma agência especializada em:
-- Marketing digital avançado e estratégia
-- Blockchain e Web3
-- Desenvolvimento de sistemas, WebApps e PWAs
-- Tokenização de ativos
-- Agentes IA personalizados
-- Arquitetura de ecossistemas digitais
+Estado atual: ativo, líquido e indexado.
 
 ---
 
-## 🚀 Início Rápido
+## Estado On-Chain
 
-### Desenvolvimento Local
-
-```bash
-# Instalar dependências
-npm install
-
-# Iniciar servidor de desenvolvimento
-npm run dev
-# ou
-make dev
-
-# Acesse: http://localhost:3000
-```
-
-### Build para Produção
-
-```bash
-# Build
-npm run build
-# ou
-make build
-
-# Resultado em: ./dist/
-```
+- Rede: Base (8453)
+- Padrão: ERC-20
+- Liquidez ativa: Uniswap V3 (NEOFLW/WETH)
+- Indexação: Dexscreener
+- Governança: Votes + Delegation
+- UX: Permit + Gasless-ready
 
 ---
 
-## 📁 Estrutura do Projeto
+## Endereços Principais
 
-### Principais Diretórios
+- Token: `0x6575933669e530dC25aaCb496cD8e402B8f26Ff5`
+- Pool Uniswap V3: NEOFLW/WETH
+- Liquidez (tx):  
+  `0x2d554f992624e5931d88966d3dbb23f28c4ab5ce01e9140f729b124738977f59`
 
-- `js/` - JavaScript do frontend
-- `css/` - CSS modularizado
-- `public/` - Assets públicos (imagens, ícones)
-- `scripts/` - Scripts de build e automação
-- `config/` - Configurações (token, etc)
-
----
-
-## 🌐 Domínios
-
-- **Web2:** 
-  - `flowoff.xyz`
-  - `flowoff.com.br`
-- **Web3:** 
-  - `neoflowoff.eth` (ENS → IPNS)
+Links:
+- Basescan: https://basescan.org/token/0x6575933669e530dc25aacb496cd8e402b8f26ff5
+- Dexscreener: https://dexscreener.com/base/0x6575933669e530dC25aaCb496cD8e402B8f26Ff5
 
 ---
 
-## 🪙 Token $NEOFLW
+## Função do Token
 
-Token oficial na rede **Base**:
+NEOFLW coordena:
 
-```bash
-# Ver informações do token
-npm run token:info
-# ou
-make token-info
-```
+- Pagamentos por serviços
+- Incentivos e recompensas
+- Programas de fidelidade
+- Governança de decisões
+- Automação de fluxos financeiros
 
-- **Contrato:** `0x6575933669e530dC25aaCb496cD8e402B8f26Ff5`
-- **Rede:** Base (Chain ID: 8453)
-- **Dashboard:** [thirdweb.com/base/0x6575...](https://thirdweb.com/base/0x6575933669e530dC25aaCb496cD8e402B8f26Ff5)
+Sem token, o sistema não escala.
+Sem liquidez, o token não existe.
 
 ---
 
-## 🛠️ Scripts Disponíveis
+## Princípios
 
-```bash
-npm start          # Inicia servidor
-npm run dev        # Desenvolvimento com nodemon
-npm run build      # Build para produção
-npm run test       # Testes de validação
-npm run token:info # Informações do token $NEOFLW
-npm run deploy:ipfs # Deploy para IPFS/IPNS
-```
-
-### Comandos Make
-
-```bash
-make help          # Lista comandos
-make build         # Build da PWA
-make dev           # Servidor local
-make token-info    # Info do token
-make deploy-ipfs   # Deploy IPFS/IPNS
-make validate      # Valida estrutura
-make clean         # Limpa build
-```
+- Liquidez antes de narrativa
+- On-chain como fonte da verdade
+- UX sem fricção
+- Governança progressiva
+- Documentação como infraestrutura
 
 ---
 
-## 🔧 Tecnologias
+## Documentação Técnica
 
-- **Frontend:** HTML5, CSS3, JavaScript (ES6+)
-- **Backend:** Node.js (server.js para dev)
-- **Deploy:** Vercel (Web2) + IPFS/IPNS (Web3)
-- **Token:** Base Network (Thirdweb)
-- **IA:** OpenAI (GPT-4o-mini) + Google Gemini
-- **PWA:** Service Worker, Manifest, Offline support
+- Especificação do token: `/docs/token-spec.md`
+- Capacidades do contrato: `/docs/token-capabilities.md`
+- Jornada do usuário: `/docs/user-journey.md`
+- Links on-chain: `/docs/onchain-links.md`
 
----
+## Para entender antes de conectar qualquer wallet
 
-## 📦 Dependências
-
-- `axios` - HTTP client
-- `cbor` - UCAN token support
-- `dotenv` - Variáveis de ambiente
-- `openai` - API OpenAI
+- Como o sistema funciona: HOW_IT_WORKS.md
+- Perguntas frequentes: FAQ.md
 
 ---
 
-## 🔐 Variáveis de Ambiente
-
-Crie um arquivo `.env` na raiz (veja `env-example.txt`):
-
-```env
-PORT=3000
-NODE_ENV=development
-
-# APIs de IA
-# OPENAI_API_KEY=seu_token_aqui
-# GOOGLE_API_KEY=seu_token_aqui
-
-# Thirdweb (Token)
-THIRDWEB_CLIENT_ID=seu_client_id_aqui
-
-# IPFS/IPNS
-IPNS_KEY_NAME=neo-flowoff-pwa
-```
-
----
-
-## 📄 Licença
-
-MIT
-
----
-
-## 👤 Autor
-
-**MELLØ™** - Arquiteto de Ecossistemas Digitais
-
-- Website: https://flowoff.xyz
-- ENS: neoflowoff.eth
-- WhatsApp: +55 62 98323-1110
-
----
-
-**Versão:** 2.2.0  
-**Última atualização:** 2025-12-18
+MELLØ NODE DEV
