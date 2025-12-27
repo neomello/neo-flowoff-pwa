@@ -2,8 +2,8 @@
 /**
  * Script de Validação de Produção
  * Verifica:
- * - Token $NEOFLW na Base
- * - Configuração Thirdweb
+ * - Token $NEOFLW na Polygon
+ * - Configuração de Wallet (preparado para ZeroDev/WalletConnect)
  * - Integração de wallet
  * - Layout e CSS
  * 
@@ -72,7 +72,7 @@ async function validateToken() {
     
     // Testar RPC
     log(`🔄 Testando conexão RPC...`, 'yellow');
-    const rpcUrl = config.network.rpcUrl || 'https://mainnet.base.org';
+    const rpcUrl = config.network.rpcUrl || 'https://polygon-rpc.com';
     const response = await fetch(rpcUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -105,46 +105,27 @@ async function validateToken() {
   }
 }
 
-// Validação Thirdweb
-async function validateThirdweb() {
-  logSection('🔐 VALIDAÇÃO THIRDWEB');
+// Validação de Wallet (preparado para migração futura)
+async function validateWallet() {
+  logSection('🔐 VALIDAÇÃO DE WALLET');
   
   try {
-    const indexPath = join(__dirname, '..', 'index.html');
-    const html = await readFile(indexPath, 'utf8');
-    
-    // Verificar Client ID
-    const clientIdMatch = html.match(/THIRDWEB_CLIENT_ID\s*=\s*['"]([^'"]+)['"]/);
-    
-    if (!clientIdMatch) {
-      log(`❌ THIRDWEB_CLIENT_ID não encontrado no index.html`, 'red');
-      return false;
-    }
-    
-    const clientId = clientIdMatch[1];
-    
-    if (!clientId || clientId.length < 10) {
-      log(`❌ THIRDWEB_CLIENT_ID inválido: ${clientId}`, 'red');
-      return false;
-    }
-    
-    log(`✅ THIRDWEB_CLIENT_ID encontrado: ${clientId.substring(0, 8)}...`, 'green');
-    
-    // Verificar CSP para thirdweb
-    if (html.includes('thirdweb.com') && html.includes('Content-Security-Policy')) {
-      log(`✅ CSP configurado para thirdweb.com`, 'green');
-    } else {
-      log(`⚠️  CSP pode não estar configurado para thirdweb`, 'yellow');
-    }
-    
-    // Verificar wallet.js
     const walletPath = join(__dirname, '..', 'js', 'wallet.js');
     const walletCode = await readFile(walletPath, 'utf8');
     
-    if (walletCode.includes('THIRDWEB_CLIENT_ID')) {
-      log(`✅ wallet.js referencia THIRDWEB_CLIENT_ID`, 'green');
+    // Verifica se wallet.js existe e tem estrutura básica
+    if (!walletCode.includes('WalletManager')) {
+      log(`❌ WalletManager não encontrado em wallet.js`, 'red');
+      return false;
+    }
+    
+    log(`✅ WalletManager encontrado`, 'green');
+    
+    // Verifica se tem fallback RPC
+    if (walletCode.includes('fetchBalanceFromRPC')) {
+      log(`✅ Fallback RPC configurado`, 'green');
     } else {
-      log(`⚠️  wallet.js não referencia THIRDWEB_CLIENT_ID`, 'yellow');
+      log(`⚠️  Fallback RPC não encontrado`, 'yellow');
     }
     
     if (walletCode.includes('fetchBalance')) {
@@ -156,7 +137,7 @@ async function validateThirdweb() {
     
     return true;
   } catch (error) {
-    log(`❌ Erro ao validar Thirdweb: ${error.message}`, 'red');
+    log(`❌ Erro ao validar Wallet: ${error.message}`, 'red');
     return false;
   }
 }
@@ -259,7 +240,7 @@ async function validateWalletIntegration() {
     });
     
     // Verificar se usa RPC correto
-    if (walletCode.includes('mainnet.base.org') || walletCode.includes('TOKEN_CONFIG.network')) {
+    if (walletCode.includes('polygon-rpc.com') || walletCode.includes('TOKEN_CONFIG.network')) {
       log(`✅ RPC configurado corretamente`, 'green');
     } else {
       log(`⚠️  RPC pode não estar configurado`, 'yellow');
@@ -282,9 +263,9 @@ async function main() {
   
   const results = {
     token: await validateToken(),
-    thirdweb: await validateThirdweb(),
+    wallet: await validateWallet(),
     layout: await validateLayout(),
-    wallet: await validateWalletIntegration()
+    walletIntegration: await validateWalletIntegration()
   };
   
   logSection('📊 RESULTADO FINAL');

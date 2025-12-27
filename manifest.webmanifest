@@ -1,8 +1,7 @@
 {
   "name": "NEØ.FLOWOFF",
   "short_name": "NEØ.FLOW",
-  "description": "Agência de Marketing na blockchain. Ecossistema com token $NEOFLW na Base Network. Desenvolvimento de WebApps, IAs e tokenização.",
-  "version": "2.4.11",
+  "description": "Ecossistema digital com WebApps, IA e token $NEOFLW na Polygon.",
   "start_url": "./",
   "scope": "/",
   "display": "standalone",
@@ -11,7 +10,7 @@
   "theme_color": "#0a0a0f",
   "lang": "pt-BR",
   "dir": "ltr",
-  "categories": ["business", "productivity", "finance"],
+  "categories": ["business", "finance", "developer"],
   "icons": [
     { "src": "/public/icons/icon-48x48.webp", "sizes": "48x48", "type": "image/webp" },
     { "src": "/public/icons/icon-72x72.webp", "sizes": "72x72", "type": "image/webp" },
@@ -53,14 +52,13 @@
       "src": "/public/images/capa_neo_flowoff_webapp.png",
       "sizes": "1200x630",
       "type": "image/png",
-      "form_factor": "wide",
-      "label": "NEØ.FLOWOFF - Agência de Marketing na Blockchain"
+      "form_factor": "wide"
     }
   ],
   "related_applications": [
     {
-      "platform": "webapp",
-      "url": "https://basescan.org/token/0x6575933669e530dC25aaCb496cD8e402B8f26Ff5",
+      "platform": "chrome_web_store",
+      "url": "https://polygonscan.com/token/0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2",
       "id": "$NEOFLW Token"
     }
   ],

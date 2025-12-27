@@ -19,10 +19,7 @@ cat css/modules/modals.css >> css/main.css
 echo "" >> css/main.css
 cat css/modules/glass-morphism.css >> css/main.css
 echo "" >> css/main.css
-cat css/modules/blog.css >> css/main.css
-echo "" >> css/main.css
 cat css/modules/responsive.css >> css/main.css
 echo "" >> css/main.css
-cat css/modules/thirdweb-widgets.css >> css/main.css
 
 echo "✅ CSS modularizado criado!"

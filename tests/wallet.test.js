@@ -34,12 +34,12 @@ beforeEach(() => {
 
 // Configuração do TOKEN_CONFIG para testes
 const TOKEN_CONFIG = {
-  address: '0x6575933669e530dC25aaCb496cD8e402B8f26Ff5',
+  address: '0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2',
   symbol: 'NEOFLW',
   name: 'NEOFlowOFF',
   decimals: 18,
-  chainId: 8453,
-  chain: 'base'
+  chainId: 137,
+  chain: 'polygon'
 };
 
 describe('WalletManager', () => {
@@ -247,14 +247,14 @@ describe('WalletManager', () => {
   });
   
   describe('Explorer', () => {
-    it('deve abrir Basescan com endereço correto', () => {
+    it('deve abrir PolygonScan com endereço correto', () => {
       const manager = new WalletManager();
       manager.address = '0x1234567890abcdef1234567890abcdef12345678';
       
       manager.viewOnExplorer();
       
       expect(window.open).toHaveBeenCalledWith(
-        'https://basescan.org/address/0x1234567890abcdef1234567890abcdef12345678',
+        'https://polygonscan.com/address/0x1234567890abcdef1234567890abcdef12345678',
         '_blank'
       );
     });
@@ -362,11 +362,11 @@ describe('WalletManager', () => {
 
 describe('TOKEN_CONFIG', () => {
   it('deve ter configurações corretas do token', () => {
-    expect(TOKEN_CONFIG.address).toBe('0x6575933669e530dC25aaCb496cD8e402B8f26Ff5');
+    expect(TOKEN_CONFIG.address).toBe('0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2');
     expect(TOKEN_CONFIG.symbol).toBe('NEOFLW');
     expect(TOKEN_CONFIG.decimals).toBe(18);
-    expect(TOKEN_CONFIG.chainId).toBe(8453);
-    expect(TOKEN_CONFIG.chain).toBe('base');
+    expect(TOKEN_CONFIG.chainId).toBe(137);
+    expect(TOKEN_CONFIG.chain).toBe('polygon');
   });
 });
 
@@ -498,7 +498,7 @@ function createWalletManagerMock() {
       if (!this.address) return;
       
       try {
-        const response = await fetch('https://mainnet.base.org', {
+        const response = await fetch('https://polygon-rpc.com', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -541,7 +541,7 @@ function createWalletManagerMock() {
 
     viewOnExplorer() {
       if (this.address) {
-        window.open(`https://basescan.org/address/${this.address}`, '_blank');
+        window.open(`https://polygonscan.com/address/${this.address}`, '_blank');
       }
     }
 

@@ -1,6 +1,6 @@
 # 🔐 Fluxo de Autenticação - NEØ.FLOWOFF Wallet
 
-> Documentação do fluxo de autenticação com $NEOFLW na Base Network
+> Documentação do fluxo de autenticação com $NEOFLW na Polygon Network
 
 ## Diagrama de Fluxo Completo
 
@@ -62,7 +62,7 @@ flowchart TD
     subgraph SUCCESS["🎉 Conexão Bem-sucedida"]
         AA["💾 saveState()<br/>localStorage"]
         AB["🔄 updateButton()<br/>Desktop + Mobile"]
-        AC["📊 fetchBalance()<br/>RPC Base Network"]
+        AC["📊 fetchBalance()<br/>RPC Polygon Network"]
         AD["❌ close() Modal"]
         AE[/"🍞 Toast<br/>Wallet conectada!"/]
     end
@@ -365,7 +365,7 @@ graph TB
     
     subgraph Token["🪙 $NEOFLW"]
         ADDR["Contract:<br/>0x6575...6Ff5"]
-        CHAIN["Chain: Base<br/>ID: 8453"]
+        CHAIN["Chain: Polygon<br/>ID: 137"]
     end
     
     %% Connections
@@ -400,7 +400,7 @@ graph TB
 
 ### Token $NEOFLW
 
-- **Contrato**: `0x6575933669e530dC25aaCb496cD8e402B8f26Ff5`
+- **Contrato**: `0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2`
 - **Rede**: Base (Chain ID: 8453)
 - **Decimais**: 18
 - **RPC**: `https://mainnet.base.org`

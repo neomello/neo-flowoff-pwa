@@ -25,8 +25,7 @@ function setup() {
     { label: "Home", x: 180, y: 480, icon: "home" },
     { label: "Projetos", x: 280, y: 480, icon: "projects" },
     { label: "Iniciar", x: 400, y: 480, icon: "start" },
-    { label: "Ecossistema", x: 520, y: 480, icon: "ecosystem" },
-    { label: "Blog", x: 620, y: 480, icon: "blog" }
+    { label: "Ecossistema", x: 520, y: 480, icon: "ecosystem" }
   ];
 
   textAlign(CENTER, TOP);
@@ -164,11 +163,6 @@ function drawIcon(type, x, y, c) {
       ellipse(x - 10, y + 10, 8, 8);
       ellipse(x + 10, y + 10, 8, 8);
       break;
-    case "blog":
-      rect(x - 20, y - 10, 40, 25, 5);
-      line(x - 5, y - 10, x + 5, y - 10);
-      arc(x, y - 10, 15, 15, PI, TWO_PI);
-      break;
   }
 }
 
@@ -245,8 +239,7 @@ function mousePressed() {
         'home': 'home',
         'projects': 'projects', 
         'start': 'start',
-        'ecosystem': 'ecosystem',
-        'blog': 'blog' // Nova rota que podemos adicionar
+        'ecosystem': 'ecosystem'
       };
       
       const route = routeMap[item.icon];

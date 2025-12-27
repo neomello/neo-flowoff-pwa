@@ -15,7 +15,7 @@
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
         { 
           "key": "Content-Security-Policy", 
-          "value": "default-src 'self' blob: data: https://*.storacha.link https://*.w3s.link https://*.nftstorage.link https://*.dweb.link https://ipfs.io https://*.githubusercontent.com https://*.storacha.network https://cdn.jsdelivr.net https://unpkg.com https://*.unpkg.com https://vercel.live; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://*.unpkg.com https://vercel.live https://*.vercel.live; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; connect-src 'self' https: wss:; font-src 'self' data: https:; frame-src 'self' https://vercel.live https://*.thirdweb.com; base-uri 'self'; form-action 'self' https://wa.me; upgrade-insecure-requests;"
+          "value": "default-src 'self' blob: data: https://*.storacha.link https://*.w3s.link https://*.nftstorage.link https://*.dweb.link https://ipfs.io https://*.githubusercontent.com https://*.storacha.network https://cdn.jsdelivr.net https://unpkg.com https://*.unpkg.com https://vercel.live; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://*.unpkg.com https://vercel.live https://*.vercel.live; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; connect-src 'self' https: wss:; font-src 'self' data: https:; frame-src 'self' https://vercel.live; base-uri 'self'; form-action 'self' https://wa.me; upgrade-insecure-requests;"
         }
       ]
     },

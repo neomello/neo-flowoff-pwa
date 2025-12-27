@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Token Info Script - $NEOFLW
- * Busca informações do token NEOFlowOFF na Base via Thirdweb API
+ * Busca informações do token NEOFlowOFF na Polygon via Thirdweb API
  * 
  * Uso:
  *   node scripts/token-info.js
@@ -37,7 +37,7 @@ function formatTokenAmount(value, decimals = 18) {
   return `${intPart.toLocaleString()}.${decStr}`;
 }
 
-// Busca dados do contrato via RPC direto (Base)
+// Busca dados do contrato via RPC direto (Polygon)
 async function fetchContractData(config) {
   const { rpcUrl } = config.network;
   const { token } = config.contracts;
@@ -123,8 +123,7 @@ async function main() {
   console.log('');
   
   console.log('🔗 LINKS');
-  console.log(`   Thirdweb: ${config.links.thirdweb}`);
-  console.log(`   Basescan: ${config.links.basescan}`);
+  console.log(`   PolygonScan: ${config.links.polygonscan || config.links.contract}`);
   console.log('');
   
   console.log('⚙️  FEATURES');

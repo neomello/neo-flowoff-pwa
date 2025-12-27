@@ -8,7 +8,7 @@
       "tipo": "PWA (Progressive Web App)",
       "framework": "Vanilla JS + CSS + HTML",
       "arquitetura": "SPA com router hashless",
-      "deploy": "Netlify",
+      "deploy": "Vercel",
       "dominio_oficial": "flowoff.xyz",
       "pasta_raiz": "/Users/nettomello/CODIGOS/neo-flowoff-pwa/",
       "arquivos_principais": {

@@ -1,22 +1,21 @@
 /**
- * Wallet Manager - Thirdweb Integration
- * Gerencia conexão de wallet com abstração (embedded wallet)
+ * Wallet Manager - RPC Direct Integration
+ * Gerencia conexão de wallet via RPC direto (preparado para migração futura)
  * 
- * Token: $NEOFLW na Base
+ * Token: $NEOFLW na Polygon
+ * 
+ * Nota: Preparado para integração futura com ZeroDev/WalletConnect/Base x402
  */
 
 // Configuração do Token
 const TOKEN_CONFIG = {
-  address: '0x6575933669e530dC25aaCb496cD8e402B8f26Ff5',
+  address: '0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2',
   symbol: 'NEOFLW',
   name: 'NEOFlowOFF',
   decimals: 18,
-  chainId: 8453, // Base
-  chain: 'base'
+  chainId: 137, // Polygon
+  chain: 'polygon'
 };
-
-// Thirdweb Client ID (público, pode ficar no frontend)
-const THIRDWEB_CLIENT_ID = window.THIRDWEB_CLIENT_ID || '';
 
 class WalletManager {
   constructor() {
@@ -182,7 +181,7 @@ class WalletManager {
     const networkDot = document.createElement('span');
     networkDot.className = 'network-dot';
     network.appendChild(networkDot);
-    network.appendChild(document.createTextNode(' Base Network'));
+    network.appendChild(document.createTextNode(' Polygon Network'));
     
     disconnected.appendChild(logoDiv);
     disconnected.appendChild(desc);
@@ -628,125 +627,15 @@ class WalletManager {
       return;
     }
     
-    // Tenta usar Thirdweb SDK primeiro (se disponível)
-    if (THIRDWEB_CLIENT_ID && typeof thirdweb !== 'undefined') {
-      try {
-        await this.connectWithThirdwebEmail(email);
-        return;
-      } catch (error) {
-        window.Logger?.warn('Thirdweb falhou, usando fallback:', error);
-        // Continua para fallback
-      }
-    }
-    
-    // Fallback: Simula conexão
+    // Usa fallback (será substituído por ZeroDev/WalletConnect futuramente)
     await this.simulateConnect(email);
-  }
-
-  // Conexão via Thirdweb Email (tentativa principal)
-  async connectWithThirdwebEmail(email) {
-    try {
-      // Inicializa Thirdweb client
-      const client = thirdweb.createThirdwebClient({
-        clientId: THIRDWEB_CLIENT_ID
-      });
-      
-      const chain = thirdweb.defineChain(8453); // Base
-      
-      // Conecta via email usando Thirdweb SDK
-      const wallet = await thirdweb.connect({
-        client,
-        strategy: 'email',
-        email
-      });
-      
-      if (wallet && wallet.getAddress) {
-        const address = await wallet.getAddress();
-        // Valida endereço antes de usar
-        if (!window.SecurityUtils?.isValidEthereumAddress(address)) {
-          throw new Error('Endereço de wallet inválido retornado');
-        }
-        this.address = address;
-        this.connected = true;
-        this.saveState();
-        this.updateButton();
-        this.updateModalState();
-        this.fetchBalance();
-        this.close();
-        this.showToast('✅ Wallet conectada com sucesso!');
-        return;
-      }
-      
-      throw new Error('Wallet não retornada pelo Thirdweb');
-    } catch (error) {
-      window.Logger?.error('Erro ao conectar via Thirdweb Email:', error);
-      throw error; // Re-lança para que o fallback seja usado
-    }
   }
 
   // Conexão via Google
   async connectGoogle() {
     if (!this.checkTermsAccepted()) return;
-    // Tenta usar Thirdweb SDK primeiro (se disponível)
-    if (THIRDWEB_CLIENT_ID && typeof thirdweb !== 'undefined') {
-      try {
-        await this.connectWithThirdwebGoogle();
-        return;
-      } catch (error) {
-        window.Logger?.warn('Thirdweb Google falhou, tentando redirect:', error);
-        // Continua para redirect OAuth
-      }
-    }
-    
-    // Fallback 1: Redirect OAuth do Thirdweb
-    if (THIRDWEB_CLIENT_ID) {
-      const redirectUrl = encodeURIComponent(window.location.href);
-      window.location.href = `https://embedded-wallet.thirdweb.com/auth/google?clientId=${THIRDWEB_CLIENT_ID}&redirectUrl=${redirectUrl}`;
-      return;
-    }
-    
-    // Fallback 2: Simula conexão
+    // Usa fallback (será substituído por ZeroDev/WalletConnect futuramente)
     await this.simulateConnect('google');
-  }
-
-  // Conexão via Thirdweb Google (tentativa principal)
-  async connectWithThirdwebGoogle() {
-    try {
-      const client = thirdweb.createThirdwebClient({
-        clientId: THIRDWEB_CLIENT_ID
-      });
-      
-      const chain = thirdweb.defineChain(8453); // Base
-      
-      // Conecta via Google usando Thirdweb SDK
-      const wallet = await thirdweb.connect({
-        client,
-        strategy: 'google',
-        redirectUrl: window.location.href
-      });
-      
-      if (wallet && wallet.getAddress) {
-        const address = await wallet.getAddress();
-        // Valida endereço antes de usar
-        if (!window.SecurityUtils?.isValidEthereumAddress(address)) {
-          throw new Error('Endereço de wallet inválido retornado');
-        }
-        this.address = address;
-        this.connected = true;
-        this.saveState();
-        this.updateButton();
-        this.updateModalState();
-        this.fetchBalance();
-        this.close();
-        this.showToast('✅ Wallet conectada com sucesso!');
-        return;
-      }
-      
-      throw new Error('Wallet não retornada pelo Thirdweb');
-    } catch (error) {
-      window.Logger?.error('Erro ao conectar via Thirdweb Google:', error);
-      throw error;
-    }
   }
 
   // Conexão via Wallet externa (MetaMask, WalletConnect, etc)
@@ -825,7 +714,7 @@ class WalletManager {
     return providers;
   }
 
-  // Simula conexão (para demo sem Thirdweb configurado)
+  // Simula conexão (será substituído por ZeroDev/WalletConnect futuramente)
   async simulateConnect(method) {
     // Gera endereço mock baseado no método
     const hash = await this.hashString(method + Date.now());
@@ -864,26 +753,16 @@ class WalletManager {
   async fetchBalance() {
     if (!this.address) return;
     
-    // Lista de RPCs da Base (com fallback)
+    // Lista de RPCs da Polygon (com fallback)
     const rpcEndpoints = [
-      'https://mainnet.base.org',
-      'https://base-mainnet.g.alchemy.com/v2/demo',
-      'https://base.publicnode.com',
-      'https://1rpc.io/base'
+      'https://polygon-rpc.com',
+      'https://rpc-mainnet.matic.network',
+      'https://polygon-mainnet.g.alchemy.com/v2/demo',
+      'https://polygon.publicnode.com',
+      'https://1rpc.io/matic'
     ];
     
-    // Tenta usar Thirdweb SDK primeiro (se disponível)
-    if (THIRDWEB_CLIENT_ID && typeof thirdweb !== 'undefined') {
-      try {
-        await this.fetchBalanceWithThirdweb();
-        return;
-      } catch (error) {
-        window.Logger?.warn('Thirdweb balance fetch falhou, usando RPC:', error);
-        // Continua para fallback RPC
-      }
-    }
-    
-    // Fallback: Tenta múltiplos RPCs
+    // Busca balance via RPC direto (preparado para migração futura)
     for (const rpcUrl of rpcEndpoints) {
       try {
         const balance = await this.fetchBalanceFromRPC(rpcUrl);
@@ -904,33 +783,6 @@ class WalletManager {
     this.updateBalanceUI();
   }
 
-  // Busca balance via Thirdweb SDK
-  async fetchBalanceWithThirdweb() {
-    try {
-      const client = thirdweb.createThirdwebClient({
-        clientId: THIRDWEB_CLIENT_ID
-      });
-      
-      const contract = thirdweb.getContract({
-        client,
-        chain: thirdweb.defineChain(8453),
-        address: TOKEN_CONFIG.address
-      });
-      
-      const balance = await contract.call('balanceOf', [this.address]);
-      
-      if (balance) {
-        const balanceBigInt = BigInt(balance.toString());
-        const decimals = BigInt(10 ** TOKEN_CONFIG.decimals);
-        const intPart = balanceBigInt / decimals;
-        const decPart = (balanceBigInt % decimals) / BigInt(10 ** (TOKEN_CONFIG.decimals - 2));
-        this.balance = `${intPart}.${decPart.toString().padStart(2, '0')}`;
-        this.updateBalanceUI();
-      }
-    } catch (error) {
-      throw error;
-    }
-  }
 
   // Busca balance via RPC direto
   async fetchBalanceFromRPC(rpcUrl) {
@@ -1016,7 +868,7 @@ class WalletManager {
     }
     
     try {
-      window.open(`https://basescan.org/address/${sanitizedAddress}`, '_blank', 'noopener,noreferrer');
+      window.open(`https://polygonscan.com/address/${sanitizedAddress}`, '_blank', 'noopener,noreferrer');
     } catch (error) {
       window.Logger?.error('Erro ao abrir explorer:', error);
       this.showToast('❌ Erro ao abrir explorer');

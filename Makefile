@@ -38,15 +38,11 @@ build: ## Build da PWA (otimiza assets)
 	@# Copia pasta js/
 	@mkdir -p dist/js
 	@cp -r js/* dist/js/ 2>/dev/null || true
-	@# Copia pasta css/modules/ para dist (para thirdweb-widgets.css)
+	@# Copia pasta css/modules/ para dist
 	@mkdir -p dist/css/modules
-	@cp css/modules/thirdweb-widgets.css dist/css/modules/ 2>/dev/null || true
 	@# Copia arquivos CSS adicionais
 	@cp glass-morphism-bottom-bar.css dist/ 2>/dev/null || true
 	@cp bento-grid.css dist/ 2>/dev/null || true
-	@cp blog.html dist/ 2>/dev/null || true
-	@cp blog-styles.css dist/ 2>/dev/null || true
-	@cp blog.js dist/ 2>/dev/null || true
 	@cp desktop.html dist/ 2>/dev/null || true
 	@# Copia diretório public (se existir)
 	@if [ -d "public" ]; then \
@@ -94,7 +90,7 @@ get-agent-did: ## Obtém o Agent DID do cliente Storacha (útil para gerar deleg
 	@node scripts/get-agent-did.js
 	@echo "✅ Agent DID obtido!"
 
-token-info: ## Exibe informações do token $NEOFLW (Base)
+token-info: ## Exibe informações do token $NEOFLW (Polygon)
 	@echo "🪙 Buscando informações do token $NEOFLW..."
 	@npm run token:info
 
@@ -167,7 +163,7 @@ validate: ## Valida estrutura da PWA
 	@echo "  ✓ public/: $(shell test -d public && echo 'OK' || echo 'FALTANDO')"
 	@echo "✅ Validação concluída!"
 
-validate-production: ## Valida produção completa (token, thirdweb, layout, wallet)
+validate-production: ## Valida produção completa (token, wallet, layout)
 	@echo "🔍 Validando produção completa..."
 	@command -v node >/dev/null 2>&1 || (echo "❌ Node.js não encontrado" && exit 1)
 	@node scripts/validate-production.js

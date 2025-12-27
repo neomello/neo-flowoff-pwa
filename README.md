@@ -1,6 +1,6 @@
 # NEOFLW
 
-Token de infraestrutura da NEØ·FlowOFF, operando na Base Network.
+Token de infraestrutura da NEØ·FlowOFF, operando na Polygon Network.
 
 NEOFLW não é um token promocional.
 É um instrumento operacional para coordenar pagamentos, incentivos, governança e automações on-chain.
@@ -11,7 +11,7 @@ Estado atual: ativo, líquido e indexado.
 
 ## Estado On-Chain
 
-- Rede: Base (8453)
+- Rede: Polygon (137)
 - Padrão: ERC-20
 - Liquidez ativa: Uniswap V3 (NEOFLW/WETH)
 - Indexação: Dexscreener
@@ -22,14 +22,11 @@ Estado atual: ativo, líquido e indexado.
 
 ## Endereços Principais
 
-- Token: `0x6575933669e530dC25aaCb496cD8e402B8f26Ff5`
-- Pool Uniswap V3: NEOFLW/WETH
-- Liquidez (tx):  
-  `0x2d554f992624e5931d88966d3dbb23f28c4ab5ce01e9140f729b124738977f59`
+- Token: `0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2`
 
 Links:
-- Basescan: https://basescan.org/token/0x6575933669e530dc25aacb496cd8e402b8f26ff5
-- Dexscreener: https://dexscreener.com/base/0x6575933669e530dC25aaCb496cD8e402B8f26Ff5
+- PolygonScan: https://polygonscan.com/token/0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2
+- Dexscreener: https://dexscreener.com/polygon/0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2
 
 ---
 

@@ -89,7 +89,7 @@
   </script>
   
   <!-- Content Security Policy -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' blob: data: https://*.storacha.link https://*.w3s.link https://*.nftstorage.link https://*.dweb.link https://ipfs.io https://*.githubusercontent.com https://*.storacha.network https://cdn.jsdelivr.net https://unpkg.com https://*.unpkg.com https://vercel.live; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://*.unpkg.com https://vercel.live https://*.vercel.live; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; connect-src 'self' https: wss:; font-src 'self' data: https:; frame-src 'self' https://vercel.live https://*.thirdweb.com; base-uri 'self'; form-action 'self' https://wa.me; upgrade-insecure-requests;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' blob: data: https://*.storacha.link https://*.w3s.link https://*.nftstorage.link https://*.dweb.link https://ipfs.io https://*.githubusercontent.com https://*.storacha.network https://cdn.jsdelivr.net https://unpkg.com https://*.unpkg.com https://vercel.live; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://*.unpkg.com https://vercel.live https://*.vercel.live; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; connect-src 'self' https: wss:; font-src 'self' data: https:; frame-src 'self' https://vercel.live; base-uri 'self'; form-action 'self' https://wa.me; upgrade-insecure-requests;">
   <!-- iOS PWA -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -98,7 +98,6 @@
   <link rel="manifest" href="manifest.webmanifest">
   <title>NEØ.FLOWOFF</title>
   <link rel="stylesheet" href="styles.css?v=2.3.0">
-  <link rel="stylesheet" href="css/modules/thirdweb-widgets.css?v=1.0.0">
   <link rel="stylesheet" href="bento-grid.css?v=1.1.0">
   <link rel="stylesheet" href="glass-morphism-bottom-bar.css">
 
@@ -360,7 +359,7 @@
                       </svg>
                     </button>
                     <div class="faq-answer">
-                      <p><strong>Sim.</strong> Qualquer wallet compatível com Ethereum/Base pode armazenar NEOFLW.</p>
+                      <p><strong>Sim.</strong> Qualquer wallet compatível com Ethereum/Polygon pode armazenar NEOFLW.</p>
                       <p>Mas o token só faz sentido <strong>quando conectado a um contexto de uso</strong>.</p>
                     </div>
                   </div>
@@ -416,9 +415,9 @@
                     </button>
                     <div class="faq-answer">
                       <ul>
-                        <li><a href="https://basescan.org/token/0x6575933669e530dC25aaCb496cD8e402B8f26Ff5" target="_blank" rel="noopener">BaseScan</a></li>
-                        <li><a href="https://dexscreener.com/base/0x6575933669e530dC25aaCb496cD8e402B8f26Ff5" target="_blank" rel="noopener">Dexscreener</a></li>
-                        <li><a href="https://app.uniswap.org/explore/pools/8453" target="_blank" rel="noopener">Uniswap Pools</a></li>
+                        <li><a href="https://polygonscan.com/token/0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2" target="_blank" rel="noopener">PolygonScan</a></li>
+                        <li><a href="https://dexscreener.com/polygon/0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2" target="_blank" rel="noopener">Dexscreener</a></li>
+                        <li><a href="https://app.uniswap.org/explore/pools/137" target="_blank" rel="noopener">Uniswap Pools</a></li>
                       </ul>
                     </div>
                   </div>
@@ -426,8 +425,8 @@
               </div>
 
               <div class="neoflw-cta">
-                <a href="https://basescan.org/token/0x6575933669e530dC25aaCb496cD8e402B8f26Ff5" target="_blank" rel="noopener" class="neoflw-link">
-                  Ver na Base Network
+                <a href="https://polygonscan.com/token/0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2" target="_blank" rel="noopener" class="neoflw-link">
+                  Ver na Polygon Network
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M7 17L17 7" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M7 7H17V17" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1049,17 +1048,8 @@
 <!-- Suporte WebP com Fallback -->
 <script src="js/webp-support.js?v=1.0.0"></script>
 
-<!-- Thirdweb Config -->
-<script>window.THIRDWEB_CLIENT_ID = 'a70d3d6d2ec826511ff9e31b0db2d0fc';</script>
-
-<!-- Thirdweb SDK v5 (via CDN) -->
-<script src="https://unpkg.com/thirdweb@latest/dist/thirdweb.umd.js"></script>
-
 <!-- Wallet Manager -->
 <script src="js/wallet.js?v=2.4.0"></script>
-
-<!-- Thirdweb Widgets (ConnectEmbed + BuyWidget) -->
-<script src="js/thirdweb-widgets.js?v=1.0.0"></script>
 
 <!-- App principal -->
 <script src="js/app.js?v=2.3.0" type="module"></script>
@@ -1133,18 +1123,26 @@
         <p>Dá pra lançar pré-vendas validadas, criar engajamento com escassez real e estruturar um ecossistema de fidelização que vira comunidade.</p>
         <p>Do jogo ao negócio, a tokenização é a ponte entre engajamento e faturamento. E o melhor: já fazemos isso.</p>
 
-        <!-- Seção Token NEOFLW com Widgets Thirdweb -->
+        <!-- Seção Token NEOFLW - Preparada para integração futura -->
         <div class="token-neoflw-section" style="margin-top: 32px; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.1);">
-          <h4 style="margin-bottom: 16px; color: #fff;">🪙 Token $NEOFLW na Base</h4>
+          <h4 style="margin-bottom: 16px; color: #fff;">🪙 Token $NEOFLW na Polygon</h4>
           <p style="margin-bottom: 24px; color: rgba(255,255,255,0.8); font-size: 14px;">
-            Cadastro ultra-simples • Compre tokens diretamente • Sem MetaMask necessário
+            Conecte sua wallet para interagir com o token $NEOFLW
           </p>
           
-          <!-- ConnectEmbed Widget -->
-          <div id="connect-embed-container" style="margin-bottom: 24px;"></div>
+          <!-- Placeholder para ConnectEmbed Widget (ZeroDev/WalletConnect) -->
+          <div id="connect-embed-container" style="margin-bottom: 24px;">
+            <div style="padding: 24px; background: rgba(255,255,255,0.03); border-radius: 12px; text-align: center; border: 1px dashed rgba(255,255,255,0.1);">
+              <p style="color: rgba(255,255,255,0.6); margin: 0;">Widget de conexão será integrado em breve</p>
+            </div>
+          </div>
           
-          <!-- BuyWidget -->
-          <div id="buy-widget-container"></div>
+          <!-- Placeholder para BuyWidget (ZeroDev/WalletConnect) -->
+          <div id="buy-widget-container">
+            <div style="padding: 24px; background: rgba(255,255,255,0.03); border-radius: 12px; text-align: center; border: 1px dashed rgba(255,255,255,0.1);">
+              <p style="color: rgba(255,255,255,0.6); margin: 0;">Widget de compra será integrado em breve</p>
+            </div>
+          </div>
         </div>
       </div>
       <div class="modal-footer">
