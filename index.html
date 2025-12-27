@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0a0a0f">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
   <meta http-equiv="Pragma" content="no-cache">
@@ -908,7 +908,7 @@
           <h3>Falar direto comigo</h3>
           <p>Respondo rápido. Sem burocracia.</p>
           <a class="btn primary block" href="https://wa.me/5562983231110" target="_blank" rel="noopener">WhatsApp</a>
-          <button class="btn ghost block">Fechar</button>
+          <button type="button" class="btn ghost block">Fechar</button>
         </form>
       </dialog>
 
@@ -1023,16 +1023,18 @@
         <span class="toast-title">Nova versão</span>
         <span class="toast-subtitle">Toque para atualizar</span>
       </div>
-      <button id="update-btn" class="toast-action-btn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <button id="update-btn" class="toast-action-btn" type="button" aria-label="Atualizar aplicação">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
           <path d="M12 5v14M5 12l7 7 7-7"/>
         </svg>
       </button>
-      <button id="update-dismiss" class="toast-dismiss">×</button>
+      <button id="update-dismiss" class="toast-dismiss" type="button" aria-label="Fechar notificação de atualização">×</button>
     </div>
   </div>
 
-  <!-- Logger (deve ser carregado primeiro) -->
+  <!-- Utils de Segurança (deve ser carregado primeiro) -->
+<script src="js/utils.js?v=1.0.0"></script>
+<!-- Logger (deve ser carregado primeiro) -->
 <script src="js/logger.js?v=1.0.0"></script>
 <!-- Offline Queue (deve ser carregado antes do form-validator) -->
 <script src="js/offline-queue.js?v=1.0.0"></script>

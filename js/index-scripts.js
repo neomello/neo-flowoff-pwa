@@ -25,15 +25,23 @@ function openMobileMenu() {
   syncMobileWalletButton();
 }
 
+let closeMenuTimeout = null;
+
 function closeMobileMenu() {
   mobileMenuDropdown.classList.remove('show');
   mobileMenuToggle.classList.remove('active');
   
+  // Limpa timeout anterior se existir
+  if (closeMenuTimeout) {
+    clearTimeout(closeMenuTimeout);
+  }
+  
   // Delay para animação
-  setTimeout(() => {
+  closeMenuTimeout = setTimeout(() => {
     if (!mobileMenuDropdown.classList.contains('show')) {
       mobileMenuDropdown.style.display = 'none';
     }
+    closeMenuTimeout = null;
   }, 350);
 }
 
@@ -406,11 +414,27 @@ if (updateBanner) {
 }
 
 // Auto-hide após 15 segundos
-setTimeout(() => {
-  if (bannerShown) {
-    hideUpdateBanner();
+let autoHideTimeout = null;
+
+function scheduleAutoHide() {
+  if (autoHideTimeout) {
+    clearTimeout(autoHideTimeout);
   }
-}, 15000);
+  
+  autoHideTimeout = setTimeout(() => {
+    if (bannerShown) {
+      hideUpdateBanner();
+    }
+    autoHideTimeout = null;
+  }, 15000);
+}
+
+// Agenda auto-hide quando banner é mostrado
+const originalShowUpdateBanner = showUpdateBanner;
+showUpdateBanner = function() {
+  originalShowUpdateBanner();
+  scheduleAutoHide();
+};
 
 // Função para testar o toast manualmente (debug)
 window.testUpdateBanner = () => {
@@ -437,15 +461,38 @@ window.clearUpdateState = () => {
 };
 
 // Verificar atualizações periodicamente (a cada 5 minutos)
-setInterval(() => {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistration().then(registration => {
-      if (registration) {
-        registration.update();
-      }
-    });
+// Armazena interval ID para limpeza
+let updateCheckInterval = null;
+
+function startUpdateCheck() {
+  // Limpa interval anterior se existir
+  if (updateCheckInterval) {
+    clearInterval(updateCheckInterval);
   }
-}, 5 * 60 * 1000); // 5 minutos
+  
+  updateCheckInterval = setInterval(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistration().then(registration => {
+        if (registration) {
+          registration.update();
+        }
+      }).catch(error => {
+        window.Logger?.warn('Erro ao verificar atualizações do SW:', error);
+      });
+    }
+  }, 5 * 60 * 1000); // 5 minutos
+}
+
+// Inicia verificação
+startUpdateCheck();
+
+// Limpa interval quando página é descarregada
+window.addEventListener('beforeunload', () => {
+  if (updateCheckInterval) {
+    clearInterval(updateCheckInterval);
+    updateCheckInterval = null;
+  }
+});
 
 // === MODAIS DOS PROJETOS ===
 document.addEventListener('DOMContentLoaded', function() {

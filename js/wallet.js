@@ -34,18 +34,18 @@ class WalletManager {
 
   // Carrega estado salvo
   loadState() {
-    const saved = localStorage.getItem('wallet_state');
-    if (saved) {
-      try {
-        const state = JSON.parse(saved);
-        if (state.address) {
-          this.connected = true;
-          this.address = state.address;
-          this.updateButton();
-          this.fetchBalance();
-        }
-      } catch (e) {
-        localStorage.removeItem('wallet_state');
+    const state = window.SecurityUtils?.safeLocalStorageGet('wallet_state', null);
+    if (state && state.address) {
+      // Valida endereço antes de usar
+      if (window.SecurityUtils?.isValidEthereumAddress(state.address)) {
+        this.connected = true;
+        this.address = state.address;
+        this.updateButton();
+        this.fetchBalance();
+      } else {
+        // Endereço inválido - limpa estado corrompido
+        window.SecurityUtils?.safeLocalStorageSet('wallet_state', null);
+        window.Logger?.warn('Estado de wallet corrompido - removido');
       }
     }
   }
@@ -53,90 +53,205 @@ class WalletManager {
   // Salva estado
   saveState() {
     if (this.connected && this.address) {
-      localStorage.setItem('wallet_state', JSON.stringify({
+      // Valida endereço antes de salvar
+      if (!window.SecurityUtils?.isValidEthereumAddress(this.address)) {
+        window.Logger?.error('Tentativa de salvar endereço inválido:', this.address);
+        return;
+      }
+      
+      window.SecurityUtils?.safeLocalStorageSet('wallet_state', {
         address: this.address,
         timestamp: Date.now()
-      }));
+      });
     } else {
-      localStorage.removeItem('wallet_state');
+      try {
+        localStorage.removeItem('wallet_state');
+      } catch (e) {
+        window.Logger?.warn('Erro ao remover wallet_state:', e);
+      }
     }
   }
 
-  // Cria modal de conexão
+  // Cria modal de conexão de forma segura
   createModal() {
     const modal = document.createElement('dialog');
     modal.id = 'wallet-modal';
     modal.className = 'wallet-modal';
-    modal.innerHTML = `
-      <div class="wallet-modal-content">
-        <div class="wallet-modal-header">
-          <h3>🪙 $NEOFLW Wallet</h3>
-          <button class="wallet-modal-close" onclick="WalletManager.close()">×</button>
-        </div>
-        
-        <div class="wallet-modal-body">
-          <!-- Estado: Desconectado -->
-          <div id="wallet-disconnected" class="wallet-state">
-            <div class="wallet-logo">
-              <img src="public/logos/pink_metalic.png" alt="NEO" style="width: 64px; height: 64px; border-radius: 50%;">
-            </div>
-            <p class="wallet-desc">Conecte sua wallet para acessar o ecossistema NEØ.FLOWOFF</p>
-            
-            <div class="wallet-options">
-              <button class="wallet-option" onclick="WalletManager.connectEmail()">
-                <span class="wallet-option-icon">📧</span>
-                <span>Email</span>
-              </button>
-              <button class="wallet-option" onclick="WalletManager.connectGoogle()">
-                <span class="wallet-option-icon">G</span>
-                <span>Google</span>
-              </button>
-              <button class="wallet-option" onclick="WalletManager.connectWallet()">
-                <span class="wallet-option-icon">🦊</span>
-                <span>Wallet</span>
-              </button>
-            </div>
-            
-            <div class="wallet-terms">
-              <label class="wallet-terms-checkbox">
-                <input type="checkbox" id="wallet-terms-accept" required>
-                <span>Eu aceito os <a href="terms.html" target="_blank" rel="noopener">Termos e Condições</a> e a <a href="privacy.html" target="_blank" rel="noopener">Política de Privacidade</a></span>
-              </label>
-            </div>
-            
-            <p class="wallet-network">
-              <span class="network-dot"></span>
-              Base Network
-            </p>
-          </div>
-          
-          <!-- Estado: Conectado -->
-          <div id="wallet-connected" class="wallet-state" style="display: none;">
-            <div class="wallet-avatar">
-              <div class="wallet-avatar-circle"></div>
-            </div>
-            <div class="wallet-address" id="wallet-address-display">0x...</div>
-            
-            <div class="wallet-balance-card">
-              <div class="balance-label">Saldo $NEOFLW</div>
-              <div class="balance-value" id="wallet-balance">0.00</div>
-            </div>
-            
-            <div class="wallet-actions">
-              <button class="wallet-action-btn" onclick="WalletManager.copyAddress()">
-                📋 Copiar
-              </button>
-              <button class="wallet-action-btn" onclick="WalletManager.viewOnExplorer()">
-                🔗 Explorer
-              </button>
-              <button class="wallet-action-btn danger" onclick="WalletManager.disconnect()">
-                🚪 Sair
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
+    
+    // Conteúdo do modal criado de forma segura
+    const content = document.createElement('div');
+    content.className = 'wallet-modal-content';
+    
+    // Header
+    const header = document.createElement('div');
+    header.className = 'wallet-modal-header';
+    
+    const title = document.createElement('h3');
+    title.textContent = '🪙 $NEOFLW Wallet';
+    
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'wallet-modal-close';
+    closeBtn.textContent = '×';
+    closeBtn.addEventListener('click', () => this.close());
+    
+    header.appendChild(title);
+    header.appendChild(closeBtn);
+    
+    // Body
+    const body = document.createElement('div');
+    body.className = 'wallet-modal-body';
+    
+    // Estado desconectado
+    const disconnected = document.createElement('div');
+    disconnected.id = 'wallet-disconnected';
+    disconnected.className = 'wallet-state';
+    
+    const logoDiv = document.createElement('div');
+    logoDiv.className = 'wallet-logo';
+    const logoImg = document.createElement('img');
+    logoImg.src = 'public/logos/pink_metalic.png';
+    logoImg.alt = 'NEO';
+    logoImg.style.cssText = 'width: 64px; height: 64px; border-radius: 50%;';
+    logoDiv.appendChild(logoImg);
+    
+    const desc = document.createElement('p');
+    desc.className = 'wallet-desc';
+    desc.textContent = 'Conecte sua wallet para acessar o ecossistema NEØ.FLOWOFF';
+    
+    const options = document.createElement('div');
+    options.className = 'wallet-options';
+    
+    // Botão Email
+    const emailBtn = document.createElement('button');
+    emailBtn.className = 'wallet-option';
+    emailBtn.addEventListener('click', () => this.connectEmail());
+    const emailIcon = document.createElement('span');
+    emailIcon.className = 'wallet-option-icon';
+    emailIcon.textContent = '📧';
+    const emailText = document.createElement('span');
+    emailText.textContent = 'Email';
+    emailBtn.appendChild(emailIcon);
+    emailBtn.appendChild(emailText);
+    
+    // Botão Google
+    const googleBtn = document.createElement('button');
+    googleBtn.className = 'wallet-option';
+    googleBtn.addEventListener('click', () => this.connectGoogle());
+    const googleIcon = document.createElement('span');
+    googleIcon.className = 'wallet-option-icon';
+    googleIcon.textContent = 'G';
+    const googleText = document.createElement('span');
+    googleText.textContent = 'Google';
+    googleBtn.appendChild(googleIcon);
+    googleBtn.appendChild(googleText);
+    
+    // Botão Wallet
+    const walletBtn = document.createElement('button');
+    walletBtn.className = 'wallet-option';
+    walletBtn.addEventListener('click', () => this.connectWallet());
+    const walletIcon = document.createElement('span');
+    walletIcon.className = 'wallet-option-icon';
+    walletIcon.textContent = '🦊';
+    const walletText = document.createElement('span');
+    walletText.textContent = 'Wallet';
+    walletBtn.appendChild(walletIcon);
+    walletBtn.appendChild(walletText);
+    
+    options.appendChild(emailBtn);
+    options.appendChild(googleBtn);
+    options.appendChild(walletBtn);
+    
+    // Terms
+    const terms = document.createElement('div');
+    terms.className = 'wallet-terms';
+    const termsLabel = document.createElement('label');
+    termsLabel.className = 'wallet-terms-checkbox';
+    const termsCheckbox = document.createElement('input');
+    termsCheckbox.type = 'checkbox';
+    termsCheckbox.id = 'wallet-terms-accept';
+    termsCheckbox.required = true;
+    const termsSpan = document.createElement('span');
+    termsSpan.innerHTML = 'Eu aceito os <a href="terms.html" target="_blank" rel="noopener">Termos e Condições</a> e a <a href="privacy.html" target="_blank" rel="noopener">Política de Privacidade</a>';
+    termsLabel.appendChild(termsCheckbox);
+    termsLabel.appendChild(termsSpan);
+    terms.appendChild(termsLabel);
+    
+    // Network
+    const network = document.createElement('p');
+    network.className = 'wallet-network';
+    const networkDot = document.createElement('span');
+    networkDot.className = 'network-dot';
+    network.appendChild(networkDot);
+    network.appendChild(document.createTextNode(' Base Network'));
+    
+    disconnected.appendChild(logoDiv);
+    disconnected.appendChild(desc);
+    disconnected.appendChild(options);
+    disconnected.appendChild(terms);
+    disconnected.appendChild(network);
+    
+    // Estado conectado
+    const connected = document.createElement('div');
+    connected.id = 'wallet-connected';
+    connected.className = 'wallet-state';
+    connected.style.display = 'none';
+    
+    const avatar = document.createElement('div');
+    avatar.className = 'wallet-avatar';
+    const avatarCircle = document.createElement('div');
+    avatarCircle.className = 'wallet-avatar-circle';
+    avatar.appendChild(avatarCircle);
+    
+    const addressDisplay = document.createElement('div');
+    addressDisplay.id = 'wallet-address-display';
+    addressDisplay.className = 'wallet-address';
+    addressDisplay.textContent = '0x...';
+    
+    const balanceCard = document.createElement('div');
+    balanceCard.className = 'wallet-balance-card';
+    const balanceLabel = document.createElement('div');
+    balanceLabel.className = 'balance-label';
+    balanceLabel.textContent = 'Saldo $NEOFLW';
+    const balanceValue = document.createElement('div');
+    balanceValue.id = 'wallet-balance';
+    balanceValue.className = 'balance-value';
+    balanceValue.textContent = '0.00';
+    balanceCard.appendChild(balanceLabel);
+    balanceCard.appendChild(balanceValue);
+    
+    const actions = document.createElement('div');
+    actions.className = 'wallet-actions';
+    
+    const copyBtn = document.createElement('button');
+    copyBtn.className = 'wallet-action-btn';
+    copyBtn.textContent = '📋 Copiar';
+    copyBtn.addEventListener('click', () => this.copyAddress());
+    
+    const explorerBtn = document.createElement('button');
+    explorerBtn.className = 'wallet-action-btn';
+    explorerBtn.textContent = '🔗 Explorer';
+    explorerBtn.addEventListener('click', () => this.viewOnExplorer());
+    
+    const disconnectBtn = document.createElement('button');
+    disconnectBtn.className = 'wallet-action-btn danger';
+    disconnectBtn.textContent = '🚪 Sair';
+    disconnectBtn.addEventListener('click', () => this.disconnect());
+    
+    actions.appendChild(copyBtn);
+    actions.appendChild(explorerBtn);
+    actions.appendChild(disconnectBtn);
+    
+    connected.appendChild(avatar);
+    connected.appendChild(addressDisplay);
+    connected.appendChild(balanceCard);
+    connected.appendChild(actions);
+    
+    body.appendChild(disconnected);
+    body.appendChild(connected);
+    
+    content.appendChild(header);
+    content.appendChild(body);
+    modal.appendChild(content);
     
     // Adiciona estilos
     const style = document.createElement('style');
@@ -500,7 +615,15 @@ class WalletManager {
     if (!this.checkTermsAccepted()) return;
     
     const email = prompt('Digite seu email:');
-    if (!email || !email.includes('@')) {
+    // Validação robusta de email
+    if (!email || !window.SecurityUtils?.isValidEmail(email)) {
+      alert('Email inválido. Por favor, digite um email válido.');
+      return;
+    }
+    
+    // Sanitiza email antes de usar
+    const sanitizedEmail = window.SecurityUtils?.sanitizeInput(email, 'email');
+    if (!sanitizedEmail) {
       alert('Email inválido');
       return;
     }
@@ -538,7 +661,12 @@ class WalletManager {
       });
       
       if (wallet && wallet.getAddress) {
-        this.address = await wallet.getAddress();
+        const address = await wallet.getAddress();
+        // Valida endereço antes de usar
+        if (!window.SecurityUtils?.isValidEthereumAddress(address)) {
+          throw new Error('Endereço de wallet inválido retornado');
+        }
+        this.address = address;
         this.connected = true;
         this.saveState();
         this.updateButton();
@@ -598,7 +726,12 @@ class WalletManager {
       });
       
       if (wallet && wallet.getAddress) {
-        this.address = await wallet.getAddress();
+        const address = await wallet.getAddress();
+        // Valida endereço antes de usar
+        if (!window.SecurityUtils?.isValidEthereumAddress(address)) {
+          throw new Error('Endereço de wallet inválido retornado');
+        }
+        this.address = address;
         this.connected = true;
         this.saveState();
         this.updateButton();
@@ -638,7 +771,13 @@ class WalletManager {
       try {
         const accounts = await provider.request({ method: 'eth_requestAccounts' });
         if (accounts && accounts[0]) {
-          this.address = accounts[0];
+          const address = accounts[0];
+          // Valida endereço antes de usar
+          if (!window.SecurityUtils?.isValidEthereumAddress(address)) {
+            window.Logger?.warn('Endereço inválido retornado pelo provider:', address);
+            continue; // Tenta próximo provider
+          }
+          this.address = address;
           this.connected = true;
           this.saveState();
           this.updateButton();
@@ -649,7 +788,7 @@ class WalletManager {
           return;
         }
       } catch (error) {
-        window.Logger?.warn(`Erro ao conectar com ${provider.name}:`, error);
+        window.Logger?.warn(`Erro ao conectar com ${provider.name || 'provider'}:`, error);
         // Tenta próximo provider
         continue;
       }
@@ -690,7 +829,16 @@ class WalletManager {
   async simulateConnect(method) {
     // Gera endereço mock baseado no método
     const hash = await this.hashString(method + Date.now());
-    this.address = '0x' + hash.slice(0, 40);
+    const mockAddress = '0x' + hash.slice(0, 40);
+    
+    // Valida endereço mock antes de usar
+    if (!window.SecurityUtils?.isValidEthereumAddress(mockAddress)) {
+      window.Logger?.error('Erro ao gerar endereço mock válido');
+      this.showToast('❌ Erro ao conectar. Tente novamente.');
+      return;
+    }
+    
+    this.address = mockAddress;
     this.connected = true;
     this.balance = '100.00';
     
@@ -830,17 +978,48 @@ class WalletManager {
   }
 
   // Copia endereço
-  copyAddress() {
-    if (this.address) {
-      navigator.clipboard.writeText(this.address);
+  async copyAddress() {
+    if (!this.address) return;
+    
+    // Valida endereço antes de copiar
+    if (!window.SecurityUtils?.isValidEthereumAddress(this.address)) {
+      window.Logger?.error('Tentativa de copiar endereço inválido');
+      this.showToast('❌ Erro ao copiar endereço');
+      return;
+    }
+    
+    try {
+      await navigator.clipboard.writeText(this.address);
       this.showToast('📋 Endereço copiado!');
+    } catch (error) {
+      window.Logger?.error('Erro ao copiar endereço:', error);
+      this.showToast('❌ Erro ao copiar. Tente novamente.');
     }
   }
 
   // Abre explorer
   viewOnExplorer() {
-    if (this.address) {
-      window.open(`https://basescan.org/address/${this.address}`, '_blank');
+    if (!this.address) return;
+    
+    // Valida endereço antes de abrir explorer
+    if (!window.SecurityUtils?.isValidEthereumAddress(this.address)) {
+      window.Logger?.error('Tentativa de abrir explorer com endereço inválido');
+      this.showToast('❌ Endereço inválido');
+      return;
+    }
+    
+    // Sanitiza URL antes de abrir
+    const sanitizedAddress = window.SecurityUtils?.sanitizeInput(this.address, 'address');
+    if (!sanitizedAddress) {
+      this.showToast('❌ Erro ao abrir explorer');
+      return;
+    }
+    
+    try {
+      window.open(`https://basescan.org/address/${sanitizedAddress}`, '_blank', 'noopener,noreferrer');
+    } catch (error) {
+      window.Logger?.error('Erro ao abrir explorer:', error);
+      this.showToast('❌ Erro ao abrir explorer');
     }
   }
 
@@ -849,15 +1028,39 @@ class WalletManager {
     this.connected = false;
     this.address = null;
     this.balance = null;
-    localStorage.removeItem('wallet_state');
+    
+    try {
+      localStorage.removeItem('wallet_state');
+    } catch (e) {
+      window.Logger?.warn('Erro ao remover wallet_state:', e);
+    }
+    
     this.updateButton();
     this.updateModalState();
     this.showToast('👋 Wallet desconectada');
   }
 
-  // Toast notification
+  // Toast notification com limpeza de timeout
   showToast(message) {
+    // Limpa toast anterior se existir
+    if (this._toastTimeout) {
+      clearTimeout(this._toastTimeout);
+      this._toastTimeout = null;
+    }
+    
+    if (this._toastRemoveTimeout) {
+      clearTimeout(this._toastRemoveTimeout);
+      this._toastRemoveTimeout = null;
+    }
+    
+    // Remove toast anterior se existir
+    const existingToast = document.querySelector('.wallet-toast');
+    if (existingToast) {
+      existingToast.remove();
+    }
+    
     const toast = document.createElement('div');
+    toast.className = 'wallet-toast';
     toast.style.cssText = `
       position: fixed;
       bottom: 100px;
@@ -873,12 +1076,19 @@ class WalletManager {
       border: 1px solid rgba(255, 255, 255, 0.1);
       animation: toast-in 0.3s ease;
     `;
-    toast.textContent = message;
+    // Sanitiza mensagem antes de exibir
+    toast.textContent = window.SecurityUtils?.sanitizeHTML(message) || message;
     document.body.appendChild(toast);
     
-    setTimeout(() => {
+    this._toastTimeout = setTimeout(() => {
       toast.style.animation = 'toast-out 0.3s ease forwards';
-      setTimeout(() => toast.remove(), 300);
+      this._toastRemoveTimeout = setTimeout(() => {
+        if (toast.parentNode) {
+          toast.remove();
+        }
+        this._toastTimeout = null;
+        this._toastRemoveTimeout = null;
+      }, 300);
     }, 2000);
   }
 }

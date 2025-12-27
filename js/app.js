@@ -8,7 +8,22 @@ if ('serviceWorker' in navigator) {
       const registration = await navigator.serviceWorker.register('./sw.js');
       
       // Verificar atualizações a cada 60 minutos
-      setInterval(() => registration.update(), 60 * 60 * 1000);
+      // Armazena interval ID para limpeza
+      let swUpdateInterval = setInterval(() => {
+        try {
+          registration.update();
+        } catch (error) {
+          window.Logger?.warn('Erro ao atualizar Service Worker:', error);
+        }
+      }, 60 * 60 * 1000);
+      
+      // Limpa interval quando página é descarregada
+      window.addEventListener('beforeunload', () => {
+        if (swUpdateInterval) {
+          clearInterval(swUpdateInterval);
+          swUpdateInterval = null;
+        }
+      });
       
       // Verificar se há atualizações
       registration.addEventListener('updatefound', () => {
@@ -34,52 +49,89 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+// Armazena timeout de remoção do toast
+let updateToastRemoveTimeout = null;
+
 // Notificação de atualização disponível
 function showUpdateNotification() {
   // Evita mostrar múltiplas notificações
-  if (document.getElementById('update-toast')) return;
+  const existingToast = document.getElementById('update-toast');
+  if (existingToast) {
+    // Limpa timeout anterior se existir
+    if (updateToastRemoveTimeout) {
+      clearTimeout(updateToastRemoveTimeout);
+      updateToastRemoveTimeout = null;
+    }
+    return;
+  }
   
   const toast = document.createElement('div');
   toast.id = 'update-toast';
-  toast.innerHTML = `
-    <div style="
-      position: fixed;
-      bottom: 100px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.95), rgba(59, 130, 246, 0.95));
-      color: white;
-      padding: 16px 24px;
-      border-radius: 16px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-      backdrop-filter: blur(10px);
-      z-index: 10000;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      font-family: inherit;
-      max-width: 90vw;
-    ">
-      <span style="font-size: 24px;">🚀</span>
-      <div>
-        <div style="font-weight: 600; margin-bottom: 4px;">Nova versão disponível!</div>
-        <div style="font-size: 0.85em; opacity: 0.9;">Clique para atualizar</div>
-      </div>
-      <button onclick="applyUpdate()" style="
-        background: rgba(255,255,255,0.2);
-        border: none;
-        color: white;
-        padding: 8px 16px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: background 0.2s;
-      " onmouseover="this.style.background='rgba(255,255,255,0.3)'" 
-         onmouseout="this.style.background='rgba(255,255,255,0.2)'">
-        Atualizar
-      </button>
-    </div>
+  toast.style.cssText = `
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.95), rgba(59, 130, 246, 0.95));
+    color: white;
+    padding: 16px 24px;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    backdrop-filter: blur(10px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-family: inherit;
+    max-width: 90vw;
+    cursor: pointer;
   `;
+  
+  const icon = document.createElement('span');
+  icon.textContent = '🚀';
+  icon.style.fontSize = '24px';
+  
+  const textDiv = document.createElement('div');
+  const title = document.createElement('div');
+  title.textContent = 'Nova versão disponível!';
+  title.style.cssText = 'font-weight: 600; margin-bottom: 4px;';
+  const subtitle = document.createElement('div');
+  subtitle.textContent = 'Clique para atualizar';
+  subtitle.style.cssText = 'font-size: 0.85em; opacity: 0.9;';
+  textDiv.appendChild(title);
+  textDiv.appendChild(subtitle);
+  
+  const updateBtn = document.createElement('button');
+  updateBtn.textContent = 'Atualizar';
+  updateBtn.style.cssText = `
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+  `;
+  updateBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    window.applyUpdate();
+  });
+  updateBtn.addEventListener('mouseenter', () => {
+    updateBtn.style.background = 'rgba(255,255,255,0.3)';
+  });
+  updateBtn.addEventListener('mouseleave', () => {
+    updateBtn.style.background = 'rgba(255,255,255,0.2)';
+  });
+  
+  toast.appendChild(icon);
+  toast.appendChild(textDiv);
+  toast.appendChild(updateBtn);
+  
+  toast.addEventListener('click', () => {
+    window.applyUpdate();
+  });
+  
   document.body.appendChild(toast);
 }
 

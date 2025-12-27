@@ -8,7 +8,6 @@ const ASSETS = [
   './js/app.js', './js/wallet.js', './js/p5-background.js', './js/logger.js', './js/form-validator.js',
   './js/webp-support.js', './js/index-scripts.js', './js/offline-queue.js',
   './js/glass-morphism-bottom-bar.js', './js/chat-ai.js',
-  './blog.html', './blog-styles.css', './blog.js', './data/blog-articles.json',
   './manifest.webmanifest', './public/icon-192.png', './public/icon-512.png', './public/maskable-512.png',
   './public/flowoff logo.png', './public/FLOWPAY.png', './public/neo_ico.png', './public/icon-512.png',
   './public/logos/pink_metalic.png', './public/logos/neowhite.png', './public/logos/proia.png',
@@ -73,9 +72,21 @@ self.addEventListener('fetch', e=>{
   }
 
   // Interceptar submissões de formulário para Background Sync
-  if (req.method === 'POST' && url.pathname.includes('/api/lead') || 
-      req.headers.get('X-Form-Submission') === 'true') {
-    e.respondWith(handleFormSubmission(req));
+  // Validação mais robusta
+  const isFormSubmission = req.method === 'POST' && 
+    (url.pathname.includes('/api/lead') || req.headers.get('X-Form-Submission') === 'true');
+  
+  if (isFormSubmission) {
+    e.respondWith(handleFormSubmission(req).catch(error => {
+      console.error('Erro ao processar submissão de formulário:', error);
+      return new Response(JSON.stringify({
+        success: false,
+        error: 'Erro ao processar formulário. Tente novamente.'
+      }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }));
     return;
   }
   
@@ -110,9 +121,21 @@ self.addEventListener('fetch', e=>{
 
 // Handler para submissões de formulário com retry logic
 async function handleFormSubmission(request) {
+  // Valida request antes de processar
+  if (!request || !request.url) {
+    throw new Error('Request inválido');
+  }
+  
   try {
-    // Tentar enviar imediatamente
-    const response = await fetch(request.clone());
+    // Tentar enviar imediatamente com timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+    
+    const response = await fetch(request.clone(), {
+      signal: controller.signal
+    });
+    
+    clearTimeout(timeoutId);
     
     if (response.ok) {
       return response;
@@ -121,11 +144,27 @@ async function handleFormSubmission(request) {
     // Se falhar, adicionar à fila para retry
     throw new Error(`HTTP ${response.status}`);
   } catch (error) {
+    // Ignora abort (timeout) - adiciona à fila
+    if (error.name === 'AbortError') {
+      console.warn('Timeout ao enviar formulário, enfileirando...');
+    }
+    
     // Salvar na fila para Background Sync
-    const formData = await request.clone().json().catch(() => ({}));
+    let formData = {};
+    try {
+      const clonedRequest = request.clone();
+      formData = await clonedRequest.json();
+      
+      // Valida dados básicos
+      if (!formData || typeof formData !== 'object') {
+        formData = {};
+      }
+    } catch (parseError) {
+      console.warn('Erro ao parsear formData:', parseError);
+      formData = {};
+    }
     
     // Adicionar à fila de Background Sync
-    // Salvar primeiro no IndexedDB
     const queuedResponse = await queueForRetry(request, formData);
     
     // Tentar registrar Background Sync
@@ -188,8 +227,18 @@ self.addEventListener('sync', event => {
   }
 });
 
+// Flag para prevenir processamento simultâneo
+let isProcessingQueue = false;
+
 // Processar fila de requisições pendentes
 async function processQueue() {
+  // Previne race condition - não processa se já estiver processando
+  if (isProcessingQueue) {
+    return;
+  }
+  
+  isProcessingQueue = true;
+  
   try {
     const db = await openQueueDB();
     const transaction = db.transaction(['queue'], 'readwrite');
@@ -202,7 +251,10 @@ async function processQueue() {
       getAllRequest.onerror = () => reject(getAllRequest.error);
     });
     
-    if (requests.length === 0) return;
+    if (requests.length === 0) {
+      isProcessingQueue = false;
+      return;
+    }
     
     for (const item of requests) {
       if (item.retries >= MAX_RETRIES) {
@@ -281,7 +333,14 @@ async function processQueue() {
     }
   } catch (error) {
     // Erro ao processar fila - tentar novamente mais tarde
-    setTimeout(() => processQueue(), 5000);
+    console.error('Erro ao processar fila:', error);
+    setTimeout(() => {
+      isProcessingQueue = false;
+      processQueue();
+    }, 5000);
+  } finally {
+    // Garante que flag é resetada mesmo em caso de erro
+    isProcessingQueue = false;
   }
 }
 
