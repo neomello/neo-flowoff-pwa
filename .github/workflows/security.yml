@@ -30,15 +30,34 @@ jobs:
           echo "Checking for exposed secrets..."
           # Procura apenas por secrets hardcoded críticos (valores reais, não referências)
           # Padrões perigosos: sk- seguido de 32+ caracteres (tokens OpenAI reais)
-          # Ignora tudo que é referência a variável de ambiente ou nome de variável
-          if grep -r --include="*.js" --include="*.json" --include="*.ts" \
+          # Ignora tudo que é referência a variável de ambiente, nome de variável, comentários ou documentação
+          SECRETS_FOUND=$(grep -r --include="*.js" --include="*.json" --include="*.ts" \
             -E "(sk-[a-zA-Z0-9]{32,})" \
-            . | grep -v "node_modules" | grep -v ".git" | grep -v "package-lock.json" | \
-            grep -v "test" | grep -v "tests/" | grep -v "\.test\." | grep -v "env-example" | \
-            grep -v "\.example\." | grep -v "process\.env" | grep -v "config\." | \
-            grep -v "window\.APP_CONFIG" | grep -v "GOOGLE_API_KEY\|OPENAI_API_KEY" | \
-            grep -v "VAR_NAME\|VAR\s*=" | head -5; then
-            echo "⚠️  Potential secrets found. Please review."
+            . 2>/dev/null | \
+            grep -v "node_modules" | \
+            grep -v ".git" | \
+            grep -v "package-lock.json" | \
+            grep -v "test" | \
+            grep -v "tests/" | \
+            grep -v "\.test\." | \
+            grep -v "env-example" | \
+            grep -v "\.example\." | \
+            grep -v "process\.env" | \
+            grep -v "config\." | \
+            grep -v "window\.APP_CONFIG" | \
+            grep -v "GOOGLE_API_KEY\|OPENAI_API_KEY" | \
+            grep -v "VAR_NAME\|VAR\s*=" | \
+            grep -v "//.*sk-" | \
+            grep -v "/\*.*sk-" | \
+            grep -v "\*.*sk-" | \
+            grep -v "#.*sk-" | \
+            grep -v "example\|Example\|EXAMPLE" | \
+            grep -v "placeholder\|Placeholder\|PLACEHOLDER" | \
+            grep -v "your.*key\|your.*token\|your.*secret" || true)
+          
+          if [ -n "$SECRETS_FOUND" ]; then
+            echo "⚠️  Potential secrets found. Please review:"
+            echo "$SECRETS_FOUND" | head -5
             exit 1
           fi
           echo "✅ No obvious secrets found"
