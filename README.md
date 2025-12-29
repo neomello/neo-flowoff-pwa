@@ -103,10 +103,10 @@ Deploy descentralizado via Storacha para IPFS/IPNS e ENS (`neoflowoff.eth.link`)
 
 ## 📚 Documentação
 
-- [Domínios e Deploy](./docs/DOMINIOS.md) - Arquitetura completa de deploy
-- [Guia Storacha/IPFS](./GUIA_STORACHA_IPFS.md) - Configuração Web3
-- [Contribuindo](./CONTRIBUTING.md) - Padrões de contribuição
-- [Segurança](./SECURITY.md) - Política de segurança
+-  [Domínios e Deploy](./docs/DOMINIOS.md) - Arquitetura completa de deploy
+-  [Guia Storacha/IPFS](./GUIA_STORACHA_IPFS.md) - Configuração Web3
+-  [Contribuindo](./CONTRIBUTING.md) - Padrões de contribuição
+-  [Segurança](./SECURITY.md) - Política de segurança
 
 ## 🛡️ Segurança
 
