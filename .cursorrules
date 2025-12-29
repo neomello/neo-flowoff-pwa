@@ -1,0 +1,42 @@
+# Cursor Rules — NEØ FlowOFF PWA
+
+This workspace follows NEØ development standards.
+These rules are authoritative.
+
+## Critical Rules
+
+-  ALWAYS add a blank line after any Markdown header.
+-  Use 2 spaces for indentation.
+-  Remove trailing whitespace and add final newline.
+-  NEVER modify folders or rename files without authorization (NEØ architecture protection).
+
+## Project Structure
+
+STRUCTURE PROTECTED BY NEØ ARCHITECTURE
+
+Consult Mellø before any structural modifications.
+
+## References (consult when needed)
+
+-  Work standards: `.cursor/standards/README.md` (if exists)
+-  Workflow protocol: `.cursor/standards/WORKFLOW.md` (if exists)
+-  Markdown rules: `.cursor/standards/markdown.rules.md` (if exists)
+-  AI behavior rules: `.cursor/standards/ai.rules.md` (if exists)
+-  README template: `.cursor/standards/readme.template.md` (if exists)
+-  Signature (projetos/READMEs): `.cursor/standards/readme.signature.md` (if exists)
+
+## Code Standards
+
+-  Indentation: 2 spaces (not tabs)
+-  Encoding: UTF-8
+-  Line endings: LF (Unix)
+-  Trailing whitespace: Remove
+-  Final newline: Always add
+
+## Markdown Standards
+
+-  ALWAYS add blank line after headers (###, ##, #)
+-  Use 2 spaces after list markers (MD030)
+-  Lists must be surrounded by blank lines (MD032)
+-  Always specify language in code blocks (MD040)
+
