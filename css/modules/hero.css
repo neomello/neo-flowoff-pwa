@@ -120,11 +120,10 @@
 /* Protocol text simples */
 .protocol-text {
   font-size: 10px;
-  color: var(--muted);
+  color: rgba(154, 160, 170, 0.85);
   text-align: center;
   margin-top: 20px;
   padding: 8px 0;
-  opacity: 0.6;
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
