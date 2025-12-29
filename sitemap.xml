@@ -12,14 +12,6 @@
     <priority>1.0</priority>
   </url>
 
-  <!-- Página Desktop -->
-  <url>
-    <loc>https://flowoff.xyz/desktop.html</loc>
-    <lastmod>2025-12-23</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
   <!-- Rotas SPA (Single Page Application) -->
   <url>
     <loc>https://flowoff.xyz/#home</loc>

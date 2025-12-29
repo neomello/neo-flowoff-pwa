@@ -51,12 +51,35 @@ const mimeTypes = {
   return hash === expectedHash;
 };
 
+// Função auxiliar para configurar CORS de forma segura
+function setCORSHeaders(req, res) {
+  const allowedOrigins = isProduction
+    ? ['https://flowoff.xyz', 'https://www.flowoff.xyz', 'https://*.storacha.link', 'https://*.w3s.link']
+    : ['http://localhost:3000', 'http://127.0.0.1:3000', '*'];
+
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes('*') || (origin && allowedOrigins.some(allowed => origin.includes(allowed.replace('*.', ''))))) {
+    res.setHeader('Access-Control-Allow-Origin', origin || '*');
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Form-Submission');
+  res.setHeader('Access-Control-Max-Age', '86400'); // 24 horas
+}
+
 const server = http.createServer((req, res) => {
   const parsedUrl = url.parse(req.url, true);
   let pathname = decodeURIComponent(parsedUrl.pathname);
-  
+
   // Remove query parameters for file serving
   let cleanPath = pathname.split('?')[0];
+
+  // Handle OPTIONS requests (preflight)
+  if (req.method === 'OPTIONS') {
+    setCORSHeaders(req, res);
+    res.writeHead(200);
+    res.end();
+    return;
+  }
 
   // Messenger webhook (GET verification, POST events)
   if (cleanPath === '/webhook/messenger') {
@@ -101,7 +124,7 @@ const server = http.createServer((req, res) => {
         log('Messenger webhook event received:', parsed.object || 'unknown');
 
         res.setHeader('Content-Type', 'application/json');
-        res.setHeader('Access-Control-Allow-Origin', '*');
+        setCORSHeaders(req, res);
         res.writeHead(200);
         res.end(JSON.stringify({ success: true }));
       });
@@ -117,7 +140,7 @@ const server = http.createServer((req, res) => {
   // API endpoints
   if (cleanPath === '/api/health') {
     res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    setCORSHeaders(req, res);
     res.writeHead(200);
     res.end(JSON.stringify({
       status: 'ok',
@@ -142,12 +165,12 @@ const server = http.createServer((req, res) => {
   if (cleanPath === '/api/config') {
     const host = req.headers.host || '';
     const isLocalhost = host.includes('localhost') || host.includes('127.0.0.1');
-    
+
     // Debug log (apenas em desenvolvimento)
     if (!isProduction) {
       log('🔧 /api/config chamado - host:', host, 'isLocalhost:', isLocalhost);
     }
-    
+
     // Só permite se for localhost ou se não estiver em produção
     if (!isLocalhost && isProduction) {
       res.writeHead(403, { 'Content-Type': 'application/json' });
@@ -155,7 +178,7 @@ const server = http.createServer((req, res) => {
       return;
     }
     res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    setCORSHeaders(req, res);
     res.writeHead(200);
     res.end(JSON.stringify({
       OPENAI_API_KEY: OPENAI_API_KEY || '',
@@ -171,20 +194,72 @@ const server = http.createServer((req, res) => {
   // API endpoint para receber leads
   if (cleanPath === '/api/lead' && req.method === 'POST') {
     let body = '';
-    
+    let bodySize = 0;
+    const MAX_BODY_SIZE = 10000; // 10KB máximo
+
     req.on('data', chunk => {
+      bodySize += chunk.length;
+      if (bodySize > MAX_BODY_SIZE) {
+        res.writeHead(413, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+          success: false,
+          error: 'Payload muito grande'
+        }));
+        return;
+      }
       body += chunk.toString();
     });
-    
+
     req.on('end', () => {
       try {
+        // Validar tamanho do body
+        if (bodySize > MAX_BODY_SIZE) {
+          res.writeHead(413, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            success: false,
+            error: 'Payload muito grande'
+          }));
+          return;
+        }
+
         const leadData = JSON.parse(body);
-        
+
+        // Validar estrutura básica
+        if (!leadData || typeof leadData !== 'object') {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            success: false,
+            error: 'Dados inválidos'
+          }));
+          return;
+        }
+
+        // Validar campos obrigatórios
+        if (!leadData.name || !leadData.email || !leadData.whats || !leadData.type) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            success: false,
+            error: 'Campos obrigatórios faltando'
+          }));
+          return;
+        }
+
+        // Validar tamanho dos campos
+        if (leadData.name.length > 100 || leadData.email.length > 255 ||
+            leadData.whats.length > 20 || leadData.type.length > 50) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            success: false,
+            error: 'Campos muito longos'
+          }));
+          return;
+        }
+
         // Aqui você pode salvar no banco de dados, enviar email, etc.
         // Por enquanto, apenas logamos e retornamos sucesso
-        
+
         res.setHeader('Content-Type', 'application/json');
-        res.setHeader('Access-Control-Allow-Origin', '*');
+        setCORSHeaders(req, res);
         res.writeHead(200);
         res.end(JSON.stringify({
           success: true,
@@ -196,7 +271,7 @@ const server = http.createServer((req, res) => {
         }));
       } catch (error) {
         res.setHeader('Content-Type', 'application/json');
-        res.setHeader('Access-Control-Allow-Origin', '*');
+        setCORSHeaders(req, res);
         res.writeHead(400);
         res.end(JSON.stringify({
           success: false,
@@ -211,10 +286,10 @@ const server = http.createServer((req, res) => {
   // API endpoint para consulta de CEP
   if (cleanPath.startsWith('/api/cep/')) {
     const cep = cleanPath.replace('/api/cep/', '').replace(/\D/g, '');
-    
+
     if (cep.length !== 8) {
       res.setHeader('Content-Type', 'application/json');
-      res.setHeader('Access-Control-Allow-Origin', '*');
+      setCORSHeaders(req, res);
       res.writeHead(400);
       res.end(JSON.stringify({
         success: false,
@@ -227,7 +302,7 @@ const server = http.createServer((req, res) => {
     // Descentralizado: retorna estrutura básica sem dependência de APIs externas
     // O frontend faz validação local via SimpleValidator
     res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    setCORSHeaders(req, res);
     res.writeHead(200);
     res.end(JSON.stringify({
       success: true,
@@ -247,18 +322,78 @@ const server = http.createServer((req, res) => {
   // API Chat com IA (OpenAI/Gemini)
   if (cleanPath === '/api/chat' && req.method === 'POST') {
     let body = '';
-    req.on('data', chunk => { body += chunk.toString(); });
+    let bodySize = 0;
+    const MAX_BODY_SIZE = 50000; // 50KB máximo
+
+    req.on('data', chunk => {
+      bodySize += chunk.length;
+      if (bodySize > MAX_BODY_SIZE) {
+        res.writeHead(413, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+          success: false,
+          error: 'Payload muito grande'
+        }));
+        return;
+      }
+      body += chunk.toString();
+    });
+
     req.on('end', async () => {
       try {
-        const { message, history = [] } = JSON.parse(body);
-        
-        if (!message || !message.trim()) {
+        // Validar tamanho do body
+        if (bodySize > MAX_BODY_SIZE) {
+          res.writeHead(413, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            success: false,
+            error: 'Payload muito grande'
+          }));
+          return;
+        }
+
+        const parsedBody = JSON.parse(body);
+        const { message, history = [] } = parsedBody;
+
+        // Validar estrutura
+        if (!parsedBody || typeof parsedBody !== 'object') {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            success: false,
+            error: 'Dados inválidos'
+          }));
+          return;
+        }
+
+        if (!message || typeof message !== 'string' || !message.trim()) {
           res.setHeader('Content-Type', 'application/json');
-          res.setHeader('Access-Control-Allow-Origin', '*');
+          res.setHeader('Access-Control-Allow-Origin', origin || '*');
           res.writeHead(400);
           res.end(JSON.stringify({
             success: false,
             error: 'Mensagem é obrigatória'
+          }));
+          return;
+        }
+
+        // Validar tamanho da mensagem
+        if (message.length > 5000) {
+          res.setHeader('Content-Type', 'application/json');
+          res.setHeader('Access-Control-Allow-Origin', origin || '*');
+          res.writeHead(400);
+          res.end(JSON.stringify({
+            success: false,
+            error: 'Mensagem muito longa (máximo 5000 caracteres)'
+          }));
+          return;
+        }
+
+        // Validar histórico
+        if (!Array.isArray(history) || history.length > 50) {
+          res.setHeader('Content-Type', 'application/json');
+          res.setHeader('Access-Control-Allow-Origin', origin || '*');
+          res.writeHead(400);
+          res.end(JSON.stringify({
+            success: false,
+            error: 'Histórico inválido'
           }));
           return;
         }
@@ -268,13 +403,13 @@ const server = http.createServer((req, res) => {
         const classifyIntent = (message, history = []) => {
           const messageLower = message.toLowerCase();
           const fullContext = history.map(m => m.content || m.text || '').join(' ').toLowerCase() + ' ' + messageLower;
-          
+
           const salesKeywords = ['preço', 'quanto', 'custo', 'orçamento', 'contratar', 'proposta', 'plano', 'pacote', 'valor', 'investimento', 'pagamento'];
           const technicalKeywords = ['código', 'stack', 'bug', 'erro', 'implementar', 'arquitetura', 'api', 'deploy', 'tecnologia', 'desenvolvimento', 'programação', 'tech', 'sistema'];
           const strategyKeywords = ['estratégia', 'crescimento', 'modelo', 'negócio', 'visão', 'posicionamento', 'sistema', 'ecossistema', 'automação', 'processo', 'metodologia'];
           const onboardingKeywords = ['o que', 'como funciona', 'quem são', 'sobre', 'entender', 'conhecer', 'flowoff', 'agência', 'empresa', 'serviços'];
           const personalKeywords = ['mello', 'mellø', 'você', 'sua', 'pessoal', 'filosofia', 'visão pessoal', 'trajetória', 'história', 'background'];
-          
+
           const scores = {
             SALES: salesKeywords.filter(k => fullContext.includes(k)).length,
             TECHNICAL: technicalKeywords.filter(k => fullContext.includes(k)).length,
@@ -282,17 +417,17 @@ const server = http.createServer((req, res) => {
             ONBOARDING: onboardingKeywords.filter(k => fullContext.includes(k)).length,
             PERSONAL_MELLO: personalKeywords.filter(k => fullContext.includes(k)).length
           };
-          
+
           const maxScore = Math.max(...Object.values(scores));
           if (maxScore === 0) {
             return { category: 'ONBOARDING', confidence: 50 };
           }
-          
+
           const category = Object.keys(scores).find(key => scores[key] === maxScore);
           const confidence = Math.min(100, Math.round((maxScore / Math.max(1, fullContext.split(' ').length / 10)) * 100));
           return { category, confidence };
         };
-        
+
         const getBasePrompt = () => {
           return `Você é NEO, o agente de inteligência da FlowOFF.
 
@@ -334,7 +469,7 @@ PRINCÍPIO CENTRAL:
 Você existe para gerar clareza, reduzir fricção e acelerar decisões.
 Cada resposta deve fazer o usuário pensar: "ok, isso resolve ou me coloca no caminho certo".`;
         };
-        
+
         const getIntentPrompt = (intentCategory) => {
           const base = getBasePrompt();
           switch (intentCategory) {
@@ -450,12 +585,12 @@ Tom:
               return base;
           }
         };
-        
+
         const buildSystemPrompt = (intent) => getIntentPrompt(intent.category);
-        
+
         const intent = classifyIntent(message, history);
         const systemPrompt = buildSystemPrompt(intent);
-        
+
         // Log da intenção (apenas em desenvolvimento)
         if (process.env.NODE_ENV !== 'production') {
           log(`🧠 Intent classificada: ${intent.category} (confiança: ${intent.confidence}%)`);
@@ -469,7 +604,7 @@ Tom:
         if (!OPENAI_API_KEY && !GOOGLE_API_KEY) {
           log('⚠️ Nenhuma API key configurada (OPENAI_API_KEY ou GOOGLE_API_KEY)');
           res.setHeader('Content-Type', 'application/json');
-          res.setHeader('Access-Control-Allow-Origin', '*');
+          res.setHeader('Access-Control-Allow-Origin', origin || '*');
           res.writeHead(200);
           res.end(JSON.stringify({
             success: false,
@@ -556,7 +691,7 @@ Tom:
         if (!aiResponse) {
           log('❌ Nenhuma API de IA funcionou. Erros:', errorDetails);
           res.setHeader('Content-Type', 'application/json');
-          res.setHeader('Access-Control-Allow-Origin', '*');
+          setCORSHeaders(req, res);
           res.writeHead(200);
           res.end(JSON.stringify({
             success: false,
@@ -569,7 +704,7 @@ Tom:
 
         // Se ambas falharem, retornar null para usar fallback no frontend
         res.setHeader('Content-Type', 'application/json');
-        res.setHeader('Access-Control-Allow-Origin', '*');
+        setCORSHeaders(req, res);
         res.writeHead(200);
           res.end(JSON.stringify({
             success: true,
@@ -580,7 +715,7 @@ Tom:
       } catch (error) {
         log('Chat API error:', error.message);
         res.setHeader('Content-Type', 'application/json');
-        res.setHeader('Access-Control-Allow-Origin', '*');
+        setCORSHeaders(req, res);
         res.writeHead(500);
         res.end(JSON.stringify({
           success: false,
@@ -595,13 +730,24 @@ Tom:
     const queryParam = parsedUrl.query.q;
     if (!queryParam) {
       res.setHeader('Content-Type', 'application/json');
+      setCORSHeaders(req, res);
       res.writeHead(400);
       res.end(JSON.stringify({ success: false, error: 'Query is required' }));
       return;
     }
 
+    // Validar tamanho da query
+    if (queryParam.length > 200) {
+      res.setHeader('Content-Type', 'application/json');
+      setCORSHeaders(req, res);
+      res.writeHead(400);
+      res.end(JSON.stringify({ success: false, error: 'Query muito longa' }));
+      return;
+    }
+
     if (!GOOGLE_API_KEY) {
       res.setHeader('Content-Type', 'application/json');
+      setCORSHeaders(req, res);
       res.writeHead(500);
       res.end(JSON.stringify({
         success: false,
@@ -639,6 +785,7 @@ Tom:
         const summary = entries.slice(0, 3).join(' | ');
 
         res.setHeader('Content-Type', 'application/json');
+        setCORSHeaders(req, res);
         res.writeHead(200);
         res.end(JSON.stringify({
           success: true,
@@ -648,6 +795,7 @@ Tom:
       } catch (error) {
         log('Google knowledge failure:', error.message);
         res.setHeader('Content-Type', 'application/json');
+        setCORSHeaders(req, res);
         res.writeHead(502);
         res.end(JSON.stringify({
           success: false,
@@ -662,16 +810,14 @@ Tom:
   if (cleanPath === '/') {
     cleanPath = '/index.html';
   }
-  
+
   const filePath = path.join(__dirname, cleanPath);
   const ext = path.extname(filePath).toLowerCase();
   const mimeType = mimeTypes[ext] || 'text/plain';
-  
-  // CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  
+
+  // CORS headers para arquivos estáticos
+  setCORSHeaders(req, res);
+
   fs.readFile(filePath, (err, data) => {
     if (err) {
       if (err.code === 'ENOENT') {
@@ -682,7 +828,7 @@ Tom:
             res.writeHead(404, { 'Content-Type': 'text/html' });
             res.end(`<h1>404 - File not found</h1><p>Erro: ${err2.message}</p>`);
           } else {
-            res.writeHead(200, { 
+            res.writeHead(200, {
               'Content-Type': 'text/html',
               'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
               'Pragma': 'no-cache',
@@ -694,8 +840,8 @@ Tom:
       } else {
         log('❌ Erro ao ler arquivo:', filePath, err.message, err.code);
         res.writeHead(500, { 'Content-Type': 'text/html' });
-        const errorMsg = isProduction 
-          ? 'Internal Server Error' 
+        const errorMsg = isProduction
+          ? 'Internal Server Error'
           : `<h1>500 - Server Error</h1><p>Erro: ${err.message}</p><p>Código: ${err.code}</p><p>Arquivo: ${filePath}</p>`;
         res.end(errorMsg);
       }

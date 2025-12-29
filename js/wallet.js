@@ -1,9 +1,9 @@
 /**
  * Wallet Manager - RPC Direct Integration
  * Gerencia conexão de wallet via RPC direto (preparado para migração futura)
- * 
+ *
  * Token: $NEOFLW na Polygon
- * 
+ *
  * Nota: Preparado para integração futura com ZeroDev/WalletConnect/Base x402
  */
 
@@ -23,6 +23,10 @@ class WalletManager {
     this.address = null;
     this.balance = null;
     this.modal = null;
+    this.rpcRequestCount = 0;
+    this.rpcRequestResetTime = 60000; // 1 minuto
+    this.lastRpcRequestTime = 0;
+    this.maxRpcRequestsPerMinute = 10;
     this.init();
   }
 
@@ -57,7 +61,7 @@ class WalletManager {
         window.Logger?.error('Tentativa de salvar endereço inválido:', this.address);
         return;
       }
-      
+
       window.SecurityUtils?.safeLocalStorageSet('wallet_state', {
         address: this.address,
         timestamp: Date.now()
@@ -76,35 +80,35 @@ class WalletManager {
     const modal = document.createElement('dialog');
     modal.id = 'wallet-modal';
     modal.className = 'wallet-modal';
-    
+
     // Conteúdo do modal criado de forma segura
     const content = document.createElement('div');
     content.className = 'wallet-modal-content';
-    
+
     // Header
     const header = document.createElement('div');
     header.className = 'wallet-modal-header';
-    
+
     const title = document.createElement('h3');
     title.textContent = '🪙 $NEOFLW Wallet';
-    
+
     const closeBtn = document.createElement('button');
     closeBtn.className = 'wallet-modal-close';
     closeBtn.textContent = '×';
     closeBtn.addEventListener('click', () => this.close());
-    
+
     header.appendChild(title);
     header.appendChild(closeBtn);
-    
+
     // Body
     const body = document.createElement('div');
     body.className = 'wallet-modal-body';
-    
+
     // Estado desconectado
     const disconnected = document.createElement('div');
     disconnected.id = 'wallet-disconnected';
     disconnected.className = 'wallet-state';
-    
+
     const logoDiv = document.createElement('div');
     logoDiv.className = 'wallet-logo';
     const logoImg = document.createElement('img');
@@ -112,14 +116,14 @@ class WalletManager {
     logoImg.alt = 'NEO';
     logoImg.style.cssText = 'width: 64px; height: 64px; border-radius: 50%;';
     logoDiv.appendChild(logoImg);
-    
+
     const desc = document.createElement('p');
     desc.className = 'wallet-desc';
     desc.textContent = 'Conecte sua wallet para acessar o ecossistema NEØ.FLOWOFF';
-    
+
     const options = document.createElement('div');
     options.className = 'wallet-options';
-    
+
     // Botão Email
     const emailBtn = document.createElement('button');
     emailBtn.className = 'wallet-option';
@@ -131,7 +135,7 @@ class WalletManager {
     emailText.textContent = 'Email';
     emailBtn.appendChild(emailIcon);
     emailBtn.appendChild(emailText);
-    
+
     // Botão Google
     const googleBtn = document.createElement('button');
     googleBtn.className = 'wallet-option';
@@ -143,7 +147,7 @@ class WalletManager {
     googleText.textContent = 'Google';
     googleBtn.appendChild(googleIcon);
     googleBtn.appendChild(googleText);
-    
+
     // Botão Wallet
     const walletBtn = document.createElement('button');
     walletBtn.className = 'wallet-option';
@@ -155,11 +159,11 @@ class WalletManager {
     walletText.textContent = 'Wallet';
     walletBtn.appendChild(walletIcon);
     walletBtn.appendChild(walletText);
-    
+
     options.appendChild(emailBtn);
     options.appendChild(googleBtn);
     options.appendChild(walletBtn);
-    
+
     // Terms
     const terms = document.createElement('div');
     terms.className = 'wallet-terms';
@@ -170,11 +174,28 @@ class WalletManager {
     termsCheckbox.id = 'wallet-terms-accept';
     termsCheckbox.required = true;
     const termsSpan = document.createElement('span');
-    termsSpan.innerHTML = 'Eu aceito os <a href="terms.html" target="_blank" rel="noopener">Termos e Condições</a> e a <a href="privacy.html" target="_blank" rel="noopener">Política de Privacidade</a>';
+    // Criar links de forma segura (sem innerHTML)
+    const termsText1 = document.createTextNode('Eu aceito os ');
+    const termsLink1 = document.createElement('a');
+    termsLink1.href = 'terms.html';
+    termsLink1.target = '_blank';
+    termsLink1.rel = 'noopener';
+    termsLink1.textContent = 'Termos e Condições';
+    const termsText2 = document.createTextNode(' e a ');
+    const termsLink2 = document.createElement('a');
+    termsLink2.href = 'privacy.html';
+    termsLink2.target = '_blank';
+    termsLink2.rel = 'noopener';
+    termsLink2.textContent = 'Política de Privacidade';
+
+    termsSpan.appendChild(termsText1);
+    termsSpan.appendChild(termsLink1);
+    termsSpan.appendChild(termsText2);
+    termsSpan.appendChild(termsLink2);
     termsLabel.appendChild(termsCheckbox);
     termsLabel.appendChild(termsSpan);
     terms.appendChild(termsLabel);
-    
+
     // Network
     const network = document.createElement('p');
     network.className = 'wallet-network';
@@ -182,30 +203,30 @@ class WalletManager {
     networkDot.className = 'network-dot';
     network.appendChild(networkDot);
     network.appendChild(document.createTextNode(' Polygon Network'));
-    
+
     disconnected.appendChild(logoDiv);
     disconnected.appendChild(desc);
     disconnected.appendChild(options);
     disconnected.appendChild(terms);
     disconnected.appendChild(network);
-    
+
     // Estado conectado
     const connected = document.createElement('div');
     connected.id = 'wallet-connected';
     connected.className = 'wallet-state';
     connected.style.display = 'none';
-    
+
     const avatar = document.createElement('div');
     avatar.className = 'wallet-avatar';
     const avatarCircle = document.createElement('div');
     avatarCircle.className = 'wallet-avatar-circle';
     avatar.appendChild(avatarCircle);
-    
+
     const addressDisplay = document.createElement('div');
     addressDisplay.id = 'wallet-address-display';
     addressDisplay.className = 'wallet-address';
     addressDisplay.textContent = '0x...';
-    
+
     const balanceCard = document.createElement('div');
     balanceCard.className = 'wallet-balance-card';
     const balanceLabel = document.createElement('div');
@@ -217,41 +238,41 @@ class WalletManager {
     balanceValue.textContent = '0.00';
     balanceCard.appendChild(balanceLabel);
     balanceCard.appendChild(balanceValue);
-    
+
     const actions = document.createElement('div');
     actions.className = 'wallet-actions';
-    
+
     const copyBtn = document.createElement('button');
     copyBtn.className = 'wallet-action-btn';
     copyBtn.textContent = '📋 Copiar';
     copyBtn.addEventListener('click', () => this.copyAddress());
-    
+
     const explorerBtn = document.createElement('button');
     explorerBtn.className = 'wallet-action-btn';
     explorerBtn.textContent = '🔗 Explorer';
     explorerBtn.addEventListener('click', () => this.viewOnExplorer());
-    
+
     const disconnectBtn = document.createElement('button');
     disconnectBtn.className = 'wallet-action-btn danger';
     disconnectBtn.textContent = '🚪 Sair';
     disconnectBtn.addEventListener('click', () => this.disconnect());
-    
+
     actions.appendChild(copyBtn);
     actions.appendChild(explorerBtn);
     actions.appendChild(disconnectBtn);
-    
+
     connected.appendChild(avatar);
     connected.appendChild(addressDisplay);
     connected.appendChild(balanceCard);
     connected.appendChild(actions);
-    
+
     body.appendChild(disconnected);
     body.appendChild(connected);
-    
+
     content.appendChild(header);
     content.appendChild(body);
     modal.appendChild(content);
-    
+
     // Adiciona estilos
     const style = document.createElement('style');
     style.textContent = `
@@ -266,16 +287,16 @@ class WalletManager {
         -webkit-backdrop-filter: blur(20px);
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
       }
-      
+
       .wallet-modal::backdrop {
         background: rgba(0, 0, 0, 0.7);
         backdrop-filter: blur(4px);
       }
-      
+
       .wallet-modal-content {
         color: white;
       }
-      
+
       .wallet-modal-header {
         display: flex;
         justify-content: space-between;
@@ -283,13 +304,13 @@ class WalletManager {
         padding: 20px 24px;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       }
-      
+
       .wallet-modal-header h3 {
         margin: 0;
         font-size: 18px;
         font-weight: 600;
       }
-      
+
       .wallet-modal-close {
         background: rgba(255, 255, 255, 0.1);
         border: none;
@@ -301,36 +322,36 @@ class WalletManager {
         cursor: pointer;
         transition: background 0.2s;
       }
-      
+
       .wallet-modal-close:hover {
         background: rgba(255, 255, 255, 0.2);
       }
-      
+
       .wallet-modal-body {
         padding: 24px;
       }
-      
+
       .wallet-state {
         text-align: center;
       }
-      
+
       .wallet-logo {
         margin-bottom: 16px;
       }
-      
+
       .wallet-desc {
         color: rgba(255, 255, 255, 0.7);
         font-size: 14px;
         margin-bottom: 24px;
       }
-      
+
       .wallet-options {
         display: flex;
         flex-direction: column;
         gap: 12px;
         margin-bottom: 24px;
       }
-      
+
       .wallet-option {
         display: flex;
         align-items: center;
@@ -344,19 +365,19 @@ class WalletManager {
         cursor: pointer;
         transition: all 0.2s;
       }
-      
+
       .wallet-option:hover {
         background: rgba(139, 92, 246, 0.2);
         border-color: rgba(139, 92, 246, 0.5);
         transform: translateY(-2px);
       }
-      
+
       .wallet-option-icon {
         font-size: 20px;
         width: 28px;
         text-align: center;
       }
-      
+
       .wallet-terms {
         margin: 20px 0;
         padding: 12px;
@@ -364,7 +385,7 @@ class WalletManager {
         border-radius: 8px;
         border: 1px solid rgba(255, 255, 255, 0.1);
       }
-      
+
       .wallet-terms-checkbox {
         display: flex;
         align-items: flex-start;
@@ -374,7 +395,7 @@ class WalletManager {
         color: rgba(255, 255, 255, 0.7);
         line-height: 1.5;
       }
-      
+
       .wallet-terms-checkbox input[type="checkbox"] {
         margin-top: 2px;
         width: 16px;
@@ -383,22 +404,22 @@ class WalletManager {
         accent-color: #8b5cf6;
         flex-shrink: 0;
       }
-      
+
       .wallet-terms-checkbox a {
         color: #8b5cf6;
         text-decoration: underline;
         transition: color 0.2s;
       }
-      
+
       .wallet-terms-checkbox a:hover {
         color: #a78bfa;
       }
-      
+
       .wallet-option:disabled {
         opacity: 0.5;
         cursor: not-allowed;
       }
-      
+
       .wallet-network {
         display: flex;
         align-items: center;
@@ -407,7 +428,7 @@ class WalletManager {
         color: rgba(255, 255, 255, 0.5);
         font-size: 12px;
       }
-      
+
       .network-dot {
         width: 8px;
         height: 8px;
@@ -415,16 +436,16 @@ class WalletManager {
         border-radius: 50%;
         animation: pulse 2s infinite;
       }
-      
+
       @keyframes pulse {
         0%, 100% { opacity: 1; }
         50% { opacity: 0.5; }
       }
-      
+
       .wallet-avatar {
         margin-bottom: 16px;
       }
-      
+
       .wallet-avatar-circle {
         width: 64px;
         height: 64px;
@@ -433,12 +454,12 @@ class WalletManager {
         background: linear-gradient(135deg, #8b5cf6, #3b82f6, #10b981);
         animation: gradient-rotate 3s linear infinite;
       }
-      
+
       @keyframes gradient-rotate {
         0% { filter: hue-rotate(0deg); }
         100% { filter: hue-rotate(360deg); }
       }
-      
+
       .wallet-address {
         font-family: 'SF Mono', Monaco, monospace;
         font-size: 14px;
@@ -449,7 +470,7 @@ class WalletManager {
         border-radius: 8px;
         display: inline-block;
       }
-      
+
       .wallet-balance-card {
         background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2));
         border: 1px solid rgba(139, 92, 246, 0.3);
@@ -457,13 +478,13 @@ class WalletManager {
         padding: 20px;
         margin-bottom: 20px;
       }
-      
+
       .balance-label {
         font-size: 12px;
         color: rgba(255, 255, 255, 0.6);
         margin-bottom: 4px;
       }
-      
+
       .balance-value {
         font-size: 28px;
         font-weight: 700;
@@ -472,14 +493,14 @@ class WalletManager {
         -webkit-text-fill-color: transparent;
         background-clip: text;
       }
-      
+
       .wallet-actions {
         display: flex;
         gap: 8px;
         flex-wrap: wrap;
         justify-content: center;
       }
-      
+
       .wallet-action-btn {
         padding: 10px 16px;
         background: rgba(255, 255, 255, 0.1);
@@ -490,17 +511,17 @@ class WalletManager {
         cursor: pointer;
         transition: all 0.2s;
       }
-      
+
       .wallet-action-btn:hover {
         background: rgba(255, 255, 255, 0.15);
       }
-      
+
       .wallet-action-btn.danger:hover {
         background: rgba(239, 68, 68, 0.2);
         border-color: rgba(239, 68, 68, 0.5);
       }
     `;
-    
+
     document.head.appendChild(style);
     document.body.appendChild(modal);
     this.modal = modal;
@@ -528,17 +549,17 @@ class WalletManager {
   updateModalState() {
     const disconnected = document.getElementById('wallet-disconnected');
     const connected = document.getElementById('wallet-connected');
-    
+
       if (this.connected) {
         disconnected.style.display = 'none';
         connected.style.display = 'block';
         const addressEl = document.getElementById('wallet-address-display');
         const balanceEl = document.getElementById('wallet-balance');
-        
+
         if (addressEl) {
           addressEl.textContent = this.formatAddress(this.address);
         }
-        
+
         if (balanceEl && this.balance !== null) {
           balanceEl.textContent = this.formatBalance(this.balance);
         }
@@ -555,7 +576,7 @@ class WalletManager {
     if (btn) {
       const textEl = btn.querySelector('.wallet-btn-text');
       const iconEl = btn.querySelector('.wallet-btn-icon');
-      
+
       if (this.connected) {
         btn.classList.add('connected');
         textEl.textContent = this.formatAddress(this.address);
@@ -566,13 +587,13 @@ class WalletManager {
         iconEl.textContent = '→';
       }
     }
-    
+
     // Botão Mobile
     const btnMobile = document.getElementById('wallet-btn-mobile');
     if (btnMobile) {
       const textElMobile = btnMobile.querySelector('.wallet-btn-text-mobile');
       const arrowElMobile = btnMobile.querySelector('.wallet-btn-arrow');
-      
+
       if (this.connected) {
         btnMobile.classList.add('connected');
         textElMobile.textContent = this.formatAddress(this.address);
@@ -612,23 +633,97 @@ class WalletManager {
   // Conexão via Email (Embedded Wallet)
   async connectEmail() {
     if (!this.checkTermsAccepted()) return;
-    
-    const email = prompt('Digite seu email:');
-    // Validação robusta de email
-    if (!email || !window.SecurityUtils?.isValidEmail(email)) {
-      alert('Email inválido. Por favor, digite um email válido.');
-      return;
-    }
-    
-    // Sanitiza email antes de usar
-    const sanitizedEmail = window.SecurityUtils?.sanitizeInput(email, 'email');
-    if (!sanitizedEmail) {
-      alert('Email inválido');
-      return;
-    }
-    
-    // Usa fallback (será substituído por ZeroDev/WalletConnect futuramente)
-    await this.simulateConnect(email);
+
+    // Criar modal seguro para entrada de email (não usar prompt())
+    const emailModal = document.createElement('dialog');
+    emailModal.className = 'wallet-modal';
+    emailModal.style.cssText = `
+      border: none;
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 400px;
+      background: linear-gradient(180deg, rgba(20, 20, 30, 0.98), rgba(10, 10, 15, 0.98));
+      backdrop-filter: blur(20px);
+    `;
+
+    const emailForm = document.createElement('form');
+    emailForm.method = 'dialog';
+
+    const title = document.createElement('h3');
+    title.textContent = 'Conectar com Email';
+    title.style.cssText = 'margin: 0 0 16px 0; color: white;';
+
+    const emailInput = document.createElement('input');
+    emailInput.type = 'email';
+    emailInput.placeholder = 'seuemail@exemplo.com';
+    emailInput.required = true;
+    emailInput.autocomplete = 'email';
+    emailInput.style.cssText = `
+      width: 100%;
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      color: white;
+      margin-bottom: 16px;
+      font-size: 14px;
+    `;
+
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = 'display: flex; gap: 8px; justify-content: flex-end;';
+
+    const cancelBtn = document.createElement('button');
+    cancelBtn.type = 'button';
+    cancelBtn.textContent = 'Cancelar';
+    cancelBtn.style.cssText = 'padding: 8px 16px; background: rgba(255,255,255,0.1); border: none; border-radius: 8px; color: white; cursor: pointer;';
+    cancelBtn.addEventListener('click', () => emailModal.close());
+
+    const submitBtn = document.createElement('button');
+    submitBtn.type = 'submit';
+    submitBtn.textContent = 'Conectar';
+    submitBtn.style.cssText = 'padding: 8px 16px; background: #8b5cf6; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: 600;';
+
+    emailForm.appendChild(title);
+    emailForm.appendChild(emailInput);
+    buttonContainer.appendChild(cancelBtn);
+    buttonContainer.appendChild(submitBtn);
+    emailForm.appendChild(buttonContainer);
+    emailModal.appendChild(emailForm);
+    document.body.appendChild(emailModal);
+
+    emailModal.showModal();
+
+    emailForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = emailInput.value.trim();
+
+      // Validação robusta de email
+      if (!email || !window.SecurityUtils?.isValidEmail(email)) {
+        alert('Email inválido. Por favor, digite um email válido.');
+        return;
+      }
+
+      // Sanitiza email antes de usar
+      const sanitizedEmail = window.SecurityUtils?.sanitizeInput(email, 'email');
+      if (!sanitizedEmail) {
+        alert('Email inválido');
+        return;
+      }
+
+      emailModal.close();
+      emailModal.remove();
+
+      // Usa fallback (será substituído por ZeroDev/WalletConnect futuramente)
+      await this.simulateConnect(sanitizedEmail);
+    });
+
+    // Fechar ao clicar fora
+    emailModal.addEventListener('click', (e) => {
+      if (e.target === emailModal) {
+        emailModal.close();
+        emailModal.remove();
+      }
+    });
   }
 
   // Conexão via Google
@@ -643,7 +738,7 @@ class WalletManager {
     if (!this.checkTermsAccepted()) return;
     // Tenta detectar múltiplos providers
     const providers = this.detectWalletProviders();
-    
+
     if (providers.length === 0) {
       // Fallback: Oferece opção de usar Email/Google
       const useFallback = confirm('Nenhuma wallet detectada.\n\nDeseja usar Email ou Google para criar uma wallet?');
@@ -654,7 +749,7 @@ class WalletManager {
       alert('Nenhuma wallet detectada. Instale MetaMask, Coinbase Wallet ou similar.');
       return;
     }
-    
+
     // Tenta conectar com o primeiro provider disponível
     for (const provider of providers) {
       try {
@@ -682,7 +777,7 @@ class WalletManager {
         continue;
       }
     }
-    
+
     // Se todos falharam
     alert('Erro ao conectar wallet. Tente novamente ou use Email/Google.');
   }
@@ -690,27 +785,27 @@ class WalletManager {
   // Detecta múltiplos providers de wallet
   detectWalletProviders() {
     const providers = [];
-    
+
     // MetaMask
     if (window.ethereum) {
       providers.push(window.ethereum);
     }
-    
+
     // Coinbase Wallet
     if (window.coinbaseWalletExtension) {
       providers.push(window.coinbaseWalletExtension);
     }
-    
+
     // WalletConnect (se disponível)
     if (window.walletConnect) {
       providers.push(window.walletConnect);
     }
-    
+
     // Brave Wallet
     if (window.ethereum && window.ethereum.isBraveWallet) {
       providers.push(window.ethereum);
     }
-    
+
     return providers;
   }
 
@@ -719,23 +814,23 @@ class WalletManager {
     // Gera endereço mock baseado no método
     const hash = await this.hashString(method + Date.now());
     const mockAddress = '0x' + hash.slice(0, 40);
-    
+
     // Valida endereço mock antes de usar
     if (!window.SecurityUtils?.isValidEthereumAddress(mockAddress)) {
       window.Logger?.error('Erro ao gerar endereço mock válido');
       this.showToast('❌ Erro ao conectar. Tente novamente.');
       return;
     }
-    
+
     this.address = mockAddress;
     this.connected = true;
     this.balance = '100.00';
-    
+
     this.saveState();
     this.updateButton();
     this.updateModalState();
     this.close();
-    
+
     // Mostra feedback
     this.showToast('✅ Wallet conectada com sucesso!');
   }
@@ -752,7 +847,7 @@ class WalletManager {
   // Busca balance do token com fallback de RPC
   async fetchBalance() {
     if (!this.address) return;
-    
+
     // Lista de RPCs da Polygon (com fallback)
     const rpcEndpoints = [
       'https://polygon-rpc.com',
@@ -761,7 +856,7 @@ class WalletManager {
       'https://polygon.publicnode.com',
       'https://1rpc.io/matic'
     ];
-    
+
     // Busca balance via RPC direto (preparado para migração futura)
     for (const rpcUrl of rpcEndpoints) {
       try {
@@ -776,7 +871,7 @@ class WalletManager {
         continue; // Tenta próximo RPC
       }
     }
-    
+
     // Se todos os RPCs falharam
     window.Logger?.error('Todos os RPCs falharam ao buscar balance');
     this.balance = '0.00';
@@ -784,41 +879,79 @@ class WalletManager {
   }
 
 
-  // Busca balance via RPC direto
+  // Busca balance via RPC direto com rate limiting e timeout
   async fetchBalanceFromRPC(rpcUrl) {
-    const response = await fetch(rpcUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: 1,
-        method: 'eth_call',
-        params: [{
-          to: TOKEN_CONFIG.address,
-          data: '0x70a08231000000000000000000000000' + this.address.slice(2).toLowerCase()
-        }, 'latest']
-      })
-    });
-    
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    // Rate limiting
+    const now = Date.now();
+    if (now - this.lastRpcRequestTime < this.rpcRequestResetTime) {
+      this.rpcRequestCount++;
+      if (this.rpcRequestCount > this.maxRpcRequestsPerMinute) {
+        throw new Error('Rate limit excedido. Aguarde um momento.');
+      }
+    } else {
+      this.rpcRequestCount = 1;
+      this.lastRpcRequestTime = now;
     }
-    
-    const json = await response.json();
-    
-    if (json.error) {
-      throw new Error(json.error.message || 'Erro na resposta RPC');
+
+    // Validar endereço antes de fazer requisição
+    if (!this.address || !window.SecurityUtils?.isValidEthereumAddress(this.address)) {
+      throw new Error('Endereço inválido');
     }
-    
-    if (json.result && json.result !== '0x' && json.result !== '0x0') {
-      const balance = BigInt(json.result);
-      const decimals = BigInt(10 ** TOKEN_CONFIG.decimals);
-      const intPart = balance / decimals;
-      const decPart = (balance % decimals) / BigInt(10 ** (TOKEN_CONFIG.decimals - 2));
-      return `${intPart}.${decPart.toString().padStart(2, '0')}`;
+
+    // Timeout de 10 segundos
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+    try {
+      const response = await fetch(rpcUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'eth_call',
+          params: [{
+            to: TOKEN_CONFIG.address,
+            data: '0x70a08231000000000000000000000000' + this.address.slice(2).toLowerCase()
+          }, 'latest']
+        }),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const json = await response.json();
+
+      if (json.error) {
+        throw new Error(json.error.message || 'Erro na resposta RPC');
+      }
+
+      // Validar tamanho da resposta
+      const resultStr = JSON.stringify(json);
+      if (resultStr.length > 1000) {
+        throw new Error('Resposta RPC muito grande');
+      }
+
+      if (json.result && json.result !== '0x' && json.result !== '0x0') {
+        const balance = BigInt(json.result);
+        const decimals = BigInt(10 ** TOKEN_CONFIG.decimals);
+        const intPart = balance / decimals;
+        const decPart = (balance % decimals) / BigInt(10 ** (TOKEN_CONFIG.decimals - 2));
+        return `${intPart}.${decPart.toString().padStart(2, '0')}`;
+      }
+
+      return '0.00';
+    } catch (error) {
+      clearTimeout(timeoutId);
+      if (error.name === 'AbortError') {
+        throw new Error('Timeout ao buscar balance');
+      }
+      throw error;
     }
-    
-    return '0.00';
   }
 
   // Atualiza UI do balance
@@ -832,14 +965,14 @@ class WalletManager {
   // Copia endereço
   async copyAddress() {
     if (!this.address) return;
-    
+
     // Valida endereço antes de copiar
     if (!window.SecurityUtils?.isValidEthereumAddress(this.address)) {
       window.Logger?.error('Tentativa de copiar endereço inválido');
       this.showToast('❌ Erro ao copiar endereço');
       return;
     }
-    
+
     try {
       await navigator.clipboard.writeText(this.address);
       this.showToast('📋 Endereço copiado!');
@@ -852,21 +985,21 @@ class WalletManager {
   // Abre explorer
   viewOnExplorer() {
     if (!this.address) return;
-    
+
     // Valida endereço antes de abrir explorer
     if (!window.SecurityUtils?.isValidEthereumAddress(this.address)) {
       window.Logger?.error('Tentativa de abrir explorer com endereço inválido');
       this.showToast('❌ Endereço inválido');
       return;
     }
-    
+
     // Sanitiza URL antes de abrir
     const sanitizedAddress = window.SecurityUtils?.sanitizeInput(this.address, 'address');
     if (!sanitizedAddress) {
       this.showToast('❌ Erro ao abrir explorer');
       return;
     }
-    
+
     try {
       window.open(`https://polygonscan.com/address/${sanitizedAddress}`, '_blank', 'noopener,noreferrer');
     } catch (error) {
@@ -880,13 +1013,13 @@ class WalletManager {
     this.connected = false;
     this.address = null;
     this.balance = null;
-    
+
     try {
       localStorage.removeItem('wallet_state');
     } catch (e) {
       window.Logger?.warn('Erro ao remover wallet_state:', e);
     }
-    
+
     this.updateButton();
     this.updateModalState();
     this.showToast('👋 Wallet desconectada');
@@ -899,18 +1032,18 @@ class WalletManager {
       clearTimeout(this._toastTimeout);
       this._toastTimeout = null;
     }
-    
+
     if (this._toastRemoveTimeout) {
       clearTimeout(this._toastRemoveTimeout);
       this._toastRemoveTimeout = null;
     }
-    
+
     // Remove toast anterior se existir
     const existingToast = document.querySelector('.wallet-toast');
     if (existingToast) {
       existingToast.remove();
     }
-    
+
     const toast = document.createElement('div');
     toast.className = 'wallet-toast';
     toast.style.cssText = `
@@ -931,7 +1064,7 @@ class WalletManager {
     // Sanitiza mensagem antes de exibir
     toast.textContent = window.SecurityUtils?.sanitizeHTML(message) || message;
     document.body.appendChild(toast);
-    
+
     this._toastTimeout = setTimeout(() => {
       toast.style.animation = 'toast-out 0.3s ease forwards';
       this._toastRemoveTimeout = setTimeout(() => {

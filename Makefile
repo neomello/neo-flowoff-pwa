@@ -43,7 +43,6 @@ build: ## Build da PWA (otimiza assets)
 	@# Copia arquivos CSS adicionais
 	@cp glass-morphism-bottom-bar.css dist/ 2>/dev/null || true
 	@cp bento-grid.css dist/ 2>/dev/null || true
-	@cp desktop.html dist/ 2>/dev/null || true
 	@# Copia diretório public (se existir)
 	@if [ -d "public" ]; then \
 		cp -r public dist/; \

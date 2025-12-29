@@ -1,72 +1,124 @@
-# NEOFLW
+# NEØ FlowOFF PWA
 
-Token de infraestrutura da NEØ·FlowOFF, operando na Polygon Network.
+PWA da NEØ·FlowOFF - Progressive Web Application para acesso ao ecossistema FlowOFF.
 
-NEOFLW não é um token promocional.
-É um instrumento operacional para coordenar pagamentos, incentivos, governança e automações on-chain.
+## Descrição
 
-Estado atual: ativo, líquido e indexado.
+Aplicação web progressiva (PWA) desenvolvida para fornecer acesso completo ao ecossistema NEØ FlowOFF, incluindo:
+
+-  Chat com IA (NEO)
+-  Integração com wallet Web3 ($NEOFLW)
+-  Formulários de contato com sincronização offline
+-  Interface moderna com Glass Morphism
+-  Suporte completo offline via Service Worker
+
+## Instalação
+
+```bash
+# Clone o repositório
+git clone git@github.com:neomello/neo-flowoff-pwa.git
+cd neo-flowoff-pwa
+
+# Instale as dependências
+npm install
+
+# Configure variáveis de ambiente
+cp env-example.txt .env
+# Edite .env com suas configurações
+
+# Inicie o servidor de desenvolvimento
+npm run dev
+```
+
+## Uso
+
+### Desenvolvimento
+
+```bash
+npm run dev
+```
+
+Acesse `http://localhost:3000`
+
+### Produção
+
+```bash
+npm run build
+npm start
+```
+
+### Deploy IPFS
+
+```bash
+npm run deploy:ipfs
+```
+
+## Estrutura
+
+```text
+neo-flowoff-pwa/
+├── js/
+│   ├── app.js              # App principal
+│   ├── chat-ai.js          # Chat com IA
+│   ├── wallet.js           # Gerenciamento de wallet
+│   ├── form-validator.js   # Validação de formulários
+│   └── ...
+├── css/                    # Estilos modulares
+├── public/                 # Assets públicos
+├── docs/                   # Documentação
+├── scripts/                # Scripts de build e deploy
+├── sw.js                   # Service Worker
+└── server.js               # Servidor Node.js
+```
+
+## Tecnologias
+
+-  Vanilla JavaScript (ES6+)
+-  Service Worker (PWA)
+-  IndexedDB (Fila offline)
+-  Node.js (Servidor)
+-  IPFS/Storacha (Deploy descentralizado)
+
+## Segurança
+
+Este projeto implementa:
+
+-  Sanitização de todas as entradas de usuário
+-  Rate limiting em operações críticas
+-  CORS restrito em produção
+-  Validação robusta de dados
+-  Prevenção de XSS e CSRF
+
+Consulte `SECURITY.md` para mais informações.
+
+## Contribuindo
+
+Este projeto segue os padrões NEØ. Consulte `CONTRIBUTING.md` para mais informações.
+
+## Licença
+
+MIT
 
 ---
 
-## Estado On-Chain
+## Contact
 
-- Rede: Polygon (137)
-- Padrão: ERC-20
-- Liquidez ativa: Uniswap V3 (NEOFLW/WETH)
-- Indexação: Dexscreener
-- Governança: Votes + Delegation
-- UX: Permit + Gasless-ready
+[neo@neoprotocol.space](mailto:neo@neoprotocol.space)
 
----
+</div>
 
-## Endereços Principais
+<div align="center">
+  <a href="https://x.com/node_mello">
+    <img src="https://img.shields.io/badge/-@node_mello-ff008e?style=flat-square&logo=twitter&logoColor=white" alt="Twitter @node_mello" />
+  </a>
+  <a href="https://www.instagram.com/neoprotocol.eth/">
+    <img src="https://img.shields.io/badge/-@neoprotocol.eth-ff008e?style=flat-square&logo=instagram&logoColor=white" alt="Instagram @neoprotocol.eth" />
+  </a>
+  <a href="https://etherscan.io/">
+    <img src="https://img.shields.io/badge/-neomello.eth-ff008e?style=flat-square&logo=ethereum&logoColor=white" alt="Ethereum neomello.eth" />
+  </a>
+</div>
 
-- Token: `0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2`
-
-Links:
-- PolygonScan: https://polygonscan.com/token/0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2
-- Dexscreener: https://dexscreener.com/polygon/0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2
-
----
-
-## Função do Token
-
-NEOFLW coordena:
-
-- Pagamentos por serviços
-- Incentivos e recompensas
-- Programas de fidelidade
-- Governança de decisões
-- Automação de fluxos financeiros
-
-Sem token, o sistema não escala.
-Sem liquidez, o token não existe.
-
----
-
-## Princípios
-
-- Liquidez antes de narrativa
-- On-chain como fonte da verdade
-- UX sem fricção
-- Governança progressiva
-- Documentação como infraestrutura
-
----
-
-## Documentação Técnica
-
-- Especificação do token: `/docs/token-spec.md`
-- Capacidades do contrato: `/docs/token-capabilities.md`
-- Jornada do usuário: `/docs/user-journey.md`
-- Links on-chain: `/docs/onchain-links.md`
-
-## Para entender antes de conectar qualquer wallet
-
-- Como o sistema funciona: HOW_IT_WORKS.md
-- Perguntas frequentes: FAQ.md
-
----
-
-MELLØ NODE DEV
+<div align="center">
+  <i>"Expand until silence becomes structure."</i>
+</div>

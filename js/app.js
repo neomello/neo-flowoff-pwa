@@ -6,25 +6,39 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
       const registration = await navigator.serviceWorker.register('./sw.js');
-      
+
       // Verificar atualizações a cada 60 minutos
       // Armazena interval ID para limpeza
       let swUpdateInterval = setInterval(() => {
         try {
-          registration.update();
+          registration.update().catch(err => {
+            window.Logger?.warn('Erro ao atualizar Service Worker:', err);
+          });
         } catch (error) {
           window.Logger?.warn('Erro ao atualizar Service Worker:', error);
         }
       }, 60 * 60 * 1000);
-      
-      // Limpa interval quando página é descarregada
-      window.addEventListener('beforeunload', () => {
+
+      // Limpa interval quando página é descarregada ou escondida
+      const cleanup = () => {
         if (swUpdateInterval) {
           clearInterval(swUpdateInterval);
           swUpdateInterval = null;
         }
+      };
+
+      window.addEventListener('beforeunload', cleanup);
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          // Não limpar aqui, apenas quando realmente descarregar
+        }
       });
-      
+
+      // Cleanup adicional em caso de erro não tratado
+      window.addEventListener('error', () => {
+        // Não limpar automaticamente em erro, apenas logar
+      });
+
       // Verificar se há atualizações
       registration.addEventListener('updatefound', () => {
         const newWorker = registration.installing;
@@ -39,7 +53,7 @@ if ('serviceWorker' in navigator) {
       window.Logger?.error('Erro ao registrar Service Worker:', error);
     }
   });
-  
+
   // Listener para controllerchange (quando SW assume controle)
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     // Recarregar após atualização do SW
@@ -64,7 +78,7 @@ function showUpdateNotification() {
     }
     return;
   }
-  
+
   const toast = document.createElement('div');
   toast.id = 'update-toast';
   toast.style.cssText = `
@@ -86,11 +100,11 @@ function showUpdateNotification() {
     max-width: 90vw;
     cursor: pointer;
   `;
-  
+
   const icon = document.createElement('span');
   icon.textContent = '🚀';
   icon.style.fontSize = '24px';
-  
+
   const textDiv = document.createElement('div');
   const title = document.createElement('div');
   title.textContent = 'Nova versão disponível!';
@@ -100,7 +114,7 @@ function showUpdateNotification() {
   subtitle.style.cssText = 'font-size: 0.85em; opacity: 0.9;';
   textDiv.appendChild(title);
   textDiv.appendChild(subtitle);
-  
+
   const updateBtn = document.createElement('button');
   updateBtn.textContent = 'Atualizar';
   updateBtn.style.cssText = `
@@ -123,15 +137,15 @@ function showUpdateNotification() {
   updateBtn.addEventListener('mouseleave', () => {
     updateBtn.style.background = 'rgba(255,255,255,0.2)';
   });
-  
+
   toast.appendChild(icon);
   toast.appendChild(textDiv);
   toast.appendChild(updateBtn);
-  
+
   toast.addEventListener('click', () => {
     window.applyUpdate();
   });
-  
+
   document.body.appendChild(toast);
 }
 
@@ -190,7 +204,7 @@ function setOffline(flag){
       }, 300);
     }
   }
-  
+
   // Notificar validador de formulário sobre mudança de status
   if (window.FormValidator) {
     window.FormValidator.isOnline = !flag;

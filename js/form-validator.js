@@ -4,6 +4,11 @@ class FormValidator {
     this.validator = null;
     this.errors = {};
     this.isValidating = false;
+    this.lastSubmissionTime = 0;
+    this.submissionCount = 0;
+    this.submissionResetTime = 60000; // 1 minuto
+    this.maxSubmissionsPerMinute = 3;
+    this.maxDataSize = 10000; // 10KB máximo por submissão
   }
 
   async init() {
@@ -43,19 +48,40 @@ class FormValidator {
 
     // Verificar se campo CEP já existe (evitar duplicação)
     let cepInput = form.querySelector('input[name="cep"]');
-    
+
     // Adicionar campo CEP apenas se não existir
     if (!cepInput) {
       const whatsappField = form.querySelector('input[name="whats"]');
       if (!whatsappField) return;
-      
+
       const whatsappLabel = whatsappField.parentElement;
       const cepLabel = document.createElement('label');
-      cepLabel.innerHTML = `
-        CEP (opcional)<input name="cep" type="text" color="gray" placeholder="Digite apenas números (ex: 74230130)" autocomplete="postal-code" maxlength="8" inputmode="numeric" pattern="[0-9]{8}">
-        <small class="validation-message" id="cep-validation"></small>
-        <small style="display: block; margin-top: 4px; font-size: 0.75rem; color: rgba(255,255,255,0.5);">Digite apenas os 8 dígitos do CEP (sem hífen ou ponto)</small>
-      `;
+
+      // Criar elementos de forma segura (sem innerHTML)
+      const cepText = document.createTextNode('CEP (opcional)');
+      cepLabel.appendChild(cepText);
+
+      const cepInput = document.createElement('input');
+      cepInput.name = 'cep';
+      cepInput.type = 'text';
+      cepInput.setAttribute('color', 'gray');
+      cepInput.placeholder = 'Digite apenas números (ex: 74230130)';
+      cepInput.autocomplete = 'postal-code';
+      cepInput.maxLength = 8;
+      cepInput.inputMode = 'numeric';
+      cepInput.pattern = '[0-9]{8}';
+      cepLabel.appendChild(cepInput);
+
+      const validationMsg = document.createElement('small');
+      validationMsg.className = 'validation-message';
+      validationMsg.id = 'cep-validation';
+      cepLabel.appendChild(validationMsg);
+
+      const helpText = document.createElement('small');
+      helpText.style.cssText = 'display: block; margin-top: 4px; font-size: 0.75rem; color: rgba(255,255,255,0.5);';
+      helpText.textContent = 'Digite apenas os 8 dígitos do CEP (sem hífen ou ponto)';
+      cepLabel.appendChild(helpText);
+
       whatsappLabel.insertAdjacentElement('afterend', cepLabel);
       cepInput = form.querySelector('input[name="cep"]');
     }
@@ -65,16 +91,16 @@ class FormValidator {
       cepInput.addEventListener('input', (e) => {
         // Remove tudo que não é número
         let value = e.target.value.replace(/\D/g, '');
-        
+
         // Limita a 8 dígitos
         if (value.length > 8) {
           value = value.slice(0, 8);
         }
-        
+
         // Atualiza o valor (sem formatação visual, apenas números)
         e.target.value = value;
         this.clearError('cep');
-        
+
         // Atualiza placeholder dinamicamente
         if (value.length === 0) {
           e.target.placeholder = 'Digite apenas números (ex: 74230130)';
@@ -119,7 +145,7 @@ class FormValidator {
     // Garantir que recebemos apenas números
     const cepLimpo = String(cep).replace(/\D/g, '');
     const statusEl = document.getElementById('cep-validation');
-    
+
     if (cepLimpo.length !== 8) {
       if (statusEl) {
         statusEl.textContent = '⚠ CEP deve ter exatamente 8 dígitos';
@@ -185,7 +211,7 @@ class FormValidator {
 
   formatPhone(input) {
     let value = input.value.replace(/\D/g, '');
-    
+
     if (value.length > 0) {
       if (value.length <= 2) {
         value = `+${value}`;
@@ -197,7 +223,7 @@ class FormValidator {
         value = `+${value.slice(0, 2)} (${value.slice(2, 4)}) ${value.slice(4, 9)}-${value.slice(9, 13)}`;
       }
     }
-    
+
     input.value = value;
   }
 
@@ -224,7 +250,7 @@ class FormValidator {
       this.setError('email', 'Email é obrigatório');
       return false;
     }
-    
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       this.setError('email', 'Email inválido');
@@ -249,7 +275,7 @@ class FormValidator {
     }
 
     const cleaned = phone.replace(/\D/g, '');
-    
+
     // Deve ter pelo menos 10 dígitos (código do país + número)
     if (cleaned.length < 10) {
       this.setError('whats', 'Número de WhatsApp inválido');
@@ -298,23 +324,55 @@ class FormValidator {
 
   async handleSubmit(e) {
     if (this.isValidating) return;
-    
+
+    // Rate limiting: prevenir spam
+    const now = Date.now();
+    if (now - this.lastSubmissionTime < this.submissionResetTime) {
+      this.submissionCount++;
+      if (this.submissionCount > this.maxSubmissionsPerMinute) {
+        const statusEl = document.getElementById('lead-status');
+        statusEl.textContent = '✗ Muitas tentativas. Aguarde um momento.';
+        statusEl.style.color = '#ef4444';
+        return;
+      }
+    } else {
+      this.submissionCount = 1;
+      this.lastSubmissionTime = now;
+    }
+
     this.isValidating = true;
     const form = e.target;
     const formData = new FormData(form);
     const statusEl = document.getElementById('lead-status');
-    
+
+    // Validar tamanho dos dados antes de processar
+    const formDataSize = JSON.stringify(Object.fromEntries(formData)).length;
+    if (formDataSize > this.maxDataSize) {
+      statusEl.textContent = '✗ Dados muito grandes. Verifique os campos.';
+      statusEl.style.color = '#ef4444';
+      this.isValidating = false;
+      return;
+    }
+
     // Limpar erros anteriores
     this.errors = {};
     statusEl.textContent = '⏳ Validando dados...';
     statusEl.style.color = '#3b82f6';
 
     try {
-      // Validações básicas
-      const name = formData.get('name');
-      const email = formData.get('email');
-      const whats = formData.get('whats');
-      const type = formData.get('type');
+      // Validações básicas com sanitização
+      const name = window.SecurityUtils?.sanitizeInput(formData.get('name') || '', 'text') || '';
+      const email = window.SecurityUtils?.sanitizeInput(formData.get('email') || '', 'email') || '';
+      const whats = window.SecurityUtils?.sanitizeInput(formData.get('whats') || '', 'text') || '';
+      const type = window.SecurityUtils?.sanitizeInput(formData.get('type') || '', 'text') || '';
+
+      // Validação de tamanho máximo
+      if (name.length > 100 || email.length > 255 || whats.length > 20 || type.length > 50) {
+        statusEl.textContent = '✗ Campos muito longos. Verifique os dados.';
+        statusEl.style.color = '#ef4444';
+        this.isValidating = false;
+        return;
+      }
 
       let isValid = true;
 
@@ -334,7 +392,7 @@ class FormValidator {
       // Validações adicionais se validador disponível
       if (this.validator && this.validator.isAvailable) {
         statusEl.textContent = '• Validando com API...';
-        
+
         // Validar email com API se disponível
         const emailValid = this.validator.validarEmail(email);
         if (!emailValid) {
@@ -353,7 +411,7 @@ class FormValidator {
 
       // Se chegou aqui, tudo válido
       await this.sendToWhatsApp(formData);
-      
+
     } catch (error) {
       window.Logger?.error('Erro ao processar formulário:', error);
       statusEl.textContent = '✗ Erro ao processar. Tente novamente ou entre em contato diretamente.';
@@ -375,13 +433,22 @@ class FormValidator {
       'proia': 'PRO.IA'
     };
 
-    const name = formData.get('name');
-    const email = formData.get('email');
-    const whats = formData.get('whats');
-    const type = formData.get('type');
-    const cep = formData.get('cep');
+    // Sanitizar todos os dados antes de usar
+    const name = window.SecurityUtils?.sanitizeInput(formData.get('name') || '', 'text') || '';
+    const email = window.SecurityUtils?.sanitizeInput(formData.get('email') || '', 'email') || '';
+    const whats = window.SecurityUtils?.sanitizeInput(formData.get('whats') || '', 'text') || '';
+    const type = window.SecurityUtils?.sanitizeInput(formData.get('type') || '', 'text') || '';
+    const cep = window.SecurityUtils?.sanitizeInput(formData.get('cep') || '', 'text') || '';
     const projectType = projectTypes[type] || type;
 
+    // Validar dados sanitizados
+    if (!name || !email || !whats || !type) {
+      statusEl.textContent = '✗ Dados inválidos. Verifique os campos.';
+      statusEl.style.color = '#ef4444';
+      return;
+    }
+
+    // Construir mensagem de forma segura
     const message = `→ *NOVO LEAD - FlowOFF*
 
 👤 *Nome:* ${name}
@@ -411,13 +478,13 @@ class FormValidator {
       await this.queueForOfflineSync(leadData);
       statusEl.textContent = '📦 Formulário salvo! Será enviado quando a conexão for restaurada.';
       statusEl.style.color = '#f59e0b';
-      
+
       // Ainda abrir WhatsApp (pode funcionar se o app estiver instalado)
       setTimeout(() => {
         window.open(whatsappUrl, '_blank');
         document.getElementById('lead-form').reset();
       }, 500);
-      
+
       return;
     }
 
@@ -462,7 +529,7 @@ class FormValidator {
     // Sempre abrir WhatsApp
     statusEl.textContent = '✓ Dados válidos! Redirecionando...';
     statusEl.style.color = '#4ade80';
-    
+
     setTimeout(() => {
       window.open(whatsappUrl, '_blank');
       document.getElementById('lead-form').reset();

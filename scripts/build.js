@@ -69,7 +69,6 @@ const filesToCopy = [
   'manifest.webmanifest',
   'sw.js',
   'favicon.ico',
-  'desktop.html',
   'glass-morphism-bottom-bar.css',
   'bento-grid.css',
   // SEO e PWA

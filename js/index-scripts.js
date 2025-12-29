@@ -88,43 +88,6 @@ window.addEventListener('resize', () => {
 window.closeMobileMenu = closeMobileMenu;
 window.syncMobileWalletButton = syncMobileWalletButton;
 
-// === DETECÇÃO DE DESKTOP COM PREVENÇÃO DE LOOPS ===
-function detectDesktop() {
-  // Verificar se usuário forçou modo desktop
-  const forceDesktop = localStorage.getItem('force-desktop');
-  if (forceDesktop === 'true') {
-    return false; // Não redirecionar
-  }
-
-  // Verificar se é desktop baseado em várias características
-  const isDesktop = window.innerWidth >= 1024 && 
-                   window.innerHeight >= 768 && 
-                   !navigator.userAgent.match(/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i) &&
-                   !('ontouchstart' in window) &&
-                   window.matchMedia('(pointer: fine)').matches;
-  
-  if (isDesktop) {
-    // Verificar se já está na página desktop
-    if (!window.location.pathname.includes('desktop.html')) {
-      // Prevenir loop: verificar se não veio do desktop.html recentemente
-      const lastDesktopVisit = localStorage.getItem('last-desktop-visit');
-      const now = Date.now();
-      
-      if (!lastDesktopVisit || (now - parseInt(lastDesktopVisit)) > 10000) { // 10 segundos
-        localStorage.setItem('last-desktop-visit', now.toString());
-        window.location.href = 'desktop.html';
-        return true;
-      } else {
-        return false;
-      }
-    }
-  }
-  return false;
-}
-
-// Executar detecção quando a página carregar
-detectDesktop();
-
 // Force CSS reload
 const link = document.querySelector('link[href*="styles.css"]');
 if (link) {

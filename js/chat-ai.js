@@ -3,6 +3,10 @@ class ChatAI {
   constructor() {
     this.messages = [];
     this.isTyping = false;
+    this.requestCount = 0;
+    this.requestResetTime = 60000; // 1 minuto
+    this.lastRequestTime = 0;
+    this.maxRequestsPerMinute = 10;
     this.init();
   }
 
@@ -31,9 +35,28 @@ class ChatAI {
 
   sendMessage() {
     const input = document.getElementById('chat-input');
-    const message = input.value.trim();
+    let message = input.value.trim();
 
     if (!message || this.isTyping) return;
+
+    // Sanitizar e validar entrada do usuário
+    message = window.SecurityUtils?.sanitizeInput(message, 'text') || '';
+
+    // Validar tamanho máximo (5000 caracteres)
+    if (message.length > 5000) {
+      window.Logger?.warn('Mensagem muito longa');
+      const statusEl = document.getElementById('chat-status');
+      if (statusEl) {
+        statusEl.textContent = 'Mensagem muito longa. Máximo 5000 caracteres.';
+        statusEl.style.color = '#ef4444';
+      }
+      return;
+    }
+
+    if (!message) {
+      window.Logger?.warn('Mensagem inválida após sanitização');
+      return;
+    }
 
     // Adiciona mensagem do usuário
     this.addMessage(message, 'user');
@@ -83,18 +106,18 @@ class ChatAI {
     try {
       // Tentar API de IA primeiro
       const aiResponse = await this.fetchAIResponse(userMessage);
-      
+
       if (aiResponse && aiResponse.trim()) {
         this.hideTypingIndicator();
         this.addMessage(aiResponse, 'agent');
         this.isTyping = false;
         return;
       }
-      
+
       // Se API retornou vazio/null, verificar se é problema de configuração
       const config = window.APP_CONFIG || {};
       const hasKeys = !!(config.OPENAI_API_KEY || config.GOOGLE_API_KEY);
-      
+
       // Não logar warning se keys não estiverem configuradas (comportamento esperado)
       // O fallback local será usado automaticamente
       if (hasKeys) {
@@ -141,7 +164,7 @@ class ChatAI {
 
       // Ⅰ. CLASSIFICAÇÃO AUTOMÁTICA DE INTENÇÃO
       const intent = this.classifyIntent(message, history);
-      
+
       // Ⅱ. OBTER SUB-PROMPT ESPECIALIZADO BASEADO NA INTENÇÃO
       const systemPrompt = this.buildSystemPrompt(intent);
 
@@ -166,14 +189,14 @@ class ChatAI {
   classifyIntent(message, history) {
     const messageLower = message.toLowerCase();
     const fullContext = history.map(m => m.content || m.text || '').join(' ').toLowerCase() + ' ' + messageLower;
-    
+
     // Análise heurística rápida (pode ser melhorada com LLM)
     const salesKeywords = ['preço', 'quanto', 'custo', 'orçamento', 'contratar', 'proposta', 'plano', 'pacote', 'valor', 'investimento', 'pagamento', 'fazer', 'criar', 'desenvolver', 'queria', 'preciso', 'gostaria', 'site', 'webapp', 'app', 'sistema', 'plataforma', 'loja', 'ecommerce'];
     const technicalKeywords = ['código', 'stack', 'bug', 'erro', 'implementar', 'arquitetura', 'api', 'deploy', 'tecnologia', 'desenvolvimento', 'programação', 'tech', 'sistema'];
     const strategyKeywords = ['estratégia', 'crescimento', 'modelo', 'negócio', 'visão', 'posicionamento', 'sistema', 'ecossistema', 'automação', 'processo', 'metodologia'];
     const onboardingKeywords = ['o que', 'como funciona', 'quem são', 'sobre', 'entender', 'conhecer', 'flowoff', 'agência', 'empresa', 'serviços'];
     const personalKeywords = ['mello', 'mellø', 'você', 'sua', 'pessoal', 'filosofia', 'visão pessoal', 'trajetória', 'história', 'background'];
-    
+
     // Contagem de matches por categoria
     const scores = {
       SALES: salesKeywords.filter(k => fullContext.includes(k)).length,
@@ -182,17 +205,17 @@ class ChatAI {
       ONBOARDING: onboardingKeywords.filter(k => fullContext.includes(k)).length,
       PERSONAL_MELLO: personalKeywords.filter(k => fullContext.includes(k)).length
     };
-    
+
     // Encontrar categoria com maior score
     const maxScore = Math.max(...Object.values(scores));
     if (maxScore === 0) {
       // Se nenhuma categoria teve match, usar ONBOARDING como padrão
       return { category: 'ONBOARDING', confidence: 50 };
     }
-    
+
     const category = Object.keys(scores).find(key => scores[key] === maxScore);
     const confidence = Math.min(100, Math.round((maxScore / Math.max(1, fullContext.split(' ').length / 10)) * 100));
-    
+
     return { category, confidence };
   }
 
@@ -259,7 +282,7 @@ Cada resposta deve fazer o usuário pensar: "ok, isso resolve ou me coloca no ca
 
   getIntentPrompt(intentCategory) {
     const base = this.getBasePrompt();
-    
+
     switch (intentCategory) {
       case 'SALES':
         return `${base}
@@ -431,16 +454,41 @@ Tom:
   }
 
   async fetchDirectAI(message, history, systemPrompt, intent = null) {
+    // Rate limiting
+    const now = Date.now();
+    if (now - this.lastRequestTime < this.requestResetTime) {
+      this.requestCount++;
+      if (this.requestCount > this.maxRequestsPerMinute) {
+        window.Logger?.warn('Rate limit excedido para API de IA');
+        return null;
+      }
+    } else {
+      this.requestCount = 1;
+      this.lastRequestTime = now;
+    }
+
+    // Validar tamanho da mensagem e histórico
+    const totalSize = JSON.stringify({ message, history, systemPrompt }).length;
+    if (totalSize > 50000) { // 50KB máximo
+      window.Logger?.warn('Payload muito grande para API');
+      return null;
+    }
+
     // Obter API keys do window.config ou variáveis de ambiente do build
     // As keys podem ser injetadas no build via script ou configuradas no index.html
     let config = window.APP_CONFIG || {};
-    
+
     // Se não houver keys e estiver em desenvolvimento local, buscar do servidor
-    if ((!config.OPENAI_API_KEY && !config.GOOGLE_API_KEY) && 
+    if ((!config.OPENAI_API_KEY && !config.GOOGLE_API_KEY) &&
         (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
       try {
         window.Logger?.info('🔄 Buscando API keys do servidor (modo desenvolvimento)...');
-        const response = await fetch('/api/config');
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+        const response = await fetch('/api/config', { signal: controller.signal });
+        clearTimeout(timeoutId);
+
         if (response.ok) {
           const serverConfig = await response.json();
           config = { ...config, ...serverConfig };
@@ -448,10 +496,12 @@ Tom:
           window.Logger?.info('✅ API keys carregadas do servidor');
         }
       } catch (error) {
-        window.Logger?.warn('⚠️ Não foi possível carregar API keys do servidor:', error.message);
+        if (error.name !== 'AbortError') {
+          window.Logger?.warn('⚠️ Não foi possível carregar API keys do servidor:', error.message);
+        }
       }
     }
-    
+
     const OPENAI_API_KEY = config.OPENAI_API_KEY || '';
     const GOOGLE_API_KEY = config.GOOGLE_API_KEY || '';
     const OPENAI_MODEL = config.OPENAI_MODEL || config.LLM_MODEL || 'gpt-4o';
@@ -481,6 +531,10 @@ Tom:
           { role: 'user', content: message }
         ];
 
+        // Timeout de 30 segundos
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
+
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
           method: 'POST',
           headers: {
@@ -492,8 +546,11 @@ Tom:
             messages: messages,
             temperature: 0.7,
             max_tokens: 800 // Aumentado para respostas mais completas
-          })
+          }),
+          signal: controller.signal
         });
+
+        clearTimeout(timeoutId);
 
         if (response.ok) {
           const data = await response.json();
@@ -518,8 +575,11 @@ Tom:
           window.Logger?.warn('   Detalhes:', errorData);
         }
       } catch (error) {
-        window.Logger?.warn('❌ Erro ao chamar OpenAI:', error.message);
-        window.Logger?.warn('   Stack:', error.stack);
+        if (error.name === 'AbortError') {
+          window.Logger?.warn('❌ Timeout ao chamar OpenAI');
+        } else {
+          window.Logger?.warn('❌ Erro ao chamar OpenAI:', error.message);
+        }
       }
     }
 
@@ -527,6 +587,10 @@ Tom:
     if (GOOGLE_API_KEY) {
       try {
         const promptText = `${systemPrompt}\n\nHistórico:\n${history.map(m => `${m.role}: ${m.content}`).join('\n')}\n\nUsuário: ${message}\n\nNEO:`;
+
+        // Timeout de 30 segundos
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
 
         const response = await fetch(
           `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GOOGLE_API_KEY}`,
@@ -545,9 +609,12 @@ Tom:
                 temperature: 0.7,
                 maxOutputTokens: 800 // Aumentado para respostas mais completas
               }
-            })
+            }),
+            signal: controller.signal
           }
         );
+
+        clearTimeout(timeoutId);
 
         if (response.ok) {
           const data = await response.json();
@@ -564,7 +631,11 @@ Tom:
           window.Logger?.warn(`⚠️ Gemini retornou erro HTTP ${response.status}`);
         }
       } catch (error) {
-        window.Logger?.warn('❌ Erro ao chamar Gemini:', error.message);
+        if (error.name === 'AbortError') {
+          window.Logger?.warn('❌ Timeout ao chamar Gemini');
+        } else {
+          window.Logger?.warn('❌ Erro ao chamar Gemini:', error.message);
+        }
       }
     }
 
@@ -597,7 +668,7 @@ Tom:
   generateHonestResponse(message) {
     // Respostas honestas quando IA não está disponível
     // Não fingir ser IA quando não é
-    
+
     if (message.includes('serviço') || message.includes('o que fazem') || message.includes('servicos')) {
       return 'A FlowOFF oferece desenvolvimento de Sites/WebApps, SAAS/BAAS, Tokenização de Ativos, POSTØN e PRO.IA (Agentes de IA personalizados). Para informações detalhadas, entre em contato: +55 62 98323-1110';
     }

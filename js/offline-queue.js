@@ -31,9 +31,32 @@ class OfflineQueue {
   async addRequest(data) {
     if (!this.db) await this.init();
 
+    // Validar dados antes de adicionar
+    if (!data || typeof data !== 'object') {
+      throw new Error('Dados inválidos');
+    }
+
+    // Validar tamanho dos dados (50KB máximo)
+    const dataSize = JSON.stringify(data).length;
+    if (dataSize > 50000) {
+      throw new Error('Dados muito grandes (máximo 50KB)');
+    }
+
+    // Validar URL
+    if (!data.url || typeof data.url !== 'string' || data.url.length > 2000) {
+      throw new Error('URL inválida');
+    }
+
+    // Validar método HTTP
+    const validMethods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'];
+    const method = (data.method || 'GET').toUpperCase();
+    if (!validMethods.includes(method)) {
+      throw new Error('Método HTTP inválido');
+    }
+
     const request = {
       url: data.url,
-      method: data.method || 'GET',
+      method: method,
       headers: data.headers || {},
       body: data.body,
       timestamp: Date.now(),
@@ -45,10 +68,20 @@ class OfflineQueue {
     return new Promise((resolve, reject) => {
       const transaction = this.db.transaction([this.storeName], 'readwrite');
       const store = transaction.objectStore(this.storeName);
-      const request = store.add(request);
 
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
+      // Verificar tamanho da fila antes de adicionar
+      const countRequest = store.count();
+      countRequest.onsuccess = () => {
+        if (countRequest.result >= 100) {
+          reject(new Error('Fila cheia (máximo 100 itens)'));
+          return;
+        }
+
+        const addRequest = store.add(request);
+        addRequest.onsuccess = () => resolve(addRequest.result);
+        addRequest.onerror = () => reject(addRequest.error);
+      };
+      countRequest.onerror = () => reject(countRequest.error);
     });
   }
 
