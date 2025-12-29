@@ -24,10 +24,8 @@ const log = (...args) => {
   }
 };
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY || '';
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
-// Modelos via variáveis de ambiente (valores padrão seguros)
-const OPENAI_MODEL = process.env.OPENAI_MODEL || process.env.LLM_MODEL || 'gpt-4o';
-const GEMINI_MODEL = process.env.GEMINI_MODEL || process.env.LLM_MODEL_FALLBACK || 'gemini-2.0-flash-exp';
+// Modelo via variáveis de ambiente (valor padrão seguro)
+const GEMINI_MODEL = process.env.GEMINI_MODEL || process.env.LLM_MODEL || 'gemini-2.0-flash-exp';
 
 // MIME types
 const mimeTypes = {
@@ -181,12 +179,9 @@ const server = http.createServer((req, res) => {
     setCORSHeaders(req, res);
     res.writeHead(200);
     res.end(JSON.stringify({
-      OPENAI_API_KEY: OPENAI_API_KEY || '',
       GOOGLE_API_KEY: GOOGLE_API_KEY || '',
-      OPENAI_MODEL: OPENAI_MODEL,
       GEMINI_MODEL: GEMINI_MODEL,
-      LLM_MODEL: OPENAI_MODEL,
-      LLM_MODEL_FALLBACK: GEMINI_MODEL
+      LLM_MODEL: GEMINI_MODEL
     }));
     return;
   }
@@ -319,7 +314,7 @@ const server = http.createServer((req, res) => {
   // Descentralizado: não dependemos de APIs externas centralizadas
   // Validação local via SimpleValidator no frontend
 
-  // API Chat com IA (OpenAI/Gemini)
+  // API Chat com IA (Gemini)
   if (cleanPath === '/api/chat' && req.method === 'POST') {
     let body = '';
     let bodySize = 0;
@@ -600,63 +595,24 @@ Tom:
         let modelUsed = null;
         let errorDetails = null;
 
-        // Verificar se há chaves de API configuradas
-        if (!OPENAI_API_KEY && !GOOGLE_API_KEY) {
-          log('⚠️ Nenhuma API key configurada (OPENAI_API_KEY ou GOOGLE_API_KEY)');
+        // Verificar se há chave de API configurada
+        if (!GOOGLE_API_KEY) {
+          log('⚠️ Nenhuma API key configurada (GOOGLE_API_KEY)');
           res.setHeader('Content-Type', 'application/json');
           res.setHeader('Access-Control-Allow-Origin', origin || '*');
           res.writeHead(200);
           res.end(JSON.stringify({
             success: false,
-            error: 'API keys não configuradas',
-            message: 'Configure OPENAI_API_KEY ou GOOGLE_API_KEY no .env'
+            error: 'API key não configurada',
+            message: 'Configure GOOGLE_API_KEY no .env'
           }));
           return;
         }
 
-        // Tentar OpenAI primeiro
-        if (OPENAI_API_KEY) {
+        // Usar Gemini
+        if (GOOGLE_API_KEY) {
           try {
-            log('🔄 Tentando OpenAI...');
-            const messages = [
-              { role: 'system', content: systemPrompt },
-              ...history.slice(-10), // Últimas 10 mensagens para contexto
-              { role: 'user', content: message }
-            ];
-
-            const openaiResponse = await axios.post(
-              'https://api.openai.com/v1/chat/completions',
-              {
-                model: OPENAI_MODEL,
-                messages: messages,
-                temperature: 0.7,
-                max_tokens: 500
-              },
-              {
-                headers: {
-                  'Authorization': `Bearer ${OPENAI_API_KEY}`,
-                  'Content-Type': 'application/json'
-                },
-                timeout: 15000
-              }
-            );
-
-            aiResponse = openaiResponse.data.choices[0]?.message?.content?.trim();
-            modelUsed = OPENAI_MODEL;
-            log('✅ OpenAI response received:', aiResponse?.substring(0, 50) + '...');
-          } catch (error) {
-            errorDetails = error.response?.data || error.message;
-            log('❌ OpenAI error:', error.message);
-            if (error.response?.status === 401) {
-              log('⚠️ OpenAI API key inválida ou expirada');
-            }
-          }
-        }
-
-        // Fallback para Gemini se OpenAI falhar
-        if (!aiResponse && GOOGLE_API_KEY) {
-          try {
-            log('🔄 Tentando Gemini como fallback...');
+            log('🔄 Chamando Gemini...');
             const geminiResponse = await axios.post(
               `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GOOGLE_API_KEY}`,
               {

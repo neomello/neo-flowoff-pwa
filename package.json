@@ -1,6 +1,6 @@
 {
   "name": "neo-flowoff-pwa",
-  "version": "2.4.11",
+  "version": "2.4.32",
   "description": "PWA da NEØ.FLOWOFF",
   "type": "module",
   "main": "server.js",
@@ -27,8 +27,7 @@
     "axios": "^1.6.0",
     "cbor": "^10.0.11",
     "dotenv": "^17.2.2",
-    "files-from-path": "^1.1.4",
-    "openai": "^6.10.0"
+    "files-from-path": "^1.1.4"
   },
   "devDependencies": {
     "@vitest/ui": "^4.0.16",

@@ -1,5 +1,5 @@
 // Versão da PWA (sincronizada com package.json e sw.js)
-const PWA_VERSION = '2.4.11';
+const PWA_VERSION = '2.4.32';
 
 // Registro do Service Worker com detecção de atualizações
 if ('serviceWorker' in navigator) {

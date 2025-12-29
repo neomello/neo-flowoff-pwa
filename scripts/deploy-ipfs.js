@@ -189,7 +189,8 @@ if (STORACHA_UCAN_ORIGINAL) {
   }
 }
 
-const USE_STORACHA = STORACHA_UCAN && STORACHA_DID;
+// Permite usar Storacha se tiver UCAN ou Space DID configurado
+const USE_STORACHA = (STORACHA_UCAN && STORACHA_DID) || (STORACHA_SPACE_DID && STORACHA_DID);
 
 // Função para mascarar valores sensíveis nos logs
 function maskSensitive(value, showStart = 10, showEnd = 4) {
@@ -292,32 +293,27 @@ async function uploadToStoracha() {
         // Prepara UCAN conforme guia: limpo, convertido para base64 padrão, com padding
         const ucanForParse = STORACHA_UCAN_BASE64 || STORACHA_UCAN;
         
-        // Tenta múltiplos formatos conforme documentação e prática comum
+        // Proof.parse() espera uma STRING base64, não um Buffer
+        // Internamente, ele faz: legacyExtract(base64.baseDecode(str))
+        // Então devemos passar a string base64 diretamente
         let proof;
         const attempts = [];
         
-        // Tentativa 1: String base64 padrão (conforme guia linha 182)
-        // O guia mostra: const proof = await Proof.parse(STORACHA_UCAN);
-        attempts.push({ name: 'base64 string (conforme guia)', value: ucanForParse });
+        // Tentativa 1: String base64 padrão (formato esperado pelo Proof.parse)
+        // O Proof.parse() tenta primeiro parsear como CID, e se falhar,
+        // usa legacyExtract que decodifica base64 e lê como CAR
+        attempts.push({ name: 'base64 string (formato esperado)', value: ucanForParse });
         
-        // Tentativa 2: Bytes decodificados de base64 (CAR files geralmente são bytes)
-        // O proof é um CAR file, que pode precisar ser decodificado
-        try {
-          const decodedBase64 = Buffer.from(ucanForParse, 'base64');
-          attempts.push({ name: 'base64 bytes (CAR file)', value: decodedBase64 });
-        } catch (e) {
-          console.log(`   ⚠️  Não foi possível decodificar base64: ${e.message.substring(0, 50)}`);
-        }
-        
-        // Tentativa 3: Bytes decodificados de base64url (se formato original era base64url)
+        // Tentativa 2: String base64url convertida (se formato original era base64url)
         if (STORACHA_UCAN !== ucanForParse) {
           try {
             let base64urlPadded = STORACHA_UCAN;
             while (base64urlPadded.length % 4 !== 0) {
               base64urlPadded += '=';
             }
-            const decodedBase64Url = Buffer.from(base64urlPadded, 'base64url');
-            attempts.push({ name: 'base64url bytes', value: decodedBase64Url });
+            // Converte base64url para base64 padrão
+            const base64Converted = base64urlPadded.replace(/-/g, '+').replace(/_/g, '/');
+            attempts.push({ name: 'base64url convertido para base64', value: base64Converted });
           } catch (e) {
             // Ignora erro
           }
@@ -328,6 +324,8 @@ async function uploadToStoracha() {
         for (const attempt of attempts) {
           try {
             console.log(`   Tentando formato: ${attempt.name}...`);
+            // Proof.parse() espera string base64, não Buffer
+            // Ele mesmo faz o decode internamente usando base64.baseDecode(str)
             proof = await Proof.parse(attempt.value);
             console.log(`   ✅ Sucesso com formato: ${attempt.name}\n`);
             break;

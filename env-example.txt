@@ -12,10 +12,8 @@ PORT=3000
 # ----------------------------------------------------------------------------
 # APIs DE IA (LLM) - Configure no painel Vercel para produção
 # ----------------------------------------------------------------------------
-# OPENAI_API_KEY=seu_token_aqui
 # GOOGLE_API_KEY=seu_token_aqui
-# LLM_MODEL=gpt-4o-mini
-# LLM_MODEL_FALLBACK=gemini-2.0-flash-exp
+# GEMINI_MODEL=gemini-2.0-flash-exp
 
 # ----------------------------------------------------------------------------
 # IPFS/IPNS (OBRIGATÓRIO para deploy IPFS)
@@ -24,7 +22,8 @@ PORT=3000
 IPNS_KEY_NAME=neo-flowoff-pwa
 
 # ID público IPNS (usado em resoluções e ENS contenthash)
-IPNS_KEY_ID=k51qzi5uqu5dizgl359xn40rxijeoya8skq61lkl4n8hizc6j0zp93l1xoavh5
+# Este é o IPNS key ID específico deste projeto
+IPNS_KEY_ID=k51qzi5uqu5dibn355zoh239agkln7mpvvu8iyk4jv2t1letihnm36s6ym4yts
 
 # Token UCAN para publicação IPNS (usado pelo agente IPNSPublisher)
 # Pode ser o mesmo que STORACHA_UCAN ou um token específico para IPNS
@@ -38,7 +37,9 @@ UCAN_TOKEN=seu_token_ucan_aqui
 
 # DID do seu agente/identidade Storacha
 # Obtenha via: node scripts/get-agent-did.js
-STORACHA_DID=did:key:z4MXj1wBzi9jUstyPWmomSd1pFwszvphKndMbzxrAdxYPNYpEhdHeDWvtULKgrWfbbSXFeQZbpnSPihq2NFL1GaqvFGRPYRRKzap12r57RdqvUEBdvbravLoKd5ZTsU6AwfoE6qfn8cGvCkxeZTwSAH5ob3frxH85px2TGYDJ9hPGFnkFo5Ysoc2gk9fvK9Q1Esod5Mv6CMDbnT3icR2jYZWsaBNzzfB5vhd4YQtkghxuzZABtyJYYz54FbjD6AXuogZksorduWuZT4f8wKoinsZ86UqsKPHxquSDSfLjGiVaT8BTGoRg7kri8fZGKA2tukYug4TiQVDprgGEbL6N85XHDJ2RQ6EVwscrhLG38aSzqms1Mjjv
+# IMPORTANTE: O UCAN deve ser gerado para este Agent DID específico
+# Substitua pelo seu Agent DID real (obtido via: node scripts/get-agent-did.js)
+STORACHA_DID=seu_agent_did_aqui
 
 # UCAN/Proof de delegação do espaço (gerado via Storacha CLI)
 # Para gerar:

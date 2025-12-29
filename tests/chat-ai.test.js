@@ -272,51 +272,14 @@ function loadChatAI() {
 
     async fetchDirectAI(message, history, systemPrompt, intent = null) {
       const config = window.APP_CONFIG || {};
-      const OPENAI_API_KEY = config.OPENAI_API_KEY || '';
       const GOOGLE_API_KEY = config.GOOGLE_API_KEY || '';
-      const OPENAI_MODEL = config.OPENAI_MODEL || config.LLM_MODEL || 'gpt-4o-mini';
-      const GEMINI_MODEL = config.GEMINI_MODEL || config.LLM_MODEL_FALLBACK || 'gemini-2.0-flash-exp';
+      const GEMINI_MODEL = config.GEMINI_MODEL || config.LLM_MODEL || 'gemini-2.0-flash-exp';
 
-      if (!OPENAI_API_KEY && !GOOGLE_API_KEY) {
+      if (!GOOGLE_API_KEY) {
         return null;
       }
 
-      // Tentar OpenAI primeiro
-      if (OPENAI_API_KEY) {
-        try {
-          const messages = [
-            { role: 'system', content: systemPrompt },
-            ...history,
-            { role: 'user', content: message }
-          ];
-
-          const response = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${OPENAI_API_KEY}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              model: OPENAI_MODEL,
-              messages: messages,
-              temperature: 0.7,
-              max_tokens: 800
-            })
-          });
-
-          if (response.ok) {
-            const data = await response.json();
-            const aiResponse = data.choices?.[0]?.message?.content?.trim();
-            if (aiResponse) {
-              return aiResponse;
-            }
-          }
-        } catch (error) {
-          console.warn('❌ Erro ao chamar OpenAI:', error.message);
-        }
-      }
-
-      // Fallback para Gemini se OpenAI falhar
+      // Usar Gemini
       if (GOOGLE_API_KEY) {
         try {
           const promptText = `${systemPrompt}\n\nHistórico:\n${history.map(m => `${m.role}: ${m.content}`).join('\n')}\n\nUsuário: ${message}\n\nNEO:`;
@@ -834,174 +797,10 @@ describe('ChatAI - Sistema de Chat com IA', () => {
     });
   });
 
-  describe('Integração com LLMs - OpenAI e Gemini', () => {
+  describe('Integração com LLM - Gemini', () => {
     beforeEach(() => {
       // Limpar fetch mocks
       global.fetch = vi.fn();
-    });
-
-    describe('OpenAI Integration', () => {
-      it('deve chamar API OpenAI quando OPENAI_API_KEY está configurada', async () => {
-        window.APP_CONFIG = {
-          OPENAI_API_KEY: 'sk-test-key-123',
-          OPENAI_MODEL: 'gpt-4o-mini'
-        };
-
-        global.fetch.mockResolvedValueOnce({
-          ok: true,
-          json: async () => ({
-            choices: [{
-              message: {
-                content: 'Resposta do OpenAI'
-              }
-            }]
-          })
-        });
-
-        const response = await chatAI.fetchDirectAI(
-          'Teste',
-          [],
-          'System prompt',
-          { category: 'ONBOARDING', confidence: 80 }
-        );
-
-        expect(global.fetch).toHaveBeenCalled();
-        expect(global.fetch.mock.calls[0][0]).toBe('https://api.openai.com/v1/chat/completions');
-        expect(global.fetch.mock.calls[0][1].method).toBe('POST');
-        expect(global.fetch.mock.calls[0][1].headers['Authorization']).toContain('sk-test-key-123');
-        expect(response).toBe('Resposta do OpenAI');
-      });
-
-      it('deve incluir system prompt e histórico na chamada OpenAI', async () => {
-        window.APP_CONFIG = {
-          OPENAI_API_KEY: 'sk-test-key-123'
-        };
-
-        global.fetch.mockResolvedValueOnce({
-          ok: true,
-          json: async () => ({
-            choices: [{
-              message: {
-                content: 'Resposta'
-              }
-            }]
-          })
-        });
-
-        const history = [
-          { role: 'user', content: 'Mensagem anterior' },
-          { role: 'assistant', content: 'Resposta anterior' }
-        ];
-
-        await chatAI.fetchDirectAI(
-          'Nova mensagem',
-          history,
-          'System prompt customizado',
-          { category: 'SALES', confidence: 90 }
-        );
-
-        const requestBody = JSON.parse(global.fetch.mock.calls[0][1].body);
-        expect(requestBody.messages[0].role).toBe('system');
-        expect(requestBody.messages[0].content).toBe('System prompt customizado');
-        expect(requestBody.messages[1].role).toBe('user');
-        expect(requestBody.messages[1].content).toBe('Mensagem anterior');
-        expect(requestBody.messages[2].role).toBe('assistant');
-        expect(requestBody.messages[3].role).toBe('user');
-        expect(requestBody.messages[3].content).toBe('Nova mensagem');
-      });
-
-      it('deve usar modelo configurado na chamada OpenAI', async () => {
-        window.APP_CONFIG = {
-          OPENAI_API_KEY: 'sk-test-key-123',
-          OPENAI_MODEL: 'gpt-4'
-        };
-
-        global.fetch.mockResolvedValueOnce({
-          ok: true,
-          json: async () => ({
-            choices: [{
-              message: {
-                content: 'Resposta'
-              }
-            }]
-          })
-        });
-
-        await chatAI.fetchDirectAI('Teste', [], 'Prompt', null);
-
-        const requestBody = JSON.parse(global.fetch.mock.calls[0][1].body);
-        expect(requestBody.model).toBe('gpt-4');
-      });
-
-      it('deve usar gpt-4o-mini como modelo padrão se não configurado', async () => {
-        window.APP_CONFIG = {
-          OPENAI_API_KEY: 'sk-test-key-123'
-        };
-
-        global.fetch.mockResolvedValueOnce({
-          ok: true,
-          json: async () => ({
-            choices: [{
-              message: {
-                content: 'Resposta'
-              }
-            }]
-          })
-        });
-
-        await chatAI.fetchDirectAI('Teste', [], 'Prompt', null);
-
-        const requestBody = JSON.parse(global.fetch.mock.calls[0][1].body);
-        expect(requestBody.model).toBe('gpt-4o-mini');
-      });
-
-      it('deve retornar null se OpenAI retornar erro 401', async () => {
-        window.APP_CONFIG = {
-          OPENAI_API_KEY: 'sk-invalid-key'
-        };
-
-        global.fetch.mockResolvedValueOnce({
-          ok: false,
-          status: 401
-        });
-
-        const response = await chatAI.fetchDirectAI('Teste', [], 'Prompt', null);
-
-        expect(response).toBeNull();
-      });
-
-      it('deve tentar Gemini se OpenAI falhar', async () => {
-        window.APP_CONFIG = {
-          OPENAI_API_KEY: 'sk-test-key-123',
-          GOOGLE_API_KEY: 'gemini-test-key-456',
-          GEMINI_MODEL: 'gemini-2.0-flash-exp'
-        };
-
-        // OpenAI falha
-        global.fetch.mockResolvedValueOnce({
-          ok: false,
-          status: 500
-        });
-
-        // Gemini sucede
-        global.fetch.mockResolvedValueOnce({
-          ok: true,
-          json: async () => ({
-            candidates: [{
-              content: {
-                parts: [{
-                  text: 'Resposta do Gemini'
-                }]
-              }
-            }]
-          })
-        });
-
-        const response = await chatAI.fetchDirectAI('Teste', [], 'Prompt', null);
-
-        expect(global.fetch).toHaveBeenCalledTimes(2);
-        expect(response).toBe('Resposta do Gemini');
-      });
     });
 
     describe('Gemini Integration', () => {
@@ -1141,31 +940,7 @@ describe('ChatAI - Sistema de Chat com IA', () => {
       });
     });
 
-    describe('Fallback e Prioridade', () => {
-      it('deve tentar OpenAI primeiro quando ambas keys estão configuradas', async () => {
-        window.APP_CONFIG = {
-          OPENAI_API_KEY: 'sk-test-key-123',
-          GOOGLE_API_KEY: 'gemini-test-key-456'
-        };
-
-        global.fetch.mockResolvedValueOnce({
-          ok: true,
-          json: async () => ({
-            choices: [{
-              message: {
-                content: 'Resposta OpenAI'
-              }
-            }]
-          })
-        });
-
-        const response = await chatAI.fetchDirectAI('Teste', [], 'Prompt', null);
-
-        expect(global.fetch).toHaveBeenCalledTimes(1);
-        expect(global.fetch.mock.calls[0][0]).toContain('api.openai.com');
-        expect(response).toBe('Resposta OpenAI');
-      });
-
+    describe('Configuração e Validação', () => {
       it('deve retornar null se nenhuma API key estiver configurada', async () => {
         window.APP_CONFIG = {};
 
@@ -1175,51 +950,19 @@ describe('ChatAI - Sistema de Chat com IA', () => {
         expect(response).toBeNull();
       });
 
-      it('deve usar Gemini como fallback se OpenAI falhar', async () => {
+      it('deve usar temperature 0.7 e maxOutputTokens 800 para Gemini', async () => {
         window.APP_CONFIG = {
-          OPENAI_API_KEY: 'sk-test-key-123',
           GOOGLE_API_KEY: 'gemini-test-key-456'
         };
 
-        // OpenAI falha
-        global.fetch.mockResolvedValueOnce({
-          ok: false,
-          status: 500
-        });
-
-        // Gemini sucede
         global.fetch.mockResolvedValueOnce({
           ok: true,
           json: async () => ({
             candidates: [{
               content: {
                 parts: [{
-                  text: 'Resposta Gemini fallback'
+                  text: 'Resposta'
                 }]
-              }
-            }]
-          })
-        });
-
-        const response = await chatAI.fetchDirectAI('Teste', [], 'Prompt', null);
-
-        expect(global.fetch).toHaveBeenCalledTimes(2);
-        expect(response).toBe('Resposta Gemini fallback');
-      });
-    });
-
-    describe('Configuração de Parâmetros', () => {
-      it('deve usar temperature 0.7 e max_tokens 800 para OpenAI', async () => {
-        window.APP_CONFIG = {
-          OPENAI_API_KEY: 'sk-test-key-123'
-        };
-
-        global.fetch.mockResolvedValueOnce({
-          ok: true,
-          json: async () => ({
-            choices: [{
-              message: {
-                content: 'Resposta'
               }
             }]
           })

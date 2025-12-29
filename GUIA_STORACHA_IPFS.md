@@ -239,7 +239,7 @@ Para publicar o CID no IPNS (InterPlanetary Name System), você precisa:
 IPNS_KEY_NAME=meu-projeto-pwa
 
 # ID público IPNS (gerado automaticamente ao criar a key)
-IPNS_KEY_ID=k51qzi5uqu5dizgl359xn40rxijeoya8skq61lkl4n8hizc6j0zp93l1xoavh5
+IPNS_KEY_ID=k51qzi5uqu5dibn355zoh239agkln7mpvvu8iyk4jv2t1letihnm36s6ym4yts
 
 # UCAN Token para publicação IPNS (pode ser o mesmo STORACHA_UCAN ou diferente)
 UCAN_TOKEN=<seu_token_ucan>

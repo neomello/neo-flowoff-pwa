@@ -116,7 +116,7 @@ class ChatAI {
 
       // Se API retornou vazio/null, verificar se é problema de configuração
       const config = window.APP_CONFIG || {};
-      const hasKeys = !!(config.OPENAI_API_KEY || config.GOOGLE_API_KEY);
+      const hasKeys = !!config.GOOGLE_API_KEY;
 
       // Não logar warning se keys não estiverem configuradas (comportamento esperado)
       // O fallback local será usado automaticamente
@@ -478,8 +478,8 @@ Tom:
     // As keys podem ser injetadas no build via script ou configuradas no index.html
     let config = window.APP_CONFIG || {};
 
-    // Se não houver keys e estiver em desenvolvimento local, buscar do servidor
-    if ((!config.OPENAI_API_KEY && !config.GOOGLE_API_KEY) &&
+    // Se não houver key e estiver em desenvolvimento local, buscar do servidor
+    if (!config.GOOGLE_API_KEY &&
         (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
       try {
         window.Logger?.info('🔄 Buscando API keys do servidor (modo desenvolvimento)...');
@@ -502,17 +502,15 @@ Tom:
       }
     }
 
-    const OPENAI_API_KEY = config.OPENAI_API_KEY || '';
     const GOOGLE_API_KEY = config.GOOGLE_API_KEY || '';
-    const OPENAI_MODEL = config.OPENAI_MODEL || config.LLM_MODEL || 'gpt-4o';
-    const GEMINI_MODEL = config.GEMINI_MODEL || config.LLM_MODEL_FALLBACK || 'gemini-2.0-flash-exp';
+    const GEMINI_MODEL = config.GEMINI_MODEL || config.LLM_MODEL || 'gemini-2.0-flash-exp';
 
-    // Se não houver keys configuradas, retornar null silenciosamente
+    // Se não houver key configurada, retornar null silenciosamente
     // (não logar warning aqui - será tratado no nível superior)
-    if (!OPENAI_API_KEY && !GOOGLE_API_KEY) {
-      // Verificar se é desenvolvimento local (sem keys injetadas)
+    if (!GOOGLE_API_KEY) {
+      // Verificar se é desenvolvimento local (sem key injetada)
       if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        window.Logger?.warn('⚠️ Modo desenvolvimento: API keys não configuradas. Verifique se o servidor está rodando e tem acesso ao .env');
+        window.Logger?.warn('⚠️ Modo desenvolvimento: API key não configurada. Verifique se o servidor está rodando e tem acesso ao .env');
       }
       return null;
     }
@@ -522,68 +520,7 @@ Tom:
       window.Logger?.info(`🧠 Intent classificada: ${intent.category} (confiança: ${intent.confidence}%)`);
     }
 
-    // Tentar OpenAI primeiro
-    if (OPENAI_API_KEY) {
-      try {
-        const messages = [
-          { role: 'system', content: systemPrompt },
-          ...history,
-          { role: 'user', content: message }
-        ];
-
-        // Timeout de 30 segundos
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000);
-
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${OPENAI_API_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            model: OPENAI_MODEL,
-            messages: messages,
-            temperature: 0.7,
-            max_tokens: 800 // Aumentado para respostas mais completas
-          }),
-          signal: controller.signal
-        });
-
-        clearTimeout(timeoutId);
-
-        if (response.ok) {
-          const data = await response.json();
-          const aiResponse = data.choices?.[0]?.message?.content?.trim();
-          if (aiResponse) {
-            window.Logger?.log('✅ Resposta OpenAI recebida (client-side, modelo:', OPENAI_MODEL, ')');
-            return aiResponse;
-          } else {
-            window.Logger?.warn('⚠️ OpenAI retornou resposta vazia');
-          }
-        } else if (response.status === 401) {
-          window.Logger?.warn('⚠️ OpenAI API key inválida ou expirada');
-          const errorData = await response.json().catch(() => ({}));
-          window.Logger?.warn('   Detalhes:', errorData);
-        } else if (response.status === 403) {
-          window.Logger?.warn(`⚠️ OpenAI retornou erro HTTP 403 (acesso negado)`);
-          const errorData = await response.json().catch(() => ({}));
-          window.Logger?.warn('   Detalhes:', errorData);
-        } else {
-          window.Logger?.warn(`⚠️ OpenAI retornou erro HTTP ${response.status}`);
-          const errorData = await response.json().catch(() => ({}));
-          window.Logger?.warn('   Detalhes:', errorData);
-        }
-      } catch (error) {
-        if (error.name === 'AbortError') {
-          window.Logger?.warn('❌ Timeout ao chamar OpenAI');
-        } else {
-          window.Logger?.warn('❌ Erro ao chamar OpenAI:', error.message);
-        }
-      }
-    }
-
-    // Fallback para Gemini se OpenAI falhar
+    // Usar Gemini
     if (GOOGLE_API_KEY) {
       try {
         const promptText = `${systemPrompt}\n\nHistórico:\n${history.map(m => `${m.role}: ${m.content}`).join('\n')}\n\nUsuário: ${message}\n\nNEO:`;

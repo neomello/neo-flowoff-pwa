@@ -27,7 +27,7 @@ dotenv.config({ path: join(PROJECT_ROOT, '.env') });
 
 // Configuração do projeto
 const IPNS_KEY_NAME = process.env.IPNS_KEY_NAME || 'neo-flowoff-pwa';
-const IPNS_KEY_ID = process.env.IPNS_KEY_ID || 'k51qzi5uqu5dizgl359xn40rxijeoya8skq61lkl4n8hizc6j0zp93l1xoavh5';
+const IPNS_KEY_ID = process.env.IPNS_KEY_ID || 'k51qzi5uqu5dibn355zoh239agkln7mpvvu8iyk4jv2t1letihnm36s6ym4yts';
 
 // Validação UCAN
 class UCANValidator {

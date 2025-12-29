@@ -122,27 +122,22 @@ if (fs.existsSync(indexHtmlPath)) {
   let html = fs.readFileSync(indexHtmlPath, 'utf8');
   html = html.replace(/<!--.*?-->/gs, '');
   
-  // Injeta API keys do Netlify (variáveis de ambiente) no window.APP_CONFIG
+  // Injeta API key do Netlify (variáveis de ambiente) no window.APP_CONFIG
   // Isso permite chamadas client-side sem usar Netlify Functions
   const apiKeys = {
-    OPENAI_API_KEY: process.env.OPENAI_API_KEY || '',
     GOOGLE_API_KEY: process.env.GOOGLE_API_KEY || '',
-    OPENAI_MODEL: process.env.OPENAI_MODEL || process.env.LLM_MODEL || 'gpt-4o',
-    GEMINI_MODEL: process.env.GEMINI_MODEL || process.env.LLM_MODEL_FALLBACK || 'gemini-2.0-flash-exp'
+    GEMINI_MODEL: process.env.GEMINI_MODEL || process.env.LLM_MODEL || 'gemini-2.0-flash-exp'
   };
   
-  // Substitui o script de configuração com as keys injetadas
+  // Substitui o script de configuração com a key injetada
   const configScript = `
-  <!-- Configuração de API Keys para Chat AI (Client-Side) -->
-  <!-- Keys injetadas no build via variáveis de ambiente do Netlify -->
+  <!-- Configuração de API Key para Chat AI (Client-Side) -->
+  <!-- Key injetada no build via variáveis de ambiente do Netlify -->
   <script>
     window.APP_CONFIG = window.APP_CONFIG || {};
-    window.APP_CONFIG.OPENAI_API_KEY = ${JSON.stringify(apiKeys.OPENAI_API_KEY)};
     window.APP_CONFIG.GOOGLE_API_KEY = ${JSON.stringify(apiKeys.GOOGLE_API_KEY)};
-    window.APP_CONFIG.OPENAI_MODEL = ${JSON.stringify(apiKeys.OPENAI_MODEL)};
     window.APP_CONFIG.GEMINI_MODEL = ${JSON.stringify(apiKeys.GEMINI_MODEL)};
-    window.APP_CONFIG.LLM_MODEL = ${JSON.stringify(apiKeys.OPENAI_MODEL)};
-    window.APP_CONFIG.LLM_MODEL_FALLBACK = ${JSON.stringify(apiKeys.GEMINI_MODEL)};
+    window.APP_CONFIG.LLM_MODEL = ${JSON.stringify(apiKeys.GEMINI_MODEL)};
   </script>`;
   
   // Substitui o placeholder ou adiciona antes do chat-ai.js
