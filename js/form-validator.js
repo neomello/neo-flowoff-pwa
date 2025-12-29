@@ -61,16 +61,16 @@ class FormValidator {
       const cepText = document.createTextNode('CEP (opcional)');
       cepLabel.appendChild(cepText);
 
-      const cepInput = document.createElement('input');
-      cepInput.name = 'cep';
-      cepInput.type = 'text';
-      cepInput.setAttribute('color', 'gray');
-      cepInput.placeholder = 'Digite apenas números (ex: 74230130)';
-      cepInput.autocomplete = 'postal-code';
-      cepInput.maxLength = 8;
-      cepInput.inputMode = 'numeric';
-      cepInput.pattern = '[0-9]{8}';
-      cepLabel.appendChild(cepInput);
+      const newCepInput = document.createElement('input');
+      newCepInput.name = 'cep';
+      newCepInput.type = 'text';
+      newCepInput.setAttribute('color', 'gray');
+      newCepInput.placeholder = 'Digite apenas números (ex: 74230130)';
+      newCepInput.autocomplete = 'postal-code';
+      newCepInput.maxLength = 8;
+      newCepInput.inputMode = 'numeric';
+      newCepInput.pattern = '[0-9]{8}';
+      cepLabel.appendChild(newCepInput);
 
       const validationMsg = document.createElement('small');
       validationMsg.className = 'validation-message';
