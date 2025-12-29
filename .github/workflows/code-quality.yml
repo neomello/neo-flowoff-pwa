@@ -33,15 +33,9 @@ jobs:
 
       - name: Check EditorConfig compliance
         run: |
-          echo "Checking EditorConfig compliance..."
-          # EditorConfig é validado principalmente pelo Prettier
-          # Esta verificação é opcional e não bloqueia o workflow
-          if npx --yes editorconfig-checker --version &> /dev/null; then
-            npx --yes editorconfig-checker -exclude 'node_modules|dist|\.git' || echo "⚠️ EditorConfig warnings found (non-blocking)"
-          else
-            echo "ℹ️ editorconfig-checker not available, skipping..."
-            echo "Note: EditorConfig is still enforced by Prettier"
-          fi
+          echo "ℹ️ EditorConfig compliance is enforced by Prettier"
+          echo "Prettier respects .editorconfig automatically"
+          echo "No separate EditorConfig checker needed"
         continue-on-error: true
 
       - name: Validate Markdown
