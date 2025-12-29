@@ -2,112 +2,126 @@
 
 PWA da NEØ·FlowOFF - Progressive Web Application para acesso ao ecossistema FlowOFF.
 
-## Descrição
+## 🚀 Sobre
 
-Aplicação web progressiva (PWA) desenvolvida para fornecer acesso completo ao ecossistema NEØ FlowOFF, incluindo:
+Aplicação web progressiva que oferece acesso ao ecossistema NEØ FlowOFF com chat IA, integração Web3 e funcionalidades offline.
 
--  Chat com IA (NEO)
--  Integração com wallet Web3 ($NEOFLW)
--  Formulários de contato com sincronização offline
--  Interface moderna com Glass Morphism
--  Suporte completo offline via Service Worker
+## 📊 Arquitetura de Deploy
 
-## Instalação
+```mermaid
+flowchart TB
+subgraph SOURCE["📦 NEØ.FLOWOFF PWA"]
+CODE["Código Fonte<br/>GitHub"]
+end
+subgraph WEB2["🌐 WEB2 - Vercel"]
+    VERCEL["Vercel Edge<br/>CDN Global"]
+    FLOWXYZ["flowoff.xyz"]
+    FLOWBR["flowoff.com.br"]
+    PREVIEW["*.vercel.app"]
+end
+
+subgraph WEB3["⛓️ WEB3 - Descentralizado"]
+    STORACHA["Storacha<br/>IPFS Upload"]
+    IPFS["IPFS<br/>Content Hash"]
+    IPNS["IPNS<br/>Mutable Pointer"]
+    ENS["ENS<br/>neoflowoff.eth"]
+end
+
+subgraph GATEWAYS["🚪 Gateways IPFS"]
+    GW1["dweb.link"]
+    GW2["w3s.link"]
+    GW3["ipfs.io"]
+end
+
+subgraph USERS["👥 Usuários"]
+    USER1["🌍 Global"]
+    USER2["🇧🇷 Brasil"]
+    USER3["🦊 Web3 Native"]
+end
+
+CODE -->|"make deploy"| VERCEL
+CODE -->|"make deploy-ipfs"| STORACHA
+
+VERCEL --> FLOWXYZ
+VERCEL --> FLOWBR
+VERCEL --> PREVIEW
+
+STORACHA --> IPFS
+IPFS --> IPNS
+IPNS --> ENS
+IPNS --> GW1
+IPNS --> GW2
+IPNS --> GW3
+
+FLOWXYZ --> USER1
+FLOWBR --> USER2
+ENS --> USER3
+GW1 --> USER3
+
+style SOURCE fill:#1a1a2e,stroke:#8b5cf6,color:#fff
+style WEB2 fill:#0f172a,stroke:#3b82f6,color:#fff
+style WEB3 fill:#0f172a,stroke:#10b981,color:#fff
+style GATEWAYS fill:#1e1e2e,stroke:#f59e0b,color:#fff
+style USERS fill:#1e1e2e,stroke:#ec4899,color:#fff
+```
+
+## ⚡ Início Rápido
 
 ```bash
-# Clone o repositório
+# Clone e instale
 git clone git@github.com:neomello/neo-flowoff-pwa.git
 cd neo-flowoff-pwa
-
-# Instale as dependências
 npm install
 
 # Configure variáveis de ambiente
 cp env-example.txt .env
-# Edite .env com suas configurações
 
-# Inicie o servidor de desenvolvimento
+# Desenvolvimento
 npm run dev
-```
 
-## Uso
-
-### Desenvolvimento
-
-```bash
-npm run dev
-```
-
-Acesse `http://localhost:3000`
-
-### Produção
-
-```bash
+# Build para produção
 npm run build
-npm start
 ```
 
-### Deploy IPFS
+## 🌐 Deploy
+
+### Web2 (Vercel)
 
 ```bash
-npm run deploy:ipfs
+make deploy
 ```
 
-## Estrutura
+Deploy automático via Vercel para `flowoff.xyz` e `flowoff.com.br`.
 
-```text
-neo-flowoff-pwa/
-├── js/
-│   ├── app.js              # App principal
-│   ├── chat-ai.js          # Chat com IA
-│   ├── wallet.js           # Gerenciamento de wallet
-│   ├── form-validator.js   # Validação de formulários
-│   └── ...
-├── css/                    # Estilos modulares
-├── public/                 # Assets públicos
-├── docs/                   # Documentação
-├── scripts/                # Scripts de build e deploy
-├── sw.js                   # Service Worker
-└── server.js               # Servidor Node.js
+### Web3 (IPFS/IPNS)
+
+```bash
+make deploy-ipfs
 ```
 
-## Tecnologias
+Deploy descentralizado via Storacha para IPFS/IPNS e ENS (`neoflowoff.eth.link`).
 
--  Vanilla JavaScript (ES6+)
--  Service Worker (PWA)
--  IndexedDB (Fila offline)
--  Node.js (Servidor)
--  IPFS/Storacha (Deploy descentralizado)
+## 📚 Documentação
 
-## Segurança
+- [Domínios e Deploy](./docs/DOMINIOS.md) - Arquitetura completa de deploy
+- [Guia Storacha/IPFS](./GUIA_STORACHA_IPFS.md) - Configuração Web3
+- [Contribuindo](./CONTRIBUTING.md) - Padrões de contribuição
+- [Segurança](./SECURITY.md) - Política de segurança
 
-Este projeto implementa:
+## 🛡️ Segurança
 
--  Sanitização de todas as entradas de usuário
--  Rate limiting em operações críticas
--  CORS restrito em produção
--  Validação robusta de dados
--  Prevenção de XSS e CSRF
+Implementa sanitização de entradas, rate limiting, CORS restrito e validação robusta. Consulte `SECURITY.md` para detalhes.
 
-Consulte `SECURITY.md` para mais informações.
-
-## Contribuindo
-
-Este projeto segue os padrões NEØ. Consulte `CONTRIBUTING.md` para mais informações.
-
-## Licença
+## 📄 Licença
 
 MIT
 
 ---
 
-## Contact
-
-[neo@neoprotocol.space](mailto:neo@neoprotocol.space)
-
-</div>
-
 <div align="center">
+  <a href="mailto:neo@neoprotocol.space">
+    <img src="https://img.shields.io/badge/-neo@neoprotocol.space-ff008e?style=flat-square&logo=gmail&logoColor=white" alt="Email" />
+  </a>
   <a href="https://x.com/node_mello">
     <img src="https://img.shields.io/badge/-@node_mello-ff008e?style=flat-square&logo=twitter&logoColor=white" alt="Twitter @node_mello" />
   </a>
