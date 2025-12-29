@@ -42,9 +42,9 @@ body{
   flex-direction:column; 
   padding: env(safe-area-inset-top) 16px 8px;
   border-bottom:1px solid rgba(255,255,255,.06);
+  -webkit-backdrop-filter: saturate(1.2) blur(12px);
   backdrop-filter: saturate(1.2) blur(12px);
   background: linear-gradient(180deg, rgba(16,16,24,.65), rgba(8,8,12,.35));
-  -webkit-backdrop-filter: saturate(1.2) blur(12px);
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   isolation: isolate;
   will-change: backdrop-filter, background;
@@ -52,8 +52,8 @@ body{
 
 /* Header com scroll blur */
 .topbar.scrolled {
-  backdrop-filter: saturate(1.4) blur(20px);
   -webkit-backdrop-filter: saturate(1.4) blur(20px);
+  backdrop-filter: saturate(1.4) blur(20px);
   background: linear-gradient(180deg, rgba(16,16,24,.85), rgba(8,8,12,.75));
   border-bottom: 1px solid rgba(255,255,255,.12);
   box-shadow: 0 8px 32px rgba(0,0,0,.3);
@@ -70,8 +70,8 @@ body{
   /* Remove qualquer fundo que possa afetar a logo */
   isolation: isolate;
   /* Garante que não há backdrop-filter afetando */
-  backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
   /* Separa completamente a logo do menu */
   gap: 0;
 }
@@ -91,8 +91,8 @@ body{
   letter-spacing: 1px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
   text-transform: uppercase;
 }
@@ -144,8 +144,8 @@ body{
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }
 
 .mobile-menu-toggle:hover {
@@ -190,8 +190,8 @@ body{
   right: 0;
   padding: 12px 16px;
   background: linear-gradient(180deg, rgba(20, 20, 30, 0.95), rgba(12, 12, 18, 0.98));
-  backdrop-filter: saturate(180%) blur(30px);
   -webkit-backdrop-filter: saturate(180%) blur(30px);
+  backdrop-filter: saturate(180%) blur(30px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
   transform: translateY(-10px);
@@ -235,8 +235,8 @@ body{
   letter-spacing: 0.5px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   position: relative;
   overflow: hidden;
 }
@@ -343,8 +343,8 @@ body{
   border: none;
   box-shadow: none;
   isolation: isolate;
-  backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
   position: relative;
   z-index: 2;
 }
@@ -359,8 +359,8 @@ body{
   border: none;
   box-shadow: none;
   isolation: isolate;
-  backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
   position: relative;
   z-index: 1003;
   margin-left: auto;
@@ -384,8 +384,8 @@ body{
   isolation: isolate;
   flex-shrink: 0;
   /* Remove qualquer fundo que possa vazar */
-  backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
   /* Garante que está em camada separada */
   margin-left: auto;
 }
@@ -421,8 +421,8 @@ body{
   max-width: 85vw;
   height: 100vh;
   background: linear-gradient(180deg, rgba(16, 16, 24, 0.98), rgba(8, 8, 12, 0.95));
-  backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
+  backdrop-filter: blur(30px);
   border-left: 2px solid #ff2fb3;
   padding: calc(env(safe-area-inset-top) + 20px) 24px calc(24px + env(safe-area-inset-bottom));
   z-index: 1005 !important;
@@ -476,8 +476,8 @@ body{
   padding: 12px;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 16px;
-  backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 47, 179, 0.3);
   box-shadow: 0 4px 12px rgba(255, 47, 179, 0.2);
 }
@@ -562,8 +562,8 @@ body{
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
   z-index: 1004;
   opacity: 0;
   visibility: hidden;
@@ -614,8 +614,8 @@ body{
   /* Força transparência total no container */
   isolation: isolate;
   /* Remove qualquer fundo que possa ser herdado */
-  backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
   /* Remove qualquer espaço em branco */
   line-height: 0;
   font-size: 0;
@@ -670,7 +670,7 @@ body{
   line-height: 0;
   /* Força o navegador a renderizar com transparência real */
   image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
+  /* image-rendering: crisp-edges;  Removido: não suportado no Edge */
   /* Posiciona a imagem para remover qualquer espaço */
   position: relative;
   top: 0;
@@ -726,6 +726,7 @@ main{
   border-radius: var(--radius); 
   padding: 4rem; 
   box-shadow: var(--shadow);
+  -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -781,19 +782,23 @@ main{
 }
 
 .hero-text-simple p {
-  font-size: 1.05rem;
+  font-size: 26px;
   font-weight: 300;
   margin: 0.85rem 0;
   color: rgba(255, 255, 255, 0.95);
   letter-spacing: 0.12em;
   text-align: center;
-  line-height: 1.7;
+  line-height: 32px;
   text-transform: none;
   font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'SF Pro Display', system-ui, sans-serif;
   position: relative;
   font-feature-settings: "kern" 1, "liga" 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  vertical-align: top;
+  padding-top: 21px;
+  padding-bottom: 21px;
+  height: 224px;
 }
 
 /* Efeitos removidos - design limpo e refinado */
@@ -827,8 +832,8 @@ main{
   font-size: 14px;
   font-weight: 500;
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }
 
 .social-link:hover {
@@ -875,8 +880,8 @@ main{
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
   z-index: 1000;
   display: none;
   align-items: center;
@@ -892,8 +897,8 @@ main{
 /* Backdrop nativo do dialog para melhor compatibilidade */
 .project-modal::backdrop {
   background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   animation: backdropFadeIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
@@ -911,13 +916,13 @@ body.modal-open #app > *:not(.project-modal):not(.toast-notifications-container)
 @keyframes backdropFadeIn {
   from {
     opacity: 0;
-    backdrop-filter: blur(0px);
     -webkit-backdrop-filter: blur(0px);
+    backdrop-filter: blur(0px);
   }
   to {
     opacity: 1;
-    backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
   }
 }
 
@@ -925,8 +930,8 @@ body.modal-open #app > *:not(.project-modal):not(.toast-notifications-container)
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 20px;
-  backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   max-width: 500px;
   width: 100%;
@@ -946,13 +951,13 @@ body.modal-open #app > *:not(.project-modal):not(.toast-notifications-container)
 @keyframes modalFadeIn {
   from {
     opacity: 0;
-    backdrop-filter: blur(0px);
     -webkit-backdrop-filter: blur(0px);
+    backdrop-filter: blur(0px);
   }
   to {
     opacity: 1;
-    backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
   }
 }
 
@@ -1127,10 +1132,12 @@ body.modal-open #app > *:not(.project-modal):not(.toast-notifications-container)
 
 @keyframes glowFade {
   0%, 100% { 
+    -webkit-backdrop-filter: blur(16px);
     backdrop-filter: blur(16px);
     box-shadow: 0 8px 32px rgba(255, 47, 179, 0.1);
   }
   50% { 
+    -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     box-shadow: 0 12px 40px rgba(255, 47, 179, 0.2);
   }
@@ -1178,6 +1185,7 @@ body.modal-open #app > *:not(.project-modal):not(.toast-notifications-container)
   border-radius: 16px; 
   padding: 16px 16px 18px; 
   box-shadow: 0 8px 32px rgba(0,0,0,.12), 0 2px 8px rgba(0,0,0,.08);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
   backdrop-filter: blur(20px) saturate(1.2);
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
@@ -1212,6 +1220,7 @@ body.modal-open #app > *:not(.project-modal):not(.toast-notifications-container)
   border: 0.5px solid rgba(255,255,255,.08); 
   position: relative; 
   overflow: hidden;
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   box-shadow: 0 4px 12px rgba(0,0,0,.2);
@@ -1240,6 +1249,7 @@ body.modal-open #app > *:not(.project-modal):not(.toast-notifications-container)
 .card:hover {
   transform: translateY(-2px) scale(1.02);
   box-shadow: 0 12px 40px rgba(0,0,0,.15), 0 4px 12px rgba(0,0,0,.1);
+  -webkit-backdrop-filter: blur(24px) saturate(1.3);
   backdrop-filter: blur(24px) saturate(1.3);
   border-color: rgba(255,255,255,.18);
 }
@@ -1253,6 +1263,7 @@ body.modal-open #app > *:not(.project-modal):not(.toast-notifications-container)
 .clickable-card:hover {
   transform: translateY(-3px) scale(1.03);
   box-shadow: 0 16px 48px rgba(0,0,0,.2), 0 6px 16px rgba(0,0,0,.15);
+  -webkit-backdrop-filter: blur(28px) saturate(1.4);
   backdrop-filter: blur(28px) saturate(1.4);
   border-color: rgba(255,255,255,.25);
 }
@@ -1502,6 +1513,7 @@ body.modal-open #app > *:not(.project-modal):not(.toast-notifications-container)
   font-size: 0.7rem;
   font-weight: 400;
   transition: all 0.2s ease;
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   opacity: 0.8;
 }
@@ -1870,6 +1882,7 @@ body.modal-open #app > *:not(.project-modal):not(.toast-notifications-container)
   display:grid; grid-template-columns:repeat(4,1fr); gap:10px;
   border-top:1px solid rgba(255,255,255,.06);
   background: linear-gradient(180deg, rgba(10,10,16,.95), rgba(10,10,16,.98));
+  -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
 }
 .tabbar button{
@@ -1884,6 +1897,7 @@ body.modal-open #app > *:not(.project-modal):not(.toast-notifications-container)
   position:fixed; bottom:0; left:0; right:0; z-index:35;
   padding: 4px 16px calc(4px + env(safe-area-inset-bottom));
   background: linear-gradient(180deg, rgba(8,8,12,.8), rgba(4,4,8,.9));
+  -webkit-backdrop-filter: saturate(1.1) blur(8px);
   backdrop-filter: saturate(1.1) blur(8px);
   border-top: 1px solid rgba(255,255,255,.04);
   transform: translateY(100%);
@@ -1981,8 +1995,8 @@ body.modal-open #app > *:not(.project-modal):not(.toast-notifications-container)
   border-radius: 20px;
   border: 1px solid rgba(255,255,255,.1);
   background: linear-gradient(180deg, rgba(15,15,22,.95), rgba(10,10,16,.98));
-  backdrop-filter: saturate(1.2) blur(20px);
   -webkit-backdrop-filter: saturate(1.2) blur(20px);
+  backdrop-filter: saturate(1.2) blur(20px);
 }
 
 .agent-modal-header {
@@ -2216,8 +2230,8 @@ body.modal-open #app > *:not(.project-modal):not(.toast-notifications-container)
   width: 380px;
   max-width: 90vw;
   background: linear-gradient(180deg, rgba(15,15,22,.95), rgba(10,10,16,.98));
-  backdrop-filter: saturate(1.2) blur(20px);
   -webkit-backdrop-filter: saturate(1.2) blur(20px);
+  backdrop-filter: saturate(1.2) blur(20px);
   border: 1px solid rgba(255,255,255,.1);
   border-radius: 20px;
   box-shadow: 0 20px 60px rgba(0,0,0,.3);
@@ -2378,8 +2392,8 @@ body.modal-open #app > *:not(.project-modal):not(.toast-notifications-container)
     rgba(10, 10, 16, 0.6) 60%,
     rgba(10, 10, 16, 0.8) 100%
   );
-  backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(15px);
   pointer-events: none;
   z-index: 50;
   opacity: 0;
@@ -2421,8 +2435,8 @@ body.modal-open #app > *:not(.project-modal):not(.toast-notifications-container)
     rgba(30, 30, 40, 0.75) 0%,
     rgba(20, 20, 28, 0.65) 100%
   );
-  backdrop-filter: saturate(180%) blur(40px);
   -webkit-backdrop-filter: saturate(180%) blur(40px);
+  backdrop-filter: saturate(180%) blur(40px);
   
   /* Multi-layer border for depth */
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -2538,8 +2552,8 @@ body.modal-open #app > *:not(.project-modal):not(.toast-notifications-container)
   height: 22px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: rgba(255, 255, 255, 0.8);
   font-size: 14px;
@@ -2667,6 +2681,7 @@ canvas {
 .hero-card,
 .card,
 .flowoff-section .flowoff-card {
+  -webkit-backdrop-filter: saturate(1.3) blur(16px);
   backdrop-filter: saturate(1.3) blur(16px);
   background: linear-gradient(180deg, rgba(15,15,22,.85), rgba(8,8,12,.75));
   border: 1px solid rgba(255,255,255,.12);
@@ -2690,6 +2705,7 @@ canvas {
 /* Efeito de interação com partículas */
 .hero-card:hover,
 .card:hover {
+  -webkit-backdrop-filter: saturate(1.4) blur(20px);
   backdrop-filter: saturate(1.4) blur(20px);
   transition: backdrop-filter 0.3s ease;
 }
@@ -2704,6 +2720,7 @@ canvas {
   .hero-card,
   .card,
   .flowoff-section .flowoff-card {
+    -webkit-backdrop-filter: saturate(1.2) blur(12px);
     backdrop-filter: saturate(1.2) blur(12px);
   }
 }
@@ -2858,8 +2875,8 @@ canvas {
   font-weight: 500;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   color: rgba(255, 255, 255, 0.95);
   text-decoration: none;
@@ -3173,6 +3190,7 @@ canvas {
   height: calc(100vh - 200px);
   min-height: 500px;
   background: rgba(10, 10, 15, 0.8);
+  -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
   border-radius: 24px;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -3183,6 +3201,7 @@ canvas {
   padding: 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(255, 255, 255, 0.05);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
 

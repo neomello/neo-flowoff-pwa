@@ -17,8 +17,8 @@
 /* Base para todos os items */
 .bento-item {
   background: var(--glass);
-  backdrop-filter: saturate(1.2) blur(20px);
   -webkit-backdrop-filter: saturate(1.2) blur(20px);
+  backdrop-filter: saturate(1.2) blur(20px);
   border-radius: var(--radius);
   border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 28px;
@@ -72,7 +72,34 @@
   height: auto;
   padding: 0;
   background: linear-gradient(135deg, rgba(122, 44, 255, 0.12), rgba(255, 47, 179, 0.12));
-  border: 1px solid rgba(255, 47, 179, 0.15);
+  border: 0.2px solid #ff2fb3;
+  position: relative;
+  overflow: visible;
+  box-shadow: 0 10px 45px rgba(255, 47, 179, 0.18), 0 0 0 0.8px rgba(255, 47, 179, 0.08), 0 0 55px rgba(255, 47, 179, 0.35), 0 0 110px rgba(255, 47, 179, 0.18), 0 0 170px rgba(255, 47, 179, 0.08), inset 0 0 18px rgba(255, 47, 179, 0.08);
+}
+
+.bento-hero > * {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.bento-hero::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  left: 20%;
+  width: 70%;
+  height: 70%;
+  background: radial-gradient(ellipse at center, rgba(255, 47, 179, 0.85), rgba(255, 47, 179, 0.5) 35%, rgba(255, 47, 179, 0.25) 55%, transparent 75%);
+  filter: blur(65px);
+  pointer-events: none;
+  z-index: -1;
+  transform: rotate(8deg);
+}
+
+.bento-hero:hover {
+  box-shadow: 0 14px 52px rgba(255, 47, 179, 0.25), 0 0 0 1px rgba(255, 47, 179, 0.15), 0 0 75px rgba(255, 47, 179, 0.45), 0 0 130px rgba(255, 47, 179, 0.25), 0 0 190px rgba(255, 47, 179, 0.12), inset 0 0 22px rgba(255, 47, 179, 0.12);
 }
 
 .bento-hero .hero-bg-image {
@@ -105,25 +132,32 @@
   position: relative;
   z-index: 2;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   min-height: 400px;
   height: 100%;
-  padding: 40px 24px;
+  padding: 20px 24px 40px;
 }
 
 .bento-hero .hero-text-simple {
   text-align: center;
-  font-size: 1.3rem;
+  font-size: 1.8rem;
   font-weight: 700;
-  line-height: 1.6;
+  line-height: 1.5;
   color: var(--text);
   text-shadow: 0 4px 12px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 47, 179, 0.2);
   letter-spacing: 0.02em;
+  margin-top: 20px;
 }
 
 .bento-hero .hero-text-simple p {
   margin: 8px 0;
+  font-size: 26px;
+  line-height: 32px;
+  vertical-align: top;
+  padding-top: 21px;
+  padding-bottom: 21px;
+  height: 224px;
 }
 
 /* FlowOFF Card - Médio */
@@ -133,7 +167,34 @@
   min-height: 360px;
   height: auto;
   background: linear-gradient(135deg, rgba(255, 47, 179, 0.1), rgba(0, 208, 255, 0.1));
-  border: 1px solid rgba(255, 47, 179, 0.12);
+  border: 0.3px solid #ff2fb3;
+  position: relative;
+  overflow: visible;
+  box-shadow: 0 11px 46px rgba(255, 47, 179, 0.19), 0 0 0 0.9px rgba(255, 47, 179, 0.09), 0 0 58px rgba(255, 47, 179, 0.38), 0 0 115px rgba(255, 47, 179, 0.19), 0 0 175px rgba(255, 47, 179, 0.09), inset 0 0 19px rgba(255, 47, 179, 0.09);
+}
+
+.bento-flowoff > * {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.bento-flowoff::before {
+  content: '';
+  position: absolute;
+  bottom: -50%;
+  left: -20%;
+  width: 75%;
+  height: 75%;
+  background: radial-gradient(ellipse at center, rgba(255, 47, 179, 0.9), rgba(255, 47, 179, 0.55) 32%, rgba(255, 47, 179, 0.28) 52%, transparent 72%);
+  filter: blur(68px);
+  pointer-events: none;
+  z-index: -1;
+  transform: rotate(-22deg);
+}
+
+.bento-flowoff:hover {
+  box-shadow: 0 15px 54px rgba(255, 47, 179, 0.28), 0 0 0 1.1px rgba(255, 47, 179, 0.18), 0 0 78px rgba(255, 47, 179, 0.48), 0 0 135px rgba(255, 47, 179, 0.28), 0 0 195px rgba(255, 47, 179, 0.14), inset 0 0 24px rgba(255, 47, 179, 0.14);
 }
 
 .bento-flowoff .flowoff-header {
@@ -211,7 +272,30 @@
   min-height: 280px;
   height: 100%;
   background: linear-gradient(135deg, rgba(122, 44, 255, 0.1), rgba(255, 47, 179, 0.08));
-  border: 1px solid rgba(122, 44, 255, 0.15);
+  border: 0.25px solid #ff2fb3;
+  position: relative;
+  overflow: visible;
+  box-shadow: 0 12px 48px rgba(255, 47, 179, 0.2), 0 0 0 1px rgba(255, 47, 179, 0.1), 0 0 60px rgba(255, 47, 179, 0.4), 0 0 120px rgba(255, 47, 179, 0.2), 0 0 180px rgba(255, 47, 179, 0.1), inset 0 0 20px rgba(255, 47, 179, 0.1);
+}
+
+.bento-webapp > * {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.bento-webapp::before {
+  content: '';
+  position: absolute;
+  top: -60%;
+  left: -35%;
+  width: 90%;
+  height: 90%;
+  background: radial-gradient(ellipse at center, rgba(255, 47, 179, 1), rgba(255, 47, 179, 0.6) 30%, rgba(255, 47, 179, 0.3) 50%, transparent 70%);
+  filter: blur(70px);
+  pointer-events: none;
+  z-index: -1;
+  transform: rotate(-15deg);
 }
 
 .bento-webapp::after {
@@ -222,6 +306,11 @@
   font-size: 2rem;
   opacity: 0.3;
   transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.bento-webapp:hover {
+  box-shadow: 0 16px 56px rgba(255, 47, 179, 0.3), 0 0 0 1px rgba(255, 47, 179, 0.2), 0 0 80px rgba(255, 47, 179, 0.5), 0 0 140px rgba(255, 47, 179, 0.3), 0 0 200px rgba(255, 47, 179, 0.15), inset 0 0 25px rgba(255, 47, 179, 0.15);
 }
 
 .bento-webapp:hover::after {
@@ -234,7 +323,30 @@
   min-height: 280px;
   height: 100%;
   background: linear-gradient(135deg, rgba(0, 208, 255, 0.1), rgba(122, 44, 255, 0.08));
-  border: 1px solid rgba(0, 208, 255, 0.15);
+  border: 0.25px solid #ff2fb3;
+  position: relative;
+  overflow: visible;
+  box-shadow: 0 12px 48px rgba(255, 47, 179, 0.2), 0 0 0 1px rgba(255, 47, 179, 0.1), 0 0 60px rgba(255, 47, 179, 0.4), 0 0 120px rgba(255, 47, 179, 0.2), 0 0 180px rgba(255, 47, 179, 0.1), inset 0 0 20px rgba(255, 47, 179, 0.1);
+}
+
+.bento-dashboard > * {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.bento-dashboard::before {
+  content: '';
+  position: absolute;
+  bottom: -55%;
+  right: -30%;
+  width: 85%;
+  height: 85%;
+  background: radial-gradient(ellipse at center, rgba(255, 47, 179, 1), rgba(255, 47, 179, 0.6) 30%, rgba(255, 47, 179, 0.3) 50%, transparent 70%);
+  filter: blur(75px);
+  pointer-events: none;
+  z-index: -1;
+  transform: rotate(25deg);
 }
 
 .bento-dashboard::after {
@@ -245,6 +357,11 @@
   font-size: 2rem;
   opacity: 0.3;
   transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.bento-dashboard:hover {
+  box-shadow: 0 16px 56px rgba(255, 47, 179, 0.3), 0 0 0 1px rgba(255, 47, 179, 0.2), 0 0 80px rgba(255, 47, 179, 0.5), 0 0 140px rgba(255, 47, 179, 0.3), 0 0 200px rgba(255, 47, 179, 0.15), inset 0 0 25px rgba(255, 47, 179, 0.15);
 }
 
 .bento-dashboard:hover::after {
@@ -257,7 +374,34 @@
   min-height: 200px;
   height: auto;
   background: linear-gradient(135deg, rgba(255, 47, 179, 0.08), rgba(122, 44, 255, 0.08));
-  border: 1px solid rgba(255, 47, 179, 0.12);
+  border: 0.22px solid #ff2fb3;
+  position: relative;
+  overflow: visible;
+  box-shadow: 0 9px 42px rgba(255, 47, 179, 0.17), 0 0 0 0.7px rgba(255, 47, 179, 0.07), 0 0 52px rgba(255, 47, 179, 0.33), 0 0 105px rgba(255, 47, 179, 0.17), 0 0 165px rgba(255, 47, 179, 0.08), inset 0 0 17px rgba(255, 47, 179, 0.08);
+}
+
+.bento-projects > * {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.bento-projects::before {
+  content: '';
+  position: absolute;
+  top: 10%;
+  right: -25%;
+  width: 65%;
+  height: 80%;
+  background: radial-gradient(ellipse at center, rgba(255, 47, 179, 0.8), rgba(255, 47, 179, 0.45) 38%, rgba(255, 47, 179, 0.22) 58%, transparent 78%);
+  filter: blur(72px);
+  pointer-events: none;
+  z-index: -1;
+  transform: rotate(18deg);
+}
+
+.bento-projects:hover {
+  box-shadow: 0 13px 50px rgba(255, 47, 179, 0.26), 0 0 0 1px rgba(255, 47, 179, 0.16), 0 0 72px rgba(255, 47, 179, 0.43), 0 0 125px rgba(255, 47, 179, 0.26), 0 0 185px rgba(255, 47, 179, 0.13), inset 0 0 21px rgba(255, 47, 179, 0.13);
 }
 
 .bento-projects .projects-logos-title {
@@ -298,7 +442,30 @@
   min-height: 260px;
   height: 100%;
   background: linear-gradient(135deg, rgba(255, 47, 179, 0.1), rgba(0, 208, 255, 0.08));
-  border: 1px solid rgba(255, 47, 179, 0.15);
+  border: 0.28px solid #ff2fb3;
+  position: relative;
+  overflow: visible;
+  box-shadow: 0 10px 44px rgba(255, 47, 179, 0.2), 0 0 0 0.85px rgba(255, 47, 179, 0.1), 0 0 56px rgba(255, 47, 179, 0.36), 0 0 112px rgba(255, 47, 179, 0.18), 0 0 172px rgba(255, 47, 179, 0.09), inset 0 0 18px rgba(255, 47, 179, 0.09);
+}
+
+.bento-neo > * {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.bento-neo::before {
+  content: '';
+  position: absolute;
+  top: -45%;
+  right: -28%;
+  width: 72%;
+  height: 72%;
+  background: radial-gradient(ellipse at center, rgba(255, 47, 179, 0.88), rgba(255, 47, 179, 0.52) 33%, rgba(255, 47, 179, 0.26) 53%, transparent 73%);
+  filter: blur(66px);
+  pointer-events: none;
+  z-index: -1;
+  transform: rotate(12deg);
 }
 
 .bento-neo::after {
@@ -309,6 +476,11 @@
   font-size: 2rem;
   opacity: 0.3;
   transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.bento-neo:hover {
+  box-shadow: 0 14px 52px rgba(255, 47, 179, 0.29), 0 0 0 1.05px rgba(255, 47, 179, 0.19), 0 0 76px rgba(255, 47, 179, 0.46), 0 0 132px rgba(255, 47, 179, 0.29), 0 0 192px rgba(255, 47, 179, 0.15), inset 0 0 23px rgba(255, 47, 179, 0.15);
 }
 
 .bento-neo:hover::after {
@@ -321,7 +493,30 @@
   min-height: 260px;
   height: 100%;
   background: linear-gradient(135deg, rgba(122, 44, 255, 0.1), rgba(255, 47, 179, 0.1));
-  border: 1px solid rgba(122, 44, 255, 0.15);
+  border: 0.26px solid #ff2fb3;
+  position: relative;
+  overflow: visible;
+  box-shadow: 0 11px 45px rgba(255, 47, 179, 0.21), 0 0 0 0.88px rgba(255, 47, 179, 0.11), 0 0 57px rgba(255, 47, 179, 0.37), 0 0 113px rgba(255, 47, 179, 0.19), 0 0 173px rgba(255, 47, 179, 0.1), inset 0 0 19px rgba(255, 47, 179, 0.1);
+}
+
+.bento-contact > * {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.bento-contact::before {
+  content: '';
+  position: absolute;
+  bottom: -48%;
+  left: 15%;
+  width: 68%;
+  height: 68%;
+  background: radial-gradient(ellipse at center, rgba(255, 47, 179, 0.87), rgba(255, 47, 179, 0.51) 34%, rgba(255, 47, 179, 0.25) 54%, transparent 74%);
+  filter: blur(69px);
+  pointer-events: none;
+  z-index: -1;
+  transform: rotate(-28deg);
 }
 
 .bento-contact::after {
@@ -332,6 +527,11 @@
   font-size: 2rem;
   opacity: 0.3;
   transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.bento-contact:hover {
+  box-shadow: 0 15px 53px rgba(255, 47, 179, 0.3), 0 0 0 1.08px rgba(255, 47, 179, 0.2), 0 0 77px rgba(255, 47, 179, 0.47), 0 0 133px rgba(255, 47, 179, 0.3), 0 0 193px rgba(255, 47, 179, 0.16), inset 0 0 24px rgba(255, 47, 179, 0.16);
 }
 
 .bento-contact:hover::after {
@@ -345,13 +545,35 @@
   min-height: 300px;
   height: auto;
   background: linear-gradient(135deg, rgba(0, 208, 255, 0.1), rgba(122, 44, 255, 0.1));
-  border: 1px solid rgba(0, 208, 255, 0.2);
+  border: 0.24px solid #ff2fb3;
   cursor: default;
+  overflow: visible;
+  box-shadow: 0 9px 43px rgba(255, 47, 179, 0.16), 0 0 0 0.75px rgba(255, 47, 179, 0.06), 0 0 54px rgba(255, 47, 179, 0.32), 0 0 108px rgba(255, 47, 179, 0.16), 0 0 168px rgba(255, 47, 179, 0.08), inset 0 0 16px rgba(255, 47, 179, 0.08);
+}
+
+.bento-neoflw > * {
+  position: relative;
+  z-index: 1;
   overflow: hidden;
 }
 
+.bento-neoflw::before {
+  content: '';
+  position: absolute;
+  top: 25%;
+  left: -22%;
+  width: 70%;
+  height: 50%;
+  background: radial-gradient(ellipse at center, rgba(255, 47, 179, 0.82), rgba(255, 47, 179, 0.48) 36%, rgba(255, 47, 179, 0.24) 56%, transparent 76%);
+  filter: blur(71px);
+  pointer-events: none;
+  z-index: -1;
+  transform: rotate(-5deg);
+}
+
 .bento-neoflw:hover {
-  border-color: rgba(0, 208, 255, 0.4);
+  border-color: rgba(255, 47, 179, 0.4);
+  box-shadow: 0 13px 51px rgba(255, 47, 179, 0.27), 0 0 0 1.02px rgba(255, 47, 179, 0.17), 0 0 74px rgba(255, 47, 179, 0.44), 0 0 128px rgba(255, 47, 179, 0.27), 0 0 188px rgba(255, 47, 179, 0.14), inset 0 0 22px rgba(255, 47, 179, 0.14);
 }
 
 .neoflw-header {
@@ -472,7 +694,6 @@
   z-index: 5;
   grid-row: span 4;
   scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
 }
 
 .bento-neoflw.expanded::-webkit-scrollbar {
@@ -931,6 +1152,15 @@
     height: auto;
   }
 
+  .bento-hero .hero-content {
+    padding: 18px 20px 35px;
+  }
+
+  .bento-hero .hero-text-simple {
+    font-size: 1.6rem;
+    margin-top: 18px;
+  }
+
   .bento-flowoff {
     grid-column: span 4;
     min-height: 280px;
@@ -987,8 +1217,13 @@
     height: auto;
   }
 
+  .bento-hero .hero-content {
+    padding: 15px 16px 30px;
+  }
+
   .bento-hero .hero-text-simple {
-    font-size: 1rem;
+    font-size: 1.5rem;
+    margin-top: 15px;
   }
 
   .bento-flowoff {
