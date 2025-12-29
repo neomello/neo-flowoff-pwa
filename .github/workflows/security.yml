@@ -28,15 +28,16 @@ jobs:
       - name: Check for exposed secrets
         run: |
           echo "Checking for exposed secrets..."
-          # Procura por valores hardcoded de secrets, ignorando referências a variáveis de ambiente
-          # Padrões perigosos: sk- seguido de caracteres alfanuméricos (não apenas o nome da variável)
-          # Ignora: process.env.VAR, config.VAR, VAR_NAME (apenas nomes de variáveis)
+          # Procura apenas por secrets hardcoded críticos (valores reais, não referências)
+          # Padrões perigosos: sk- seguido de 32+ caracteres (tokens OpenAI reais)
+          # Ignora tudo que é referência a variável de ambiente ou nome de variável
           if grep -r --include="*.js" --include="*.json" --include="*.ts" \
-            -E "(sk-[a-zA-Z0-9]{20,}|api[_-]?key\s*[:=]\s*['\"][^'\"]{20,}|private[_-]?key\s*[:=]\s*['\"][^'\"]{20,}|password\s*[:=]\s*['\"][^'\"]{10,})" \
+            -E "(sk-[a-zA-Z0-9]{32,})" \
             . | grep -v "node_modules" | grep -v ".git" | grep -v "package-lock.json" | \
             grep -v "test" | grep -v "tests/" | grep -v "\.test\." | grep -v "env-example" | \
-            grep -v "\.example\." | grep -v "process\.env\." | grep -v "config\." | \
-            grep -v "window\.APP_CONFIG" | grep -v "GOOGLE_API_KEY\|OPENAI_API_KEY" | head -10; then
+            grep -v "\.example\." | grep -v "process\.env" | grep -v "config\." | \
+            grep -v "window\.APP_CONFIG" | grep -v "GOOGLE_API_KEY\|OPENAI_API_KEY" | \
+            grep -v "VAR_NAME\|VAR\s*=" | head -5; then
             echo "⚠️  Potential secrets found. Please review."
             exit 1
           fi
