@@ -882,6 +882,24 @@ class WalletManager {
     await this.simulateConnect('google');
   }
 
+  // Método auxiliar para processar conexão de wallet
+  async handleConnect(address, method) {
+    // Valida endereço antes de usar
+    if (!address || !window.SecurityUtils?.isValidEthereumAddress(address)) {
+      window.Logger?.warn('Endereço inválido retornado:', address);
+      this.showNotification('Erro: endereço de wallet inválido.', 'error');
+      return;
+    }
+
+    this.address = address;
+    this.connected = true;
+    this.saveState();
+    this.updateButton();
+    this.updateModalState();
+    this.fetchBalance();
+    this.showToast(`✅ Wallet conectada com sucesso! (${method})`);
+  }
+
   // Conexão via MetaMask
   async connectMetaMask() {
     if (!this.checkTermsAccepted()) return;
