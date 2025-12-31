@@ -1,3 +1,6 @@
+// Import Vercel Speed Insights for performance monitoring
+import './speed-insights.js';
+
 // Versão da PWA (sincronizada com package.json e sw.js)
 const PWA_VERSION = '2.4.32';
 
