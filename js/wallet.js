@@ -160,6 +160,18 @@ class WalletManager {
     metamaskBtn.appendChild(metamaskIcon);
     metamaskBtn.appendChild(metamaskText);
 
+    // Botão Web3Auth (Embedded Wallets)
+    const web3authBtn = document.createElement('button');
+    web3authBtn.className = 'wallet-option';
+    web3authBtn.addEventListener('click', () => this.connectWeb3Auth());
+    const web3authIcon = document.createElement('span');
+    web3authIcon.className = 'wallet-option-icon';
+    web3authIcon.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="#8B5CF6"/></svg>';
+    const web3authText = document.createElement('span');
+    web3authText.textContent = 'Web3Auth';
+    web3authBtn.appendChild(web3authIcon);
+    web3authBtn.appendChild(web3authText);
+
     // Botão WalletConnect
     const walletConnectBtn = document.createElement('button');
     walletConnectBtn.className = 'wallet-option';
@@ -184,6 +196,7 @@ class WalletManager {
     separator.appendChild(separatorLine.cloneNode(true));
 
     options.appendChild(metamaskBtn);
+    options.appendChild(web3authBtn);
     options.appendChild(walletConnectBtn);
     options.appendChild(separator);
     options.appendChild(emailBtn);
@@ -900,6 +913,42 @@ class WalletManager {
     this.showToast(`✅ Wallet conectada com sucesso! (${method})`);
   }
 
+  // Callback quando Web3Auth conecta
+  async onWeb3AuthConnected(provider) {
+    try {
+      // Extrair endereço do provider Web3Auth
+      const accounts = await provider.request({ method: 'eth_accounts' });
+      if (accounts && accounts[0]) {
+        await this.handleConnect(accounts[0], 'Web3Auth');
+        this.close();
+      }
+    } catch (error) {
+      window.Logger?.error('Erro ao processar Web3Auth:', error);
+      this.showNotification('Erro ao conectar via Web3Auth.', 'error');
+    }
+  }
+
+  // Callback quando WalletConnect conecta
+  async onWalletConnectConnected(provider) {
+    try {
+      // Extrair endereço do provider WalletConnect
+      const address = provider.address;
+      if (address) {
+        await this.handleConnect(address, 'WalletConnect');
+        this.close();
+      }
+    } catch (error) {
+      window.Logger?.error('Erro ao processar WalletConnect:', error);
+      this.showNotification('Erro ao conectar via WalletConnect.', 'error');
+    }
+  }
+
+  // Callback quando provider está pronto
+  onProviderReady(provider) {
+    console.log('🔗 Wallet Provider pronto:', provider.getStatus());
+    // Aqui você pode adicionar lógica adicional quando o provider estiver inicializado
+  }
+
   // Conexão via MetaMask
   async connectMetaMask() {
     if (!this.checkTermsAccepted()) return;
@@ -958,16 +1007,44 @@ class WalletManager {
     }
   }
 
+  // Conexão via Web3Auth
+  async connectWeb3Auth() {
+    if (!this.checkTermsAccepted()) return;
+
+    try {
+      if (window.WalletProvider && window.WalletProvider.connectWeb3Auth) {
+        await window.WalletProvider.connectWeb3Auth();
+      } else {
+        this.showNotification('Web3Auth não está disponível. Use MetaMask.', 'error');
+        // Fallback para MetaMask
+        setTimeout(() => {
+          this.connectMetaMask();
+        }, 2000);
+      }
+    } catch (error) {
+      window.Logger?.error('Erro Web3Auth:', error);
+      this.showNotification('Erro ao conectar via Web3Auth. Tente MetaMask.', 'error');
+    }
+  }
+
   // Conexão via WalletConnect
   async connectWalletConnect() {
     if (!this.checkTermsAccepted()) return;
-    
-    this.showNotification('WalletConnect será integrado em breve. Use MetaMask por enquanto.', 'info');
-    // TODO: Implementar WalletConnect quando SDK estiver disponível
-    // Por enquanto, redireciona para MetaMask
-    setTimeout(() => {
-      this.connectMetaMask();
-    }, 2000);
+
+    try {
+      if (window.WalletProvider && window.WalletProvider.connectWalletConnect) {
+        await window.WalletProvider.connectWalletConnect();
+      } else {
+        this.showNotification('WalletConnect não está disponível. Use MetaMask.', 'error');
+        // Fallback para MetaMask
+        setTimeout(() => {
+          this.connectMetaMask();
+        }, 2000);
+      }
+    } catch (error) {
+      window.Logger?.error('Erro WalletConnect:', error);
+      this.showNotification('Erro ao conectar via WalletConnect. Tente MetaMask.', 'error');
+    }
   }
 
   // Conexão via Wallet externa (MetaMask, WalletConnect, etc)
@@ -1440,6 +1517,7 @@ WalletManager.close = () => window.WalletManager.close();
 WalletManager.connectEmail = () => window.WalletManager?.connectEmail();
 WalletManager.connectGoogle = () => window.WalletManager?.connectGoogle();
 WalletManager.connectMetaMask = () => window.WalletManager?.connectMetaMask();
+WalletManager.connectWeb3Auth = () => window.WalletManager?.connectWeb3Auth();
 WalletManager.connectWalletConnect = () => window.WalletManager?.connectWalletConnect();
 WalletManager.connectWallet = () => window.WalletManager?.connectWallet();
 WalletManager.copyAddress = () => window.WalletManager.copyAddress();

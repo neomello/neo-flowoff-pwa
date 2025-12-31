@@ -1950,6 +1950,23 @@ body.modal-open #app > *:not(.project-modal):not(.toast-notifications-container)
   line-height: 1.2;
   opacity: 0.8;
 }
+.footer-link{
+  text-align: center;
+  margin: 2px 0 0;
+}
+.footer-telegram-link{
+  font-size: 9px;
+  font-weight: 400;
+  color: var(--muted);
+  text-decoration: none;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+.footer-telegram-link:hover,
+.footer-telegram-link:focus{
+  opacity: 1;
+  text-decoration: underline;
+}
 
 /* Grande título recolhe ao rolar - removido por incompatibilidade */
 /* As propriedades animation-timeline e animation-range não são suportadas amplamente */

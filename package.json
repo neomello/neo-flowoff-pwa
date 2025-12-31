@@ -39,6 +39,7 @@
   ],
   "dependencies": {
     "@metamask/smart-accounts-kit": "^0.3.0",
+    "@reown/walletkit": "^1.4.1",
     "@storacha/client": "latest",
     "@tanstack/react-query": "^5.90.16",
     "@web3auth/base": "^9.7.0",
