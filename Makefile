@@ -47,6 +47,12 @@ build: ## Build da PWA (otimiza assets)
 	@if [ -d "public" ]; then \
 		cp -r public dist/; \
 	fi
+	@# Copia pasta api/ (funções serverless para Vercel)
+	@if [ -d "api" ]; then \
+		echo "📦 Copiando funções serverless (api/)..."; \
+		cp -r api dist/; \
+		echo "✅ Funções serverless copiadas!"; \
+	fi
 	@# Otimiza HTML (remove apenas comentários, preserva atributos style)
 	@sed 's/<!--.*-->//g' dist/index.html > dist/index.tmp && mv dist/index.tmp dist/index.html
 	@echo "✅ Build concluído em ./dist/"

@@ -115,6 +115,15 @@ if (fs.existsSync(publicSrcDir)) {
   }
 }
 
+// Copia pasta api/ (funções serverless para Vercel)
+const apiSrcDir = path.join(rootDir, 'api');
+const apiDestDir = path.join(distDir, 'api');
+if (fs.existsSync(apiSrcDir)) {
+  console.log('📦 Copiando funções serverless (api/)...');
+  fs.cpSync(apiSrcDir, apiDestDir, { recursive: true });
+  console.log('✅ Funções serverless copiadas!');
+}
+
 // Otimiza HTML (remove comentários)
 const indexHtmlPath = path.join(distDir, 'index.html');
 if (fs.existsSync(indexHtmlPath)) {
