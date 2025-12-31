@@ -50,7 +50,7 @@ export default function Provider({ children, web3authInitialState }:
       {/* // IMP START - Setup Wagmi Provider */}
       <QueryClientProvider client={queryClient}>
         <WagmiProvider>
-        {children}
+          {children}
         </WagmiProvider>
       </QueryClientProvider>
       {/*// IMP END - Setup Wagmi Provider */}
