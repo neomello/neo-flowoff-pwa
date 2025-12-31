@@ -33,13 +33,6 @@
       "icons": [{ "src": "/public/neo_ico.png", "sizes": "96x96" }]
     },
     {
-      "name": "Chat com NEO IA",
-      "short_name": "Chat IA",
-      "description": "Conversar com a assistente NEO",
-      "url": "./#chat",
-      "icons": [{ "src": "/public/neo_ico.png", "sizes": "96x96" }]
-    },
-    {
       "name": "Projetos",
       "short_name": "Projetos",
       "description": "Ver serviços e GPTs",
@@ -51,8 +44,7 @@
     {
       "src": "/public/images/capa_neo_flowoff_webapp.png",
       "sizes": "1200x630",
-      "type": "image/png",
-      "form_factor": "wide"
+      "type": "image/png"
     }
   ],
   "related_applications": [

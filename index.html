@@ -1352,6 +1352,34 @@
 <!-- Suporte WebP com Fallback -->
 <script src="js/webp-support.js?v=1.0.0"></script>
 
+<!-- Configuração Global de Ambiente -->
+<script>
+  // Configurações globais para o frontend
+  // Carrega variáveis de ambiente do endpoint /api/config (Vercel)
+  
+  // Inicializa variáveis (podem ser sobrescritas via console)
+  window.DRPC_RPC_KEY = window.DRPC_RPC_KEY || null;
+  window.WEB3AUTH_CLIENT_ID = window.WEB3AUTH_CLIENT_ID || null;
+
+  // Carrega configurações do backend (Vercel serverless function)
+  (async function() {
+    try {
+      const response = await fetch('/api/config');
+      if (response.ok) {
+        const config = await response.json();
+        if (config.WEB3AUTH_CLIENT_ID) {
+          window.WEB3AUTH_CLIENT_ID = config.WEB3AUTH_CLIENT_ID;
+        }
+        if (config.DRPC_RPC_KEY) {
+          window.DRPC_RPC_KEY = config.DRPC_RPC_KEY;
+        }
+      }
+    } catch (error) {
+      console.warn('⚠️ Não foi possível carregar configurações do /api/config:', error);
+    }
+  })();
+</script>
+
 <!-- Wallet Manager -->
 <script src="js/wallet-provider.js?v=2.0.0"></script>
 <script src="js/wallet.js?v=2.4.0"></script>

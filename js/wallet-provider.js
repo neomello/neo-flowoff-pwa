@@ -5,7 +5,8 @@
  * - MetaMask: ✅ Funcional (MetaMask + Injected)
  * - Web3Auth: ✅ Implementado (Embedded Wallets)
  * - WalletConnect: ✅ Implementado (Reown WalletKit)
- * - Social Login: ✅ Email, Google, etc.
+ * - Social Login: ✅ Email Passwordless, GitHub, LinkedIn, Farcaster
+ * - External Wallets: ✅ Suportado via Web3Auth
  *
  * Token: $NEOFLW na Polygon Network
  */
@@ -22,30 +23,37 @@ const WALLET_SYSTEM_STATUS = {
   embedded: 'functional'
 };
 
-// Configuração Web3Auth
-const WEB3AUTH_CONFIG = {
-  clientId: process?.env?.WEB3AUTH_CLIENT_ID ||
-           process?.env?.NEXT_PUBLIC_WEB3AUTH_CLIENT_ID ||
-           'BE8xLx4TFgZYp4z5cF2gYqkQX2zQkQKz6z8zQkQKz6z8zQkQKz6z8zQkQKz6z8zQkQKz6z8zQkQKz6z8zQkQKz6z8zQkQKz6z8zQkQKz6z8', // Demo ID
-  web3AuthNetwork: 'sapphire_mainnet',
-  chainConfig: {
-    chainNamespace: 'eip155',
-    chainId: '0x89', // Polygon Mainnet
-    rpcTarget: process?.env?.WEB3AUTH_RPC_URL ||
-              process?.env?.NEXT_PUBLIC_WEB3AUTH_RPC_URL ||
-              'https://polygon-rpc.com',
-    displayName: 'Polygon Mainnet',
-    blockExplorerUrl: 'https://polygonscan.com',
-    ticker: 'MATIC',
-    tickerName: 'MATIC',
-    avatarUrl: 'https://cryptologos.cc/logos/polygon-matic-logo.png'
-  },
-  uiConfig: {
-    theme: 'dark',
-    loginMethodsOrder: ['google', 'email_passwordless', 'github', 'twitter'],
-    appLogo: 'https://flowoff.xyz/public/logos/pink_metalic.png'
-  }
-};
+// Função para obter configuração Web3Auth (dinâmica para pegar valores atualizados)
+// ⚠️ IMPORTANTE: WEB3AUTH_CLIENT_ID deve ser configurado via variável de ambiente
+// No Vercel: configure a variável WEB3AUTH_CLIENT_ID nas variáveis de ambiente
+// O valor será carregado via /api/config e injetado em window.WEB3AUTH_CLIENT_ID
+function getWeb3AuthConfig() {
+  return {
+    clientId: window?.WEB3AUTH_CLIENT_ID || null, // Carregado via /api/config
+    web3AuthNetwork: 'sapphire_mainnet',
+    chainConfig: {
+      chainNamespace: 'eip155',
+      chainId: '0x89', // Polygon Mainnet
+      rpcTarget: window?.DRPC_RPC_KEY || 'null', // DRPC_RPC_KEY já é URL completa
+      displayName: 'Polygon Mainnet',
+      blockExplorerUrl: 'https://polygonscan.com',
+      ticker: 'MATIC',
+      tickerName: 'MATIC',
+      avatarUrl: 'https://cryptologos.cc/logos/polygon-matic-logo.png'
+    },
+    uiConfig: {
+      theme: 'dark',
+      // Métodos de login configurados no dashboard Web3Auth:
+      // - Email Passwordless
+      // - GitHub
+      // - LinkedIn
+      // - Farcaster
+      // MetaMask e External Wallets são conectores de wallet (não aparecem aqui)
+      loginMethodsOrder: ['email_passwordless', 'github', 'linkedin', 'farcaster'],
+      appLogo: 'https://flowoff.xyz/public/logos/pink_metalic.png'
+    }
+  };
+}
 
 // Instâncias globais
 let web3authInstance = null;
@@ -125,7 +133,14 @@ async function initWeb3Auth() {
     const { Web3AuthModal: Web3AuthModalClass } = await import('@web3auth/modal');
     Web3AuthModal = Web3AuthModalClass;
 
-    web3authInstance = new Web3AuthModal(WEB3AUTH_CONFIG);
+    // Obtém configuração dinamicamente (para pegar valores atualizados de window)
+    const config = getWeb3AuthConfig();
+    
+    if (!config.clientId) {
+      console.warn('⚠️ WEB3AUTH_CLIENT_ID não configurado. Configure a variável no Vercel.');
+    }
+
+    web3authInstance = new Web3AuthModal(config);
 
     await web3authInstance.initModal();
     console.log('✅ Web3Auth inicializado');

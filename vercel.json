@@ -82,7 +82,11 @@
   ],
   "rewrites": [
     {
-      "source": "/((?!api|_next|public|.*\\..*).*)",
+      "source": "/desktop",
+      "destination": "/desktop.html"
+    },
+    {
+      "source": "/((?!api|_next|public|desktop|.*\\..*).*)",
       "destination": "/index.html"
     }
   ],

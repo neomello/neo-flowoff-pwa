@@ -988,7 +988,7 @@ class WalletManager {
                   chainId: '0x89',
                   chainName: 'Polygon Mainnet',
                   nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 },
-                  rpcUrls: ['https://polygon-rpc.com'],
+                  rpcUrls: [window?.DRPC_RPC_KEY || 'https://polygon-rpc.com'], // DRPC_RPC_KEY já é URL completa
                   blockExplorerUrls: ['https://polygonscan.com']
                 }]
               });
@@ -1164,6 +1164,8 @@ class WalletManager {
 
     // Lista de RPCs da Polygon (com fallback)
     const rpcEndpoints = [
+      // DRPC primeiro se disponível (DRPC_RPC_KEY já é URL completa)
+      ...(window?.DRPC_RPC_KEY ? [window.DRPC_RPC_KEY] : []),
       'https://polygon-rpc.com',
       'https://rpc-mainnet.matic.network',
       'https://polygon-mainnet.g.alchemy.com/v2/demo',

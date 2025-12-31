@@ -10,23 +10,11 @@ NODE_ENV=development
 PORT=3000
 
 # ----------------------------------------------------------------------------
-# APIs DE IA (LLM) - Configure no painel Vercel para produção
-# ----------------------------------------------------------------------------
-# Google API Key para Gemini (obtenha em https://makersuite.google.com/app/apikey)
-GOOGLE_API_KEY=seu_token_aqui
-
-# Modelo Gemini a ser usado (padrão: gemini-2.0-flash-exp)
-GEMINI_MODEL=gemini-2.0-flash-exp
-
-# Modelo LLM alternativo (fallback se GEMINI_MODEL não estiver definido)
-# LLM_MODEL=gemini-2.0-flash-exp
-
-# ----------------------------------------------------------------------------
 # METAMASK EMBEDDED WALLETS (Web3Auth) - Autenticação de Usuários
 # ----------------------------------------------------------------------------
 # MetaMask Embedded Wallets (anteriormente Web3Auth) fornece infraestrutura
 # de wallet embutida plugável para simplificar integração Web3 e onboarding.
-# 
+#
 # Client ID do MetaMask Embedded Wallets (obtenha em https://dashboard.web3auth.io)
 # Versão privada (backend/scripts)
 WEB3AUTH_CLIENT_ID=seu_web3auth_client_id_aqui
@@ -36,21 +24,18 @@ WEB3AUTH_CLIENT_ID=seu_web3auth_client_id_aqui
 NEXT_PUBLIC_WEB3AUTH_CLIENT_ID=seu_web3auth_client_id_aqui
 
 # ----------------------------------------------------------------------------
-# WEB3AUTH - RPC e Bundler (RECOMENDADO)
+# DRPC RPC (RPC Pago - Recomendado para Produção)
 # ----------------------------------------------------------------------------
-# ⚠️ IMPORTANTE: Web3Auth fornece RPC e Bundler próprios!
-# Após configurar a chain no dashboard do Web3Auth, você receberá URLs próprias
-# que substituem a necessidade do Infura
-#
-# RPC URL do Web3Auth (obtenha no dashboard após configurar Polygon chain)
-# Formato: https://api.web3auth.io/infura-service/v1/0x89/SEU_TOKEN
-WEB3AUTH_RPC_URL=https://api.web3auth.io/infura-service/v1/0x89/SEU_TOKEN_AQUI
+# DRPC fornece RPC dedicado e confiável para Polygon
+# Obtenha sua chave em: https://drpc.org
+# ⚠️ IMPORTANTE: Use a URL completa (ex: https://lb.drpc.live/polygon/sua_chave_aqui)
+# Se configurada, será usada automaticamente no frontend
+DRPC_RPC_KEY=https://lb.drpc.live/polygon/sua_chave_aqui
 
-# Versão pública (frontend/Next.js) - ⚠️ EXPOSTA NO FRONTEND
-NEXT_PUBLIC_WEB3AUTH_RPC_URL=https://api.web3auth.io/infura-service/v1/0x89/SEU_TOKEN_AQUI
-
-# Bundler URL do Web3Auth (obtenha no dashboard após configurar Polygon chain)
-# Formato: https://api.web3auth.io/infura-service/v1/0x89/SEU_TOKEN
+# ----------------------------------------------------------------------------
+# WEB3AUTH - Autenticação (RECOMENDADO)
+# ----------------------------------------------------------------------------
+# MetaMask Embedded Wallets (anteriormente Web3Auth) para autenticação de usuários
 WEB3AUTH_BUNDLER_URL=https://api.web3auth.io/infura-service/v1/0x89/SEU_TOKEN_AQUI
 
 # Versão pública (frontend/Next.js) - ⚠️ EXPOSTA NO FRONTEND
@@ -144,15 +129,6 @@ UCAN_TOKEN=seu_token_ucan_aqui
 # PRIVATE_KEY=sua_private_key_aqui
 
 # ----------------------------------------------------------------------------
-# FACEBOOK MESSENGER (Opcional - para integração de chatbot)
-# ----------------------------------------------------------------------------
-# Token de verificação do Facebook Messenger (webhook)
-FB_MESSENGER_VERIFY_TOKEN=flowoff-messenger-verify-token
-
-# App Secret do Facebook Messenger (para validação de webhooks)
-FB_MESSENGER_APP_SECRET=seu_app_secret_aqui
-
-# ----------------------------------------------------------------------------
 # WALLET PROVIDER (Token $NEOFLW)
 # ----------------------------------------------------------------------------
 # Configuração para provedor de wallet (ZeroDev/WalletConnect/Base x402)
@@ -228,9 +204,6 @@ CLOUDINARY_API_SECRET=seu_api_secret_aqui
 #   - STORACHA_UCAN (NUNCA exponha)
 #   - STORACHA_DID (pode ser pública)
 #   - STORACHA_PRIVATE_KEY (NUNCA exponha)
-#   - GOOGLE_API_KEY (NUNCA exponha - use apenas no backend)
-#   - FB_MESSENGER_APP_SECRET (NUNCA exponha)
-#   - FB_MESSENGER_VERIFY_TOKEN (pode ser pública, mas melhor privada)
 #   - CLOUDINARY_API_SECRET (NUNCA exponha - use apenas no backend)
 #   - BUILD_BUMP_VERSION (apenas para CI/CD)
 #

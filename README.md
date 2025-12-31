@@ -34,12 +34,15 @@ Crie um arquivo `.env.local`:
 # Web3Auth (Autenticação)
 NEXT_PUBLIC_WEB3AUTH_CLIENT_ID=seu_web3auth_client_id
 
-# Web3Auth (RPC e Bundler - RECOMENDADO)
-# Obtenha estas URLs após configurar Polygon no dashboard Web3Auth
-WEB3AUTH_RPC_URL=https://api.web3auth.io/infura-service/v1/0x89/SEU_TOKEN
-WEB3AUTH_BUNDLER_URL=https://api.web3auth.io/infura-service/v1/0x89/SEU_TOKEN
+# DRPC (RPC Pago - MAIS RECOMENDADO)
+# RPC dedicado e confiável para Polygon - melhor performance
+# Obtenha em: https://drpc.org
+# ⚠️ IMPORTANTE: Use a URL completa (ex: https://lb.drpc.live/polygon/sua_chave_aqui)
+DRPC_RPC_KEY=https://lb.drpc.live/polygon/sua_chave_aqui
 
-# Infura (OPCIONAL - fallback se não usar Web3Auth RPC/Bundler)
+# Web3Auth (Autenticação - RECOMENDADO)
+# Client ID para autenticação Web3Auth
+NEXT_PUBLIC_WEB3AUTH_CLIENT_ID=seu_web3auth_client_id
 INFURA_API_KEY=sua_infura_api_key
 
 # Storacha

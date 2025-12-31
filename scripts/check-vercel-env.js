@@ -39,8 +39,6 @@ const EXPECTED_VARS = {
     'IPNS_KEY_NAME',
     'IPNS_KEY_ID',
     'UCAN_TOKEN',
-    'GOOGLE_API_KEY',
-    'GEMINI_MODEL',
   ],
   // Opcionais
   optional: [

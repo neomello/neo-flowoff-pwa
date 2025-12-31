@@ -26,6 +26,30 @@ beforeEach(() => {
       log: vi.fn(),
       warn: vi.fn()
     };
+    
+    // Mock de SecurityUtils
+    window.SecurityUtils = {
+      sanitizeHTML: (str) => str || '',
+      isValidEthereumAddress: (addr) => /^0x[a-fA-F0-9]{40}$/.test(addr || ''),
+      isValidEmail: (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email || ''),
+      sanitizeInput: (input, type) => String(input || ''),
+      safeLocalStorageGet: (key, defaultValue) => {
+        try {
+          const item = localStorage.getItem(key);
+          return item ? JSON.parse(item) : defaultValue;
+        } catch {
+          return defaultValue;
+        }
+      },
+      safeLocalStorageSet: (key, value) => {
+        try {
+          localStorage.setItem(key, JSON.stringify(value));
+          return true;
+        } catch {
+          return false;
+        }
+      }
+    };
   }
   
   // Mock de fetch

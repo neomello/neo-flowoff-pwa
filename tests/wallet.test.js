@@ -340,10 +340,22 @@ describe('WalletManager', () => {
     it('deve criar toast com mensagem', () => {
       const manager = new WalletManager();
       
+      // Garantir que document.body existe
+      expect(document.body).toBeTruthy();
+      
       manager.showToast('Teste de mensagem');
       
-      const toasts = document.querySelectorAll('div[style*="position: fixed"]');
+      // Procura pela classe wallet-toast
+      const toasts = document.querySelectorAll('.wallet-toast');
+      // Se não encontrar pela classe, procura por qualquer div filho do body
+      const bodyChildren = Array.from(document.body.children);
+      const toastElement = bodyChildren.find(child => 
+        child.classList?.contains('wallet-toast') || 
+        child.textContent?.includes('Teste de mensagem')
+      );
+      
       expect(toasts.length).toBeGreaterThan(0);
+      expect(toasts[0].textContent).toContain('Teste de mensagem');
     });
     
     it('deve remover toast após timeout', async () => {
@@ -555,6 +567,7 @@ function createWalletManagerMock() {
 
     showToast(message) {
       const toast = document.createElement('div');
+      toast.className = 'wallet-toast'; // Adiciona classe para o teste encontrar
       toast.style.cssText = `
         position: fixed;
         bottom: 100px;

@@ -14,8 +14,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const PORT = process.env.PORT || 3000;
-const MESSENGER_VERIFY_TOKEN = process.env.FB_MESSENGER_VERIFY_TOKEN || 'flowoff-messenger-verify-token';
-const MESSENGER_APP_SECRET = process.env.FB_MESSENGER_APP_SECRET || '';
 const isProduction = process.env.NODE_ENV === 'production';
 const log = (...args) => {
   // Sempre loga em desenvolvimento, mesmo se NODE_ENV não estiver definido
@@ -23,9 +21,6 @@ const log = (...args) => {
     console.log(...args);
   }
 };
-const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY || '';
-// Modelo via variáveis de ambiente (valor padrão seguro)
-const GEMINI_MODEL = process.env.GEMINI_MODEL || process.env.LLM_MODEL || 'gemini-2.0-flash-exp';
 
 // MIME types
 const mimeTypes = {
@@ -41,13 +36,6 @@ const mimeTypes = {
   '.webmanifest': 'application/manifest+json'
 };
 
-  const verifyMessengerSignature = (signature = '', body = '') => {
-    if (!signature || !MESSENGER_APP_SECRET) return false;
-  const [algorithm, hash] = signature.split('=');
-  if (algorithm !== 'sha256' || !hash) return false;
-  const expectedHash = createHmac('sha256', MESSENGER_APP_SECRET).update(body).digest('hex');
-  return hash === expectedHash;
-};
 
 // Função auxiliar para configurar CORS de forma segura
 function setCORSHeaders(req, res) {
@@ -79,61 +67,6 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // Messenger webhook (GET verification, POST events)
-  if (cleanPath === '/webhook/messenger') {
-    if (req.method === 'GET') {
-      const hubMode = parsedUrl.query['hub.mode'];
-      const hubToken = parsedUrl.query['hub.verify_token'];
-      const challenge = parsedUrl.query['hub.challenge'];
-      if (hubMode === 'subscribe' && hubToken === MESSENGER_VERIFY_TOKEN) {
-        res.writeHead(200, { 'Content-Type': 'text/plain' });
-        res.end(challenge || '');
-      } else {
-        res.writeHead(403, { 'Content-Type': 'text/plain' });
-        res.end('Verify token mismatch');
-      }
-      return;
-    }
-
-    if (req.method === 'POST') {
-      let payload = '';
-      req.on('data', (chunk) => {
-        payload += chunk;
-      });
-
-      req.on('end', () => {
-        const signature = req.headers['x-hub-signature-256'];
-        const signatureValid = !MESSENGER_APP_SECRET || verifyMessengerSignature(signature, payload);
-        if (MESSENGER_APP_SECRET && !signatureValid) {
-          res.writeHead(401, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ success: false, error: 'Invalid signature' }));
-          return;
-        }
-
-        let parsed;
-        try {
-          parsed = payload ? JSON.parse(payload) : {};
-        } catch (error) {
-          res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ success: false, error: 'Invalid JSON payload' }));
-          return;
-        }
-
-        log('Messenger webhook event received:', parsed.object || 'unknown');
-
-        res.setHeader('Content-Type', 'application/json');
-        setCORSHeaders(req, res);
-        res.writeHead(200);
-        res.end(JSON.stringify({ success: true }));
-      });
-
-      return;
-    }
-
-    res.writeHead(405, { 'Content-Type': 'text/plain' });
-    res.end('Method not allowed');
-    return;
-  }
 
   // API endpoints
   if (cleanPath === '/api/health') {
@@ -179,9 +112,7 @@ const server = http.createServer((req, res) => {
     setCORSHeaders(req, res);
     res.writeHead(200);
     res.end(JSON.stringify({
-      GOOGLE_API_KEY: GOOGLE_API_KEY || '',
-      GEMINI_MODEL: GEMINI_MODEL,
-      LLM_MODEL: GEMINI_MODEL
+      message: 'API config endpoint - apenas para desenvolvimento'
     }));
     return;
   }
@@ -310,89 +241,9 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // Endpoint removido: /api/invertexto
+  // Endpoints removidos: /api/invertexto e /api/google-knowledge
   // Descentralizado: não dependemos de APIs externas centralizadas
   // Validação local via SimpleValidator no frontend
-
-  if (cleanPath === '/api/google-knowledge' && req.method === 'GET') {
-    const queryParam = parsedUrl.query.q;
-    if (!queryParam) {
-      res.setHeader('Content-Type', 'application/json');
-      setCORSHeaders(req, res);
-      res.writeHead(400);
-      res.end(JSON.stringify({ success: false, error: 'Query is required' }));
-      return;
-    }
-
-    // Validar tamanho da query
-    if (queryParam.length > 200) {
-      res.setHeader('Content-Type', 'application/json');
-      setCORSHeaders(req, res);
-      res.writeHead(400);
-      res.end(JSON.stringify({ success: false, error: 'Query muito longa' }));
-      return;
-    }
-
-    if (!GOOGLE_API_KEY) {
-      res.setHeader('Content-Type', 'application/json');
-      setCORSHeaders(req, res);
-      res.writeHead(500);
-      res.end(JSON.stringify({
-        success: false,
-        error: 'GOOGLE_API_KEY is not configured'
-      }));
-      return;
-    }
-
-    (async () => {
-      const endpoint = 'https://kgsearch.googleapis.com/v1/entities:search';
-      try {
-        const response = await axios.get(endpoint, {
-          params: {
-            query: queryParam,
-            key: GOOGLE_API_KEY,
-            limit: 3,
-            indent: false,
-            languages: 'pt-BR,en'
-          },
-          timeout: 10000
-        });
-
-        const elements = response.data?.itemListElement || [];
-        const entries = elements.map(({ result }) => {
-          if (!result) return null;
-          const parts = [];
-          if (result.name) parts.push(result.name);
-          if (result.description) parts.push(result.description);
-          if (result.detailedDescription?.articleBody) {
-            parts.push(result.detailedDescription.articleBody);
-          }
-          return parts.filter(Boolean).join(' — ');
-        }).filter(Boolean);
-
-        const summary = entries.slice(0, 3).join(' | ');
-
-        res.setHeader('Content-Type', 'application/json');
-        setCORSHeaders(req, res);
-        res.writeHead(200);
-        res.end(JSON.stringify({
-          success: true,
-          summary: summary || 'Nenhuma informação adicional foi encontrada.',
-          entries
-        }));
-      } catch (error) {
-        log('Google knowledge failure:', error.message);
-        res.setHeader('Content-Type', 'application/json');
-        setCORSHeaders(req, res);
-        res.writeHead(502);
-        res.end(JSON.stringify({
-          success: false,
-          error: 'Erro ao consultar o Google Knowledge Graph'
-        }));
-      }
-    })();
-    return;
-  }
 
   // Serve index.html for root
   if (cleanPath === '/') {

@@ -64,7 +64,9 @@ try {
 // Copia arquivos principais
 const filesToCopy = [
   'index.html',
+  'desktop.html',
   'styles.css',
+  'desktop.css',
   // app.js na raiz não precisa ser copiado (é apenas wrapper)
   'manifest.webmanifest',
   'sw.js',
