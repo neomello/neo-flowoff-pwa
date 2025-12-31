@@ -2,7 +2,7 @@
 
 // IMP START - Setup Web3Auth Provider
 import { Web3AuthProvider, type Web3AuthContextConfig } from "@web3auth/modal/react";
-import { IWeb3AuthState, WEB3AUTH_NETWORK } from "@web3auth/modal";
+import { IWeb3AuthState, WEB3AUTH_NETWORK, WALLET_CONNECTORS, AUTH_CONNECTION } from "@web3auth/modal";
 // IMP END - Setup Web3Auth Provider
 // IMP START - Setup Wagmi Provider
 import { WagmiProvider } from "@web3auth/modal/react/wagmi";
@@ -33,9 +33,34 @@ const web3AuthContextConfig: Web3AuthContextConfig = {
     // IMP START - SSR
     ssr: true,
     // IMP END - SSR
-  }
+  },
+  connectors: {
+    auth: {
+      loginMethods: {
+        google: {
+          name: "google",
+          showOnModal: true,
+          showOnDesktop: true,
+          showOnMobile: true,
+        },
+      },
+      showOnModal: true,
+      showOnDesktop: true,
+      showOnMobile: true,
+    },
+  },
 };
 // IMP END - Config
+
+// IMP START - Google Auth Connection
+export const connectToGoogle = async () => {
+  const { connect } = await import("@web3auth/modal/react");
+  await connect(WALLET_CONNECTORS.AUTH, {
+    authConnection: AUTH_CONNECTION.GOOGLE,
+    authConnectionId: "w3a-google-demo",
+  });
+};
+// IMP END - Google Auth Connection
 
 // IMP START - SSR
 export default function Provider({ children, web3authInitialState }:

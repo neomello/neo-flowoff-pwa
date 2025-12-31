@@ -1,5 +1,5 @@
-import { useWeb3AuthConnect, useWeb3AuthDisconnect, useWeb3AuthUser } from "@web3auth/modal/react";
-// IMP START - Blockchain Calls  
+import { useWeb3AuthConnect, useWeb3AuthDisconnect, useWeb3AuthUser, WALLET_CONNECTORS, AUTH_CONNECTION } from "@web3auth/modal/react";
+// IMP START - Blockchain Calls
 import { useAccount } from "wagmi";
 import { SendTransaction } from "./wagmi/sendTransaction";
 import { Balance } from "./wagmi/getBalance";
@@ -25,6 +25,19 @@ function App() {
       console.log(...args);
     }
   }
+
+  // IMP START - Google Auth Connection
+  const connectToGoogleWithIdToken = async (idToken: string) => {
+    await connect(WALLET_CONNECTORS.AUTH, {
+      authConnectionId: "w3a-google-demo",
+      authConnection: AUTH_CONNECTION.GOOGLE,
+      idToken,
+      extraLoginOptions: {
+        isUserIdCaseSensitive: false,
+      },
+    });
+  };
+  // IMP END - Google Auth Connection
 
   const loggedInView = (
     <div className="grid">
@@ -61,6 +74,9 @@ function App() {
     <div className="grid">
       <button onClick={() => connect()} className="card">
         Login
+      </button>
+      <button onClick={() => connectToGoogleWithIdToken("sample-id-token")} className="card">
+        Login with Google
       </button>
       {connectLoading && <div className="loading">Connecting...</div>}
       {connectError && <div className="error">{connectError.message}</div>}
