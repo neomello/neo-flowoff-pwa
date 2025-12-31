@@ -13,7 +13,7 @@
  *   UCAN_TOKEN=<token> node scripts/deploy-ipfs.js
  */
 
-import { execSync } from 'child_process';
+import { execSync, execFileSync } from 'child_process';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import dotenv from 'dotenv';
@@ -471,8 +471,8 @@ async function uploadToIPFSLocal() {
   }
 
   // Faz upload para IPFS
-  const command = `ipfs add -r --pin --quiet ${DIST_DIR}`;
-  const output = execSync(command, {
+  const args = ['add', '-r', '--pin', '--quiet', DIST_DIR];
+  const output = execFileSync('ipfs', args, {
     encoding: 'utf-8',
     cwd: PROJECT_ROOT
   });
