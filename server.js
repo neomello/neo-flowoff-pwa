@@ -399,6 +399,11 @@ const server = http.createServer((req, res) => {
     cleanPath = '/index.html';
   }
 
+  // Serve desktop.html for /desktop route
+  if (cleanPath === '/desktop') {
+    cleanPath = '/desktop.html';
+  }
+
   const filePath = path.join(__dirname, cleanPath);
   const ext = path.extname(filePath).toLowerCase();
   const mimeType = mimeTypes[ext] || 'text/plain';
