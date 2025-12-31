@@ -121,13 +121,13 @@
         <!-- Container do menu à direita -->
         <div class="header-menu-container">
           <!-- Desktop: Botão direto -->
-          <button id="wallet-btn" class="wallet-connect-btn desktop-only" onclick="window.WalletManager?.toggle()">
+          <button type="button" id="wallet-btn" class="wallet-connect-btn desktop-only" onclick="window.WalletManager?.toggle()">
             <span class="wallet-btn-text">ACESSAR</span>
             <span class="wallet-btn-icon">→</span>
           </button>
           
           <!-- Mobile: Menu hambúrguer -->
-          <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Menu">
+          <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Menu">
             <span class="hamburger-line"></span>
             <span class="hamburger-line"></span>
             <span class="hamburger-line"></span>
@@ -137,7 +137,7 @@
       
       <!-- Mobile Dropdown Menu -->
       <div class="mobile-menu-dropdown" id="mobile-menu-dropdown">
-        <button id="wallet-btn-mobile" class="wallet-connect-btn-mobile" onclick="window.WalletManager?.toggle(); closeMobileMenu();">
+        <button type="button" id="wallet-btn-mobile" class="wallet-connect-btn-mobile" onclick="window.WalletManager?.toggle(); closeMobileMenu();">
           <span class="wallet-btn-icon-mobile">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/>
@@ -269,28 +269,28 @@
               <h4>Sites e WebApp's</h4>
               <p>Performance, acessibilidade, conversão. SEO Avançado e Mobile First.</p>
             </div>
-            <button class="chip">ver</button>
+            <button type="button" class="chip">ver</button>
           </div>
           <div class="list-item" data-modal="saas-baas">
             <div>
               <h4>SAAS / BAAS</h4>
               <p>Área do cliente, sistema de gestão ou uma nova solução.</p>
             </div>
-            <button class="chip">ver</button>
+            <button type="button" class="chip">ver</button>
           </div>
           <div class="list-item" data-modal="tokenizacao">
             <div>
               <h4>Tokenização de Ativos</h4>
               <p>Sua empresa com sua propria cripto.</p>
             </div>
-            <button class="chip">ver</button>
+            <button type="button" class="chip">ver</button>
           </div>
           <div class="list-item" data-modal="agentes-ia">
             <div>
               <h4>Agentes IA e Chatbots</h4>
               <p>IA para seu negócio, ou que facilite seu dia a dia.</p>
             </div>
-            <button class="chip">ver</button>
+            <button type="button" class="chip">ver</button>
           </div>
         </div>
 
@@ -308,7 +308,7 @@
               <h3>🪙 NEOFLW</h3>
               <p class="neoflw-subtitle">Token de infraestrutura</p>
             </div>
-            <button class="neoflw-toggle" aria-label="Expandir informações">
+            <button type="button" class="neoflw-toggle" aria-label="Expandir informações">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M6 9L12 15L18 9" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
@@ -767,7 +767,7 @@
             <div><b>FlowPay</b><span>Pagamentos integrados</span></div>
             <div class="ecosystem-progress">
               <div class="xp-bar">
-                <div class="xp-fill" style="width: 100%;"></div>
+                <div class="xp-fill xp-fill-100"></div>
                 <span class="xp-text">100%</span>
               </div>
               <div class="progress-label">Solicite agora</div>
@@ -779,7 +779,7 @@
             <div><b>NEØ Protocol</b><span>Camada tecnológica</span></div>
             <div class="ecosystem-progress">
               <div class="xp-bar">
-                <div class="xp-fill" style="width: 65%;"></div>
+                <div class="xp-fill xp-fill-65"></div>
                 <span class="xp-text">65%</span>
               </div>
               <div class="progress-label">Em desenvolvimento</div>
@@ -790,7 +790,7 @@
             <div><b>POSTØN</b><span>Gestão de redes sociais</span></div>
             <div class="ecosystem-progress">
               <div class="xp-bar">
-                <div class="xp-fill" style="width: 78%;"></div>
+                <div class="xp-fill xp-fill-78"></div>
                 <span class="xp-text">78%</span>
               </div>
               <div class="progress-label">Em testes</div>
@@ -801,7 +801,7 @@
             <div><b>PRO.IA</b><span>Treinamento IA</span></div>
             <div class="ecosystem-progress">
               <div class="xp-bar">
-                <div class="xp-fill" style="width: 90%;"></div>
+                <div class="xp-fill xp-fill-90"></div>
                 <span class="xp-text">90%</span>
               </div>
               <div class="progress-label">Lançamento em breve</div>
@@ -1359,14 +1359,14 @@
     <div class="modal-content">
       <div class="modal-header">
         <h3>Desenvolvimento de Sites e WebApp's</h3>
-        <button class="modal-close" data-close="modal-site-webapp">×</button>
+        <button type="button" class="modal-close" data-close="modal-site-webapp">×</button>
       </div>
       <div class="modal-body">
         <p>A maioria ainda vende "site bonito". A gente constrói ativos digitais com arquitetura de conversão e tecnologia que 98% do mercado nem sabe que existe.</p>
         <p>Do código ao design, cada elemento é pensado pra escalar. Velocidade, acessibilidade, SEO e experiências que colam na mente. É inovação com função, não firula com corzinha pastel.</p>
       </div>
       <div class="modal-footer">
-        <button class="btn primary" data-close="modal-site-webapp">Entendi</button>
+        <button type="button" class="btn primary" data-close="modal-site-webapp">Entendi</button>
         <img src="public/neowhite.png" alt="NEO" class="modal-signature">
       </div>
     </div>
@@ -1376,7 +1376,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h3>SAAS / BAAS</h3>
-        <button class="modal-close" data-close="modal-saas-baas">×</button>
+        <button type="button" class="modal-close" data-close="modal-saas-baas">×</button>
       </div>
       <div class="modal-body">
         <p>A maioria entrega software. Nós entregamos máquinas de escala, com lógica de negócio embutida, integração nativa e prontos pra rodar no mundo real.</p>
@@ -1384,7 +1384,7 @@
         <p>Do MVP à plataforma robusta você escolhe o estágio, a gente entrega o motor.</p>
       </div>
       <div class="modal-footer">
-        <button class="btn primary" data-close="modal-saas-baas">Entendi</button>
+        <button type="button" class="btn primary" data-close="modal-saas-baas">Entendi</button>
         <img src="public/neowhite.png" alt="NEO" class="modal-signature">
       </div>
     </div>
@@ -1394,7 +1394,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h3>🧬 Tokenização de Ativos</h3>
-        <button class="modal-close" data-close="modal-tokenizacao">×</button>
+        <button type="button" class="modal-close" data-close="modal-tokenizacao">×</button>
       </div>
       <div class="modal-body">
         <p>Esquece o "XP genérico" das gamificações rasas.</p>
@@ -1403,29 +1403,29 @@
         <p>Do jogo ao negócio, a tokenização é a ponte entre engajamento e faturamento. E o melhor: já fazemos isso.</p>
 
         <!-- Seção Token NEOFLW - Preparada para integração futura -->
-        <div class="token-neoflw-section" style="margin-top: 32px; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.1);">
-          <h4 style="margin-bottom: 16px; color: #fff;">🪙 Token $NEOFLW na Polygon</h4>
-          <p style="margin-bottom: 24px; color: rgba(255,255,255,0.8); font-size: 14px;">
+        <div class="token-neoflw-section">
+          <h4>🪙 Token $NEOFLW na Polygon</h4>
+          <p class="widget-description">
             Conecte sua wallet para interagir com o token $NEOFLW
           </p>
-          
+
           <!-- Placeholder para ConnectEmbed Widget (ZeroDev/WalletConnect) -->
-          <div id="connect-embed-container" style="margin-bottom: 24px;">
-            <div style="padding: 24px; background: rgba(255,255,255,0.03); border-radius: 12px; text-align: center; border: 1px dashed rgba(255,255,255,0.1);">
-              <p style="color: rgba(255,255,255,0.6); margin: 0;">Widget de conexão será integrado em breve</p>
+          <div id="connect-embed-container" class="widget-container">
+            <div class="widget-placeholder">
+              <p>Widget de conexão será integrado em breve</p>
             </div>
           </div>
-          
+
           <!-- Placeholder para BuyWidget (ZeroDev/WalletConnect) -->
           <div id="buy-widget-container">
-            <div style="padding: 24px; background: rgba(255,255,255,0.03); border-radius: 12px; text-align: center; border: 1px dashed rgba(255,255,255,0.1);">
-              <p style="color: rgba(255,255,255,0.6); margin: 0;">Widget de compra será integrado em breve</p>
+            <div class="widget-placeholder">
+              <p>Widget de compra será integrado em breve</p>
             </div>
           </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn primary" data-close="modal-tokenizacao">Entendi</button>
+        <button type="button" class="btn primary" data-close="modal-tokenizacao">Entendi</button>
         <img src="public/neowhite.png" alt="NEO" class="modal-signature">
       </div>
     </div>
@@ -1435,7 +1435,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h3>Agentes IA e Chatbots</h3>
-        <button class="modal-close" data-close="modal-agentes-ia">×</button>
+        <button type="button" class="modal-close" data-close="modal-agentes-ia">×</button>
       </div>
       <div class="modal-body">
         <p>Chatbot virou commodity. A diferença está no nível de inteligência e integração.</p>
@@ -1444,7 +1444,7 @@
         <p>É como ter 10 colaboradores que não dormem — programados pra escalar.</p>
       </div>
       <div class="modal-footer">
-        <button class="btn primary" data-close="modal-agentes-ia">Entendi</button>
+        <button type="button" class="btn primary" data-close="modal-agentes-ia">Entendi</button>
         <img src="public/neowhite.png" alt="NEO" class="modal-signature">
       </div>
     </div>

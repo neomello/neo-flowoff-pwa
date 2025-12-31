@@ -27,7 +27,7 @@ class DesktopExperience {
    * Inicializa a experiência desktop
    */
   init() {
-    console.log('🚀 Inicializando Desktop Experience v2.0.0');
+    window.Logger?.log('🚀 Inicializando Desktop Experience v2.0.0');
 
     // Verifica se deve redirecionar para mobile
     if (this.shouldRedirectToMobile()) {
@@ -49,7 +49,7 @@ class DesktopExperience {
     // Animação de entrada
     this.playIntroAnimation();
 
-    console.log('✅ Desktop Experience inicializada');
+    window.Logger?.log('✅ Desktop Experience inicializada');
   }
 
   /**
@@ -92,7 +92,7 @@ class DesktopExperience {
    * Redireciona para versão mobile
    */
   redirectToMobile() {
-    console.log('📱 Redirecionando para versão mobile...');
+    window.Logger?.log('📱 Redirecionando para versão mobile...');
 
     localStorage.setItem('last-mobile-redirect', Date.now().toString());
     localStorage.setItem('mobile-redirect-from', 'desktop');
@@ -283,7 +283,7 @@ class DesktopExperience {
       return;
     }
 
-    console.log(`📍 Navegando para seção: ${sectionId}`);
+    window.Logger?.log(`📍 Navegando para seção: ${sectionId}`);
 
     // Atualiza navegação
     this.updateNavigation(sectionId);
@@ -526,7 +526,7 @@ class DesktopExperience {
       }, 2000);
 
     } catch (error) {
-      console.error('Erro ao enviar formulário:', error);
+      window.Logger?.error('Erro ao enviar formulário:', error);
       this.showToast('Erro ao enviar mensagem. Tente novamente.', 'error');
     }
   }
@@ -600,7 +600,7 @@ class DesktopExperience {
    * Destroi a experiência desktop
    */
   destroy() {
-    console.log('🗑️ Destruindo Desktop Experience');
+    window.Logger?.log('🗑️ Destruindo Desktop Experience');
 
     // Remove event listeners
     window.removeEventListener('resize', this.handleResize);
@@ -697,5 +697,5 @@ window.debugDesktop = {
   })
 };
 
-console.log('🎯 Desktop Experience v2.0.0 carregada');
-console.log('💡 Use window.debugDesktop para debugging');
+window.Logger?.log('🎯 Desktop Experience v2.0.0 carregada');
+window.Logger?.log('💡 Use window.debugDesktop para debugging');

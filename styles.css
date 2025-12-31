@@ -1312,6 +1312,44 @@ body.modal-open #app > *:not(.project-modal):not(.toast-notifications-container)
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+
+/* === CORREÇÕES WEBHINT === */
+
+/* Token NEOFLW section styling */
+.token-neoflw-section {
+  margin-top: 32px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.token-neoflw-section h4 {
+  margin-bottom: 16px;
+  color: #fff;
+}
+
+/* Estilos para placeholders de widgets */
+.widget-placeholder {
+  padding: 24px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 12px;
+  text-align: center;
+  border: 1px dashed rgba(255,255,255,0.1);
+}
+
+.widget-placeholder p {
+  color: rgba(255,255,255,0.6);
+  margin: 0;
+}
+
+.widget-description {
+  margin-bottom: 24px;
+  color: rgba(255,255,255,0.8);
+  font-size: 14px;
+}
+
+.widget-container {
+  margin-bottom: 24px;
+}
   line-height: 1.2;
 }
 

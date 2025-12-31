@@ -52,7 +52,7 @@ const mimeTypes = {
 // Função auxiliar para configurar CORS de forma segura
 function setCORSHeaders(req, res) {
   const allowedOrigins = isProduction
-    ? ['https://flowoff.xyz', 'https://www.flowoff.xyz', 'https://*.storacha.link', 'https://*.w3s.link']
+    ? ['https://flowoff.xyz', 'https://www.flowoff.xyz', 'https://neoflowoff.eth.link', 'https://*.storacha.link', 'https://*.w3s.link']
     : ['http://localhost:3000', 'http://127.0.0.1:3000', '*'];
 
   const origin = req.headers.origin;

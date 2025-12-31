@@ -6,7 +6,7 @@
 export function setCORSHeaders(req, res) {
   const isProduction = process.env.NODE_ENV === 'production';
   const allowedOrigins = isProduction
-    ? ['https://flowoff.xyz', 'https://www.flowoff.xyz', 'https://*.storacha.link', 'https://*.w3s.link']
+    ? ['https://flowoff.xyz', 'https://www.flowoff.xyz', 'https://neoflowoff.eth.link', 'https://*.storacha.link', 'https://*.w3s.link']
     : ['http://localhost:3000', 'http://127.0.0.1:3000', '*'];
 
   const origin = req.headers.origin || req.headers.referer?.split('/').slice(0, 3).join('/');

@@ -1,4 +1,4 @@
-import { setCORSHeaders, handleOptions } from './_utils.js';
+import { setCORSHeaders, handleOptions } from './utils.js';
 
 const MAX_BODY_SIZE = 10000; // 10KB máximo
 
