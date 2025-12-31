@@ -11,29 +11,36 @@ import React from "react";
 // IMP END - Setup Wagmi Provider
 
 // IMP START - Dashboard Registration
-const clientId = "BHgArYmWwSeq21czpcarYh0EVq2WWOzflX-NTK-tY1-1pauPzHKRRLgpABkmYiIV_og9jAvoIxQ8L3Smrwe04Lw"; // get from https://dashboard.web3auth.io
+const web3AuthNetwork: string = process.env.NEXT_PUBLIC_WEB3AUTH_NETWORK || "";
+const clientId: string = process.env.NEXT_PUBLIC_WEB3AUTH_CLIENT_ID || "";
+if (!web3AuthNetwork) {
+  throw new Error("NEXT_PUBLIC_WEB3AUTH_NETWORK is not set");
+}
+if (!clientId) {
+  throw new Error("NEXT_PUBLIC_WEB3AUTH_CLIENT_ID is not set");
+}
 // IMP END - Dashboard Registration
 
 // IMP START - Setup Wagmi Provider
 const queryClient = new QueryClient();
 // IMP END - Setup Wagmi Provider
- 
+
 // IMP START - Config
 const web3AuthContextConfig: Web3AuthContextConfig = {
-    web3AuthOptions: {
-      clientId,
-      web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_DEVNET,
-        // IMP START - SSR
-      ssr: true,
-      // IMP END - SSR
-    }
-  };
+  web3AuthOptions: {
+    clientId: clientId,
+    web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_DEVNET,
+    // IMP START - SSR
+    ssr: true,
+    // IMP END - SSR
+  }
+};
 // IMP END - Config
 
 // IMP START - SSR
-export default function Provider({ children, web3authInitialState }: 
+export default function Provider({ children, web3authInitialState }:
   { children: React.ReactNode, web3authInitialState: IWeb3AuthState | undefined }) {
-// IMP END - SSR
+  // IMP END - SSR
   return (
     // IMP START - Setup Web3Auth Provider
     // IMP START - SSR
