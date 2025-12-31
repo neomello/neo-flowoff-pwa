@@ -5,6 +5,9 @@ import Provider from "../components/provider";
 // IMP START - SSR
 import { cookieToWeb3AuthState } from "@web3auth/modal";
 // IMP END - SSR
+// IMP START - Speed Insights
+import { SpeedInsights } from "@vercel/speed-insights/next";
+// IMP END - Speed Insights
 import "./globals.css";
 
 import { Inter } from "next/font/google";
@@ -30,6 +33,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {/* // IMP START - SSR */}
         <Provider web3authInitialState={web3authInitialState}>{children}</Provider>
         {/* // IMP END - SSR */}
+        {/* // IMP START - Speed Insights */}
+        <SpeedInsights />
+        {/* // IMP END - Speed Insights */}
       </body>
     </html>
   );

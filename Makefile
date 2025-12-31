@@ -82,7 +82,7 @@ deploy-preview: build ## Deploy preview para Vercel (sem atualizar versão)
 deploy-ipfs: ## Deploy completo para IPFS/IPNS via Storacha (Web3) - atualiza versão automaticamente
 	@echo "🌐 Deploying para IPFS/IPNS via Storacha (Web3 descentralizado)..."
 	@echo "ℹ️  Nota: O script deploy-ipfs.js já atualiza a versão automaticamente antes do build"
-	@npm run deploy:ipfs
+	@node scripts/deploy-ipfs.js
 	@echo "✅ Deploy IPFS/IPNS concluído!"
 
 check-storacha: ## Verifica configuração e espaços da conta Storacha

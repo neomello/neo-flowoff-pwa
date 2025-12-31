@@ -138,6 +138,8 @@ if (!rawUCAN || rawUCAN.length < 500) {
 
 // Mantém formato original e versão limpa para tentativas
 let STORACHA_UCAN_ORIGINAL = rawUCAN ? rawUCAN.replace(/\s+/g, '').trim() : null;
+// Trata string vazia como null (não tenta usar UCAN vazio)
+STORACHA_UCAN_ORIGINAL = STORACHA_UCAN_ORIGINAL === "" ? null : STORACHA_UCAN_ORIGINAL;
 let STORACHA_UCAN = null;
 let STORACHA_UCAN_BASE64 = null;
 
