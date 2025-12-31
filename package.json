@@ -4,10 +4,12 @@
   "description": "NEOFlowOFF Token Integration with Account Abstraction",
   "main": "index.js",
   "scripts": {
+    "build": "node scripts/build.js",
     "test:basic": "tsx examples/integrate-token-smart-accounts.ts",
     "test:full": "tsx examples/integrate-token-full-stack.ts",
     "dev": "tsx examples/integrate-token-smart-accounts.ts"
   },
+  "type": "module",
   "keywords": [
     "neoflowoff",
     "token",

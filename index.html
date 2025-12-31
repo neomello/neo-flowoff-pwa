@@ -988,25 +988,6 @@
 <script src="js/app.js?v=2.3.0" type="module"></script>
 <script src="js/index-scripts.js?v=2.3.0"></script>
 
-<!-- Configuração de API Keys para Chat AI (Client-Side) -->
-<!-- As API keys podem ser injetadas no build via variáveis de ambiente do Netlify -->
-<!-- OU configuradas manualmente aqui (não recomendado para produção) -->
-<script>
-  // Configuração de API Keys para chamadas client-side
-  // Prioridade: 1) Variáveis de ambiente do Netlify (injetadas no build)
-  //             2) window.APP_CONFIG (configurado manualmente)
-  //             3) Valores padrão (se houver)
-  window.APP_CONFIG = window.APP_CONFIG || {};
-  
-  // A variável será injetada no build via script de build
-  // Para desenvolvimento local, configure manualmente ou use .env
-  // Exemplo: window.APP_CONFIG.GOOGLE_API_KEY = 'sua-chave-aqui';
-  
-  // Nota: Em produção, a key deve ser injetada no build via
-  // scripts/build.js usando variáveis de ambiente do Netlify
-  // Isso mantém a key segura e não exposta no código fonte
-</script>
-
   <!-- Modais dos Projetos -->
   <dialog id="modal-site-webapp" class="project-modal">
     <div class="modal-content">

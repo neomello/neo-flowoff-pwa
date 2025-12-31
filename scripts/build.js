@@ -115,53 +115,13 @@ if (fs.existsSync(publicSrcDir)) {
   }
 }
 
-// Otimiza HTML (remove comentários) e injeta API keys do Netlify
+// Otimiza HTML (remove comentários)
 const indexHtmlPath = path.join(distDir, 'index.html');
 if (fs.existsSync(indexHtmlPath)) {
   let html = fs.readFileSync(indexHtmlPath, 'utf8');
   html = html.replace(/<!--.*?-->/gs, '');
-  
-  // Injeta API key do Netlify (variáveis de ambiente) no window.APP_CONFIG
-  // Isso permite chamadas client-side sem usar Netlify Functions
-  const apiKeys = {
-    GOOGLE_API_KEY: process.env.GOOGLE_API_KEY || '',
-    GEMINI_MODEL: process.env.GEMINI_MODEL || process.env.LLM_MODEL || 'gemini-2.0-flash-exp'
-  };
-  
-  // Substitui o script de configuração com a key injetada
-  const configScript = `
-  <!-- Configuração de API Key para Chat AI (Client-Side) -->
-  <!-- Key injetada no build via variáveis de ambiente do Netlify -->
-  <script>
-    window.APP_CONFIG = window.APP_CONFIG || {};
-    window.APP_CONFIG.GOOGLE_API_KEY = ${JSON.stringify(apiKeys.GOOGLE_API_KEY)};
-    window.APP_CONFIG.GEMINI_MODEL = ${JSON.stringify(apiKeys.GEMINI_MODEL)};
-    window.APP_CONFIG.LLM_MODEL = ${JSON.stringify(apiKeys.GEMINI_MODEL)};
-  </script>`;
-  
-  // Substitui o placeholder ou adiciona antes do chat-ai.js
-  if (html.includes('<!-- Configuração de API Keys para Chat AI')) {
-    // Substitui o bloco existente
-    html = html.replace(
-      /<!-- Configuração de API Keys para Chat AI[^]*?<\/script>/s,
-      configScript
-    );
-  } else {
-    // Adiciona antes do chat-ai.js
-    const chatAiScriptMatch = html.match(/(<script src="js\/chat-ai\.js[^>]*><\/script>)/);
-    if (chatAiScriptMatch) {
-      html = html.replace(
-        /(<script src="js\/chat-ai\.js[^>]*><\/script>)/,
-        configScript + '\n$1'
-      );
-    } else {
-      // Se não encontrar, adicionar antes do fechamento do body
-      html = html.replace(/<\/body>/, configScript + '\n</body>');
-    }
-  }
-  
   fs.writeFileSync(indexHtmlPath, html, 'utf8');
-  console.log('✅ API keys injetadas no build (client-side mode)');
+  console.log('✅ HTML otimizado (comentários removidos)');
 }
 
 console.log('✅ Build concluído em ./dist/');
