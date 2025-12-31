@@ -160,6 +160,38 @@ FB_MESSENGER_APP_SECRET=seu_app_secret_aqui
 # WALLET_PROVIDER_API_KEY=seu_api_key_aqui
 
 # ----------------------------------------------------------------------------
+# CLOUDINARY (CDN de Imagens)
+# ----------------------------------------------------------------------------
+# Cloudinary é usado para CDN e otimização automática de imagens
+# Obtenha as credenciais em: https://cloudinary.com/console
+# 
+# Cloud Name da sua conta Cloudinary
+CLOUDINARY_CLOUD_NAME=seu_cloud_name_aqui
+# Alternativa: CLOUD_NAME=seu_cloud_name_aqui
+
+# API Key do Cloudinary (obtida no dashboard)
+CLOUDINARY_API_KEY=sua_api_key_aqui
+# Alternativa: CLOUD_API_KEY=sua_api_key_aqui
+
+# API Secret do Cloudinary (obtida no dashboard) - ⚠️ NUNCA exponha
+CLOUDINARY_API_SECRET=seu_api_secret_aqui
+# Alternativa: CLOUD_API_SECRET=seu_api_secret_aqui
+
+# Domínios autorizados para fetch automático de imagens:
+# - www.flowoff.xyz / flowoff.xyz
+# - www.flowoff.com.br / flowoff.com.br
+# - neoflw.vercel.app
+# 
+# Para usar:
+#   import { fetchImage, uploadImage, optimizeImage } from './scripts/cloudinary-config.js';
+# 
+# Exemplo de fetch automático:
+#   const optimizedUrl = fetchImage('https://www.flowoff.xyz/image.jpg', { width: 800 });
+# 
+# Teste a configuração:
+#   node scripts/test-cloudinary.js
+
+# ----------------------------------------------------------------------------
 # BUILD E DEPLOY
 # ----------------------------------------------------------------------------
 # Versão para bump automático durante o build (ex: patch, minor, major)
@@ -199,6 +231,7 @@ FB_MESSENGER_APP_SECRET=seu_app_secret_aqui
 #   - GOOGLE_API_KEY (NUNCA exponha - use apenas no backend)
 #   - FB_MESSENGER_APP_SECRET (NUNCA exponha)
 #   - FB_MESSENGER_VERIFY_TOKEN (pode ser pública, mas melhor privada)
+#   - CLOUDINARY_API_SECRET (NUNCA exponha - use apenas no backend)
 #   - BUILD_BUMP_VERSION (apenas para CI/CD)
 #
 # Variáveis PÚBLICAS (NEXT_PUBLIC_*):

@@ -964,6 +964,372 @@
     </div>
   </div>
 
+  <!-- DETECÇÃO DE DESKTOP E REDIRECIONAMENTO -->
+  <script>
+    /**
+     * NEØ FlowOFF - Device Detection & Desktop Redirect
+     * Detecta dispositivos desktop e redireciona para experiência otimizada
+     */
+
+    (function() {
+      'use strict';
+
+      // === CONFIGURAÇÃO ===
+      const DESKTOP_BREAKPOINT = {
+        width: 1024,
+        height: 768
+      };
+
+      const DESKTOP_REDIRECT_DELAY = 100; // ms
+      const MOBILE_REDIRECT_DELAY = 2000; // ms para mostrar feedback
+
+      // === DETECÇÃO DE DISPOSITIVO ===
+      function isDesktopDevice() {
+        // Verifica user agent
+        const userAgent = navigator.userAgent.toLowerCase();
+        const mobileKeywords = ['android', 'iphone', 'ipad', 'ipod', 'blackberry', 'iemobile', 'opera mini'];
+
+        const hasMobileKeyword = mobileKeywords.some(keyword => userAgent.includes(keyword));
+
+        // Verifica touch capability
+        const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+        // Verifica pointer (mouse vs touch)
+        const hasFinePointer = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
+
+        // Verifica tamanho da tela
+        const screenWidth = window.innerWidth || document.documentElement.clientWidth;
+        const screenHeight = window.innerHeight || document.documentElement.clientHeight;
+
+        // Lógica de detecção
+        const isNotMobileDevice = !hasMobileKeyword;
+        const isLargeScreen = screenWidth >= DESKTOP_BREAKPOINT.width && screenHeight >= DESKTOP_BREAKPOINT.height;
+        const prefersMouse = hasFinePointer && !hasTouch;
+
+        console.log('🔍 Device Detection:', {
+          userAgent: userAgent.substring(0, 50) + '...',
+          hasMobileKeyword,
+          hasTouch,
+          hasFinePointer,
+          screenWidth,
+          screenHeight,
+          isNotMobileDevice,
+          isLargeScreen,
+          prefersMouse
+        });
+
+        return isNotMobileDevice && (isLargeScreen || prefersMouse);
+      }
+
+      // === VERIFICAÇÕES DE ESTADO ===
+      function shouldRedirectToDesktop() {
+        // Não redireciona se já estiver na versão desktop
+        if (window.location.pathname.includes('desktop.html')) {
+          return false;
+        }
+
+        // Verifica se é desktop
+        if (!isDesktopDevice()) {
+          return false;
+        }
+
+        // Verifica se usuário forçou mobile
+        const forceMobile = localStorage.getItem('force-mobile') === 'true';
+        if (forceMobile) {
+          console.log('📱 Usuário forçou versão mobile');
+          return false;
+        }
+
+        // Verifica se já visitou desktop recentemente
+        const lastDesktopVisit = localStorage.getItem('desktop-visit-time');
+        const now = Date.now();
+        const ONE_HOUR = 60 * 60 * 1000;
+
+        if (lastDesktopVisit && (now - parseInt(lastDesktopVisit)) < ONE_HOUR) {
+          console.log('🖥️ Visitou desktop recentemente, mantendo mobile');
+          return false;
+        }
+
+        // Verifica parâmetro de URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('force-mobile') === 'true') {
+          localStorage.setItem('force-mobile', 'true');
+          return false;
+        }
+
+        return true;
+      }
+
+      function shouldRedirectToMobile() {
+        // Só redireciona se estiver na versão desktop
+        if (!window.location.pathname.includes('desktop.html')) {
+          return false;
+        }
+
+        // Verifica se não é mais desktop
+        if (isDesktopDevice()) {
+          return false;
+        }
+
+        return true;
+      }
+
+      // === REDIRECIONAMENTOS ===
+      function redirectToDesktop() {
+        console.log('🖥️ Redirecionando para versão desktop...');
+
+        // Salva estado
+        localStorage.setItem('mobile-to-desktop-redirect', Date.now().toString());
+        localStorage.setItem('from-mobile', 'true');
+
+        // Mostra feedback rápido
+        showRedirectFeedback('🖥️ Versão Desktop detectada!', 'Redirecionando...');
+
+        // Redireciona
+        setTimeout(() => {
+          window.location.href = 'desktop.html';
+        }, DESKTOP_REDIRECT_DELAY);
+      }
+
+      function redirectToMobile() {
+        console.log('📱 Redirecionando para versão mobile...');
+
+        // Salva estado
+        localStorage.setItem('desktop-to-mobile-redirect', Date.now().toString());
+
+        // Mostra feedback
+        showRedirectFeedback('📱 Redirecionando para mobile...', 'Experiência otimizada');
+
+        // Redireciona com delay
+        setTimeout(() => {
+          const url = new URL(window.location);
+          url.pathname = url.pathname.replace('desktop.html', 'index.html');
+          url.searchParams.set('from', 'desktop');
+          window.location.href = url.toString();
+        }, MOBILE_REDIRECT_DELAY);
+      }
+
+      // === FEEDBACK VISUAL ===
+      function showRedirectFeedback(title, subtitle) {
+        const feedback = document.createElement('div');
+        feedback.id = 'redirect-feedback';
+        feedback.innerHTML = `
+          <div class="redirect-overlay">
+            <div class="redirect-content">
+              <div class="redirect-icon">⚡</div>
+              <h3>${title}</h3>
+              <p>${subtitle}</p>
+              <div class="redirect-spinner"></div>
+            </div>
+          </div>
+        `;
+
+        // Estilos inline
+        const styles = document.createElement('style');
+        styles.textContent = `
+          #redirect-feedback {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            pointer-events: none;
+          }
+
+          .redirect-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+
+          .redirect-content {
+            text-align: center;
+            color: #e6e6f0;
+            padding: 2rem;
+            border-radius: 16px;
+            background: rgba(15, 15, 24, 0.9);
+            border: 1px solid rgba(255, 47, 179, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+          }
+
+          .redirect-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: pulse 1.5s ease-in-out infinite;
+          }
+
+          .redirect-content h3 {
+            margin: 0 0 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+          }
+
+          .redirect-content p {
+            margin: 0 0 1.5rem;
+            opacity: 0.8;
+          }
+
+          .redirect-spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid rgba(255, 47, 179, 0.3);
+            border-top: 3px solid #ff2fb3;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+          }
+
+          @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+          }
+
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `;
+
+        document.head.appendChild(styles);
+        document.body.appendChild(feedback);
+      }
+
+      // === LINK DE FORÇAR VERSÃO ===
+      function addVersionToggleLink() {
+        // Só adiciona se não existir
+        if (document.getElementById('version-toggle')) return;
+
+        const toggle = document.createElement('a');
+        toggle.id = 'version-toggle';
+        toggle.href = '#';
+        toggle.innerHTML = isDesktopDevice() ?
+          '📱 Versão Mobile' : '🖥️ Versão Desktop';
+        toggle.style.cssText = `
+          position: fixed;
+          bottom: 20px;
+          left: 20px;
+          z-index: 1000;
+          padding: 8px 16px;
+          background: rgba(15, 15, 24, 0.9);
+          color: #e6e6f0;
+          text-decoration: none;
+          border-radius: 8px;
+          font-size: 12px;
+          font-weight: 500;
+          border: 1px solid rgba(255, 47, 179, 0.3);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+          transition: all 0.3s ease;
+        `;
+
+        toggle.addEventListener('click', function(e) {
+          e.preventDefault();
+
+          if (isDesktopDevice()) {
+            // Força versão mobile
+            localStorage.setItem('force-mobile', 'true');
+            localStorage.removeItem('force-desktop');
+            window.location.reload();
+          } else {
+            // Força versão desktop
+            localStorage.setItem('force-desktop', 'true');
+            localStorage.removeItem('force-mobile');
+            window.location.href = 'desktop.html';
+          }
+        });
+
+        // Hover effects
+        toggle.addEventListener('mouseenter', function() {
+          this.style.background = 'rgba(255, 47, 179, 0.1)';
+          this.style.borderColor = 'rgba(255, 47, 179, 0.5)';
+        });
+
+        toggle.addEventListener('mouseleave', function() {
+          this.style.background = 'rgba(15, 15, 24, 0.9)';
+          this.style.borderColor = 'rgba(255, 47, 179, 0.3)';
+        });
+
+        document.body.appendChild(toggle);
+      }
+
+      // === MONITORAMENTO DE REDIMENSIONAMENTO ===
+      function handleResize() {
+        const wasDesktop = localStorage.getItem('was-desktop') === 'true';
+        const isNowDesktop = isDesktopDevice();
+
+        if (wasDesktop !== isNowDesktop) {
+          console.log('📏 Tamanho da tela mudou, recarregando...');
+          localStorage.setItem('was-desktop', isNowDesktop.toString());
+          window.location.reload();
+        }
+      }
+
+      // === INICIALIZAÇÃO ===
+      function init() {
+        console.log('🔄 Inicializando detecção de dispositivo...');
+
+        // Salva estado atual
+        localStorage.setItem('was-desktop', isDesktopDevice().toString());
+
+        // Verifica redirecionamentos
+        if (shouldRedirectToDesktop()) {
+          redirectToDesktop();
+          return;
+        }
+
+        if (shouldRedirectToMobile()) {
+          redirectToMobile();
+          return;
+        }
+
+        // Adiciona link de toggle (modo debug)
+        if (window.location.search.includes('debug=true')) {
+          addVersionToggleLink();
+        }
+
+        // Monitora redimensionamento
+        let resizeTimeout;
+        window.addEventListener('resize', function() {
+          clearTimeout(resizeTimeout);
+          resizeTimeout = setTimeout(handleResize, 500);
+        });
+
+        console.log('✅ Detecção de dispositivo inicializada');
+      }
+
+      // === API GLOBAL ===
+      window.DeviceDetector = {
+        isDesktop: isDesktopDevice,
+        redirectToDesktop: redirectToDesktop,
+        redirectToMobile: redirectToMobile,
+        getInfo: () => ({
+          isDesktop: isDesktopDevice(),
+          userAgent: navigator.userAgent,
+          screenSize: `${window.innerWidth}x${window.innerHeight}`,
+          hasTouch: 'ontouchstart' in window,
+          pointerType: window.matchMedia('(pointer: fine)').matches ? 'fine' : 'coarse'
+        })
+      };
+
+      // Inicializa quando DOM estiver pronto
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+
+    })();
+  </script>
+
   <!-- Utils de Segurança (deve ser carregado primeiro) -->
 <script src="js/utils.js?v=1.0.0"></script>
 <!-- Logger (deve ser carregado primeiro) -->

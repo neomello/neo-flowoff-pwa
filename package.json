@@ -7,7 +7,13 @@
     "build": "node scripts/build.js",
     "test:basic": "tsx examples/integrate-token-smart-accounts.ts",
     "test:full": "tsx examples/integrate-token-full-stack.ts",
-    "dev": "tsx examples/integrate-token-smart-accounts.ts"
+    "dev": "tsx examples/integrate-token-smart-accounts.ts",
+    "test:cloudinary": "node scripts/test-cloudinary.js",
+    "example:cloudinary": "node examples/cloudinary-usage.js",
+    "upload:cloudinary": "node scripts/upload-images-cloudinary.js",
+    "upload:cloudinary:dry": "node scripts/upload-images-cloudinary.js --dry-run",
+    "vercel:cloudinary": "node scripts/setup-vercel-cloudinary.js",
+    "vercel:cloudinary:all": "node scripts/setup-vercel-cloudinary.js --all"
   },
   "type": "module",
   "keywords": [
@@ -26,6 +32,7 @@
     "@storacha/client": "latest",
     "@web3auth/base": "^9.7.0",
     "@web3auth/modal": "latest",
+    "cloudinary": "^2.8.0",
     "dotenv": "latest",
     "files-from-path": "latest",
     "viem": "^2.31.4"
