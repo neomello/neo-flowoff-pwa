@@ -164,7 +164,7 @@ window.applyUpdate = async function() {
 window.PWA_VERSION = PWA_VERSION;
 
 // Router super simples (hashless) - Compatível com Glass Morphism Bottom Bar
-const routes = ['home','projects','start','chat','ecosystem'];
+const routes = ['home','projects','start','ecosystem'];
 const buttons = document.querySelectorAll('.glass-nav-item');
 const sections = [...document.querySelectorAll('.route')];
 

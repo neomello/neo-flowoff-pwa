@@ -1,121 +1,75 @@
 # Dependencies
 node_modules/
+.pnp
+.pnp.js
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Coverage directory used by tools like istanbul
-coverage/
-
-# nyc test coverage
-.nyc_output
-
-# Grunt intermediate storage
-.grunt
-
-# Bower dependency directory
-bower_components
-
-# node-waf configuration
-.lock-wscript
-
-# Compiled binary addons
-build/Release
-
-# Dependency directories
-jspm_packages/
-
-# Optional npm cache directory
-.npm
-
-# Optional REPL history
-.node_repl_history
-
-# Output of 'npm pack'
-*.tgz
-
-# Yarn Integrity file
-.yarn-integrity
-
-# dotenv environment variables file
-.env
-.env.*
-!.env.example
-!.env-example.txt
-*.backup
-.env.backup
-
-# parcel-bundler cache
-.cache
-.parcel-cache
-
-# next.js build output
-.next
-
-# nuxt.js build output
-.nuxt
-
-# vuepress build output
-.vuepress/dist
-
-# Serverless directories
-.serverless
-
-# FuseBox cache
-.fusebox/
-
-# DynamoDB Local files
-.dynamodb/
-
-# TernJS port file
-.tern-port
-
-# Stores VSCode versions used for testing VSCode extensions
-.vscode-test
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-# SSL Certificates and Keys
-*.key
-*.crt
-*.pem
-*.p12
-*.pfx
-
-# Projetos e tarefas
-.projetos
-
-# Build output (gerado apenas no build)
-dist/
-
-# Arquivos temporários e de sistema
-.DS_Store
-*.DS_Store
-**/.DS_Store
-
-# Scripts de desenvolvimento/teste (opcional)
-# clear-cache*.js
-# optimize*.js
-# extract-*.js
-
-# IDE
-.idea/
-.vscode/
-
-# Vercel
+# TypeScript
+*.tsbuildinfo
 .vercel
+.env*.local
+.env.local.backup
+.env.backup
+*.backup
 
-# Documentação interna (não deve ser commitada)
-docs/
+# Testing
+coverage/
+.nyc_output/
+*.lcov
+.vitest/
+
+# Cache
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+
+# IPFS Local
+.ipfs/
+.ipns/
+
+# Cursor/IDE específico
+.cursor/
+*.code-workspace
+
+# Temporários
+*.tmp
+*.temp
+.tmp/
+.temp/
+
+# Lock files (opcional - descomente se não quiser commitar)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+/docs

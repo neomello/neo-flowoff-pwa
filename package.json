@@ -1,51 +1,36 @@
 {
   "name": "neo-flowoff-pwa",
-  "version": "2.4.32",
-  "description": "PWA da NEØ.FLOWOFF",
-  "type": "module",
-  "main": "server.js",
+  "version": "1.0.0",
+  "description": "NEOFlowOFF Token Integration with Account Abstraction",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
-    "setup": "node setup.js",
-    "build": "node scripts/build.js",
-    "test": "vitest",
-    "test:ui": "vitest --ui",
-    "test:run": "vitest run",
-    "ipns:publish": "node scripts/ipns-publisher.js",
-    "deploy:ipfs": "node scripts/deploy-ipfs.js",
-    "check:storacha": "node scripts/check-storacha.js",
-    "token:info": "node scripts/token-info.js",
-    "version:bump": "node scripts/bump-version.js",
-    "lint:md": "markdownlint '**/*.md' --ignore node_modules --ignore dist --ignore .git --ignore-path .markdownlintignore",
-    "format": "prettier --write \"**/*.{js,json,md}\" --ignore-path .gitignore",
-    "format:check": "prettier --check \"**/*.{js,json,md}\" --ignore-path .gitignore",
-    "lint": "npm run lint:md && npm run format:check"
-  },
-  "dependencies": {
-    "@storacha/client": "^1.8.23",
-    "axios": "^1.6.0",
-    "cbor": "^10.0.11",
-    "dotenv": "^17.2.2",
-    "files-from-path": "^1.1.4"
-  },
-  "devDependencies": {
-    "@vitest/ui": "^4.0.16",
-    "jsdom": "^23.0.0",
-    "markdownlint-cli": "^0.47.0",
-    "nodemon": "^3.0.1",
-    "prettier": "^3.7.4",
-    "vitest": "^4.0.16"
-  },
-  "engines": {
-    "node": "20.x"
+    "test:basic": "tsx examples/integrate-token-smart-accounts.ts",
+    "test:full": "tsx examples/integrate-token-full-stack.ts",
+    "dev": "tsx examples/integrate-token-smart-accounts.ts"
   },
   "keywords": [
-    "pwa",
-    "ai",
-    "neo",
-    "flowoff"
+    "neoflowoff",
+    "token",
+    "account-abstraction",
+    "smart-accounts",
+    "metamask",
+    "web3auth",
+    "ipfs"
   ],
-  "author": "MELLØ™",
-  "license": "MIT"
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@metamask/smart-accounts-kit": "^0.3.0",
+    "@storacha/client": "latest",
+    "@web3auth/base": "^9.7.0",
+    "@web3auth/modal": "latest",
+    "dotenv": "latest",
+    "files-from-path": "latest",
+    "viem": "^2.31.4"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "tsx": "latest",
+    "typescript": "^5.0.4"
+  }
 }

@@ -73,9 +73,8 @@ const filesToCopy = [
   'bento-grid.css',
   // SEO e PWA
   'sitemap.xml',
-  'robots.txt',
-  // Documentação (se existir)
-  'WALLET-AUTH-FLOW.md'
+  'robots.txt'
+  // Documentação removida - arquivos .md agora estão em docs/
 ];
 
 for (const file of filesToCopy) {

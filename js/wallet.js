@@ -148,21 +148,46 @@ class WalletManager {
     googleBtn.appendChild(googleIcon);
     googleBtn.appendChild(googleText);
 
-    // Botão Wallet
-    const walletBtn = document.createElement('button');
-    walletBtn.className = 'wallet-option';
-    walletBtn.addEventListener('click', () => this.connectWallet());
-    const walletIcon = document.createElement('span');
-    walletIcon.className = 'wallet-option-icon';
-    walletIcon.textContent = '🦊';
-    const walletText = document.createElement('span');
-    walletText.textContent = 'Wallet';
-    walletBtn.appendChild(walletIcon);
-    walletBtn.appendChild(walletText);
+    // Botão MetaMask
+    const metamaskBtn = document.createElement('button');
+    metamaskBtn.className = 'wallet-option wallet-option-primary';
+    metamaskBtn.addEventListener('click', () => this.connectMetaMask());
+    const metamaskIcon = document.createElement('span');
+    metamaskIcon.className = 'wallet-option-icon';
+    metamaskIcon.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M22.56 2.5L12.5 9.5L2.44 2.5L12.5 0L22.56 2.5Z" fill="#E2761B"/><path d="M2.44 2.5L12.5 9.5L22.56 2.5L12.5 0L2.44 2.5Z" fill="#E4761B"/><path d="M22.56 2.5L12.5 9.5L2.44 2.5L12.5 0L22.56 2.5Z" fill="#CD6116"/></svg>';
+    const metamaskText = document.createElement('span');
+    metamaskText.textContent = 'MetaMask';
+    metamaskBtn.appendChild(metamaskIcon);
+    metamaskBtn.appendChild(metamaskText);
 
+    // Botão WalletConnect
+    const walletConnectBtn = document.createElement('button');
+    walletConnectBtn.className = 'wallet-option';
+    walletConnectBtn.addEventListener('click', () => this.connectWalletConnect());
+    const walletConnectIcon = document.createElement('span');
+    walletConnectIcon.className = 'wallet-option-icon';
+    walletConnectIcon.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#3B99FC"/></svg>';
+    const walletConnectText = document.createElement('span');
+    walletConnectText.textContent = 'WalletConnect';
+    walletConnectBtn.appendChild(walletConnectIcon);
+    walletConnectBtn.appendChild(walletConnectText);
+
+    // Separador
+    const separator = document.createElement('div');
+    separator.className = 'wallet-separator';
+    const separatorLine = document.createElement('div');
+    separatorLine.className = 'wallet-separator-line';
+    const separatorText = document.createElement('span');
+    separatorText.textContent = 'ou';
+    separator.appendChild(separatorLine);
+    separator.appendChild(separatorText);
+    separator.appendChild(separatorLine.cloneNode(true));
+
+    options.appendChild(metamaskBtn);
+    options.appendChild(walletConnectBtn);
+    options.appendChild(separator);
     options.appendChild(emailBtn);
     options.appendChild(googleBtn);
-    options.appendChild(walletBtn);
 
     // Terms
     const terms = document.createElement('div');
@@ -280,17 +305,38 @@ class WalletManager {
         border: none;
         border-radius: 24px;
         padding: 0;
-        max-width: 380px;
+        max-width: 420px;
         width: 90vw;
-        background: linear-gradient(180deg, rgba(20, 20, 30, 0.98), rgba(10, 10, 15, 0.98));
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
+        background: linear-gradient(180deg, rgba(15, 15, 22, 0.98), rgba(10, 10, 16, 0.98));
+        backdrop-filter: saturate(1.2) blur(20px);
+        -webkit-backdrop-filter: saturate(1.2) blur(20px);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 
+                    0 0 0 1px rgba(255, 255, 255, 0.1),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        animation: modalSlideIn 0.3s cubic-bezier(0.4, 0.1, 0.2, 1);
+      }
+
+      @keyframes modalSlideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px) scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
       }
 
       .wallet-modal::backdrop {
-        background: rgba(0, 0, 0, 0.7);
-        backdrop-filter: blur(4px);
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        animation: backdropFadeIn 0.3s ease;
+      }
+
+      @keyframes backdropFadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
       }
 
       .wallet-modal-content {
@@ -307,8 +353,12 @@ class WalletManager {
 
       .wallet-modal-header h3 {
         margin: 0;
-        font-size: 18px;
-        font-weight: 600;
+        font-size: 20px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #ff2fb3, #00d0ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
       }
 
       .wallet-modal-close {
@@ -355,27 +405,84 @@ class WalletManager {
       .wallet-option {
         display: flex;
         align-items: center;
-        gap: 12px;
-        padding: 14px 20px;
+        gap: 14px;
+        padding: 16px 20px;
         background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
+        border-radius: 14px;
         color: white;
         font-size: 15px;
+        font-weight: 600;
         cursor: pointer;
-        transition: all 0.2s;
+        transition: all 0.3s cubic-bezier(0.4, 0.1, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .wallet-option::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: left 0.5s ease;
+      }
+
+      .wallet-option:hover::before {
+        left: 100%;
       }
 
       .wallet-option:hover {
-        background: rgba(139, 92, 246, 0.2);
-        border-color: rgba(139, 92, 246, 0.5);
+        background: rgba(255, 47, 179, 0.15);
+        border-color: rgba(255, 47, 179, 0.4);
         transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(255, 47, 179, 0.2);
+      }
+
+      .wallet-option:active {
+        transform: translateY(0);
+      }
+
+      .wallet-option-primary {
+        background: linear-gradient(135deg, rgba(255, 47, 179, 0.2), rgba(0, 208, 255, 0.2));
+        border-color: rgba(255, 47, 179, 0.3);
+      }
+
+      .wallet-option-primary:hover {
+        background: linear-gradient(135deg, rgba(255, 47, 179, 0.3), rgba(0, 208, 255, 0.3));
+        border-color: rgba(255, 47, 179, 0.5);
+        box-shadow: 0 8px 24px rgba(255, 47, 179, 0.3);
       }
 
       .wallet-option-icon {
-        font-size: 20px;
         width: 28px;
-        text-align: center;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .wallet-option-icon svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      .wallet-separator {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 8px 0;
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 12px;
+      }
+
+      .wallet-separator-line {
+        flex: 1;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.1);
       }
 
       .wallet-terms {
@@ -472,26 +579,49 @@ class WalletManager {
       }
 
       .wallet-balance-card {
-        background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2));
-        border: 1px solid rgba(139, 92, 246, 0.3);
-        border-radius: 16px;
-        padding: 20px;
-        margin-bottom: 20px;
+        background: linear-gradient(135deg, rgba(255, 47, 179, 0.15), rgba(0, 208, 255, 0.15));
+        border: 1px solid rgba(255, 47, 179, 0.3);
+        border-radius: 18px;
+        padding: 24px;
+        margin-bottom: 24px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .wallet-balance-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 47, 179, 0.1) 0%, transparent 70%);
+        animation: balanceShimmer 3s ease-in-out infinite;
+      }
+
+      @keyframes balanceShimmer {
+        0%, 100% { transform: rotate(0deg); }
+        50% { transform: rotate(180deg); }
       }
 
       .balance-label {
-        font-size: 12px;
-        color: rgba(255, 255, 255, 0.6);
-        margin-bottom: 4px;
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 8px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
       }
 
       .balance-value {
-        font-size: 28px;
+        font-size: 32px;
         font-weight: 700;
-        background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+        background: linear-gradient(135deg, #ff2fb3, #00d0ff);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
+        position: relative;
+        z-index: 1;
       }
 
       .wallet-actions {
@@ -502,23 +632,42 @@ class WalletManager {
       }
 
       .wallet-action-btn {
-        padding: 10px 16px;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
+        flex: 1;
+        padding: 12px 18px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
         color: white;
         font-size: 13px;
+        font-weight: 600;
         cursor: pointer;
-        transition: all 0.2s;
+        transition: all 0.3s cubic-bezier(0.4, 0.1, 0.2, 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
       }
 
       .wallet-action-btn:hover {
-        background: rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.25);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      .wallet-action-btn:active {
+        transform: translateY(0);
+      }
+
+      .wallet-action-btn.danger {
+        background: rgba(239, 68, 68, 0.15);
+        border-color: rgba(239, 68, 68, 0.3);
       }
 
       .wallet-action-btn.danger:hover {
-        background: rgba(239, 68, 68, 0.2);
+        background: rgba(239, 68, 68, 0.25);
         border-color: rgba(239, 68, 68, 0.5);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
       }
     `;
 
@@ -731,6 +880,76 @@ class WalletManager {
     if (!this.checkTermsAccepted()) return;
     // Usa fallback (será substituído por ZeroDev/WalletConnect futuramente)
     await this.simulateConnect('google');
+  }
+
+  // Conexão via MetaMask
+  async connectMetaMask() {
+    if (!this.checkTermsAccepted()) return;
+    
+    if (typeof window.ethereum === 'undefined') {
+      this.showNotification('MetaMask não detectado. Instale a extensão MetaMask.', 'error');
+      window.open('https://metamask.io/download/', '_blank');
+      return;
+    }
+
+    try {
+      this.showLoading('Conectando ao MetaMask...');
+      
+      // Solicita conexão
+      const accounts = await window.ethereum.request({
+        method: 'eth_requestAccounts'
+      });
+
+      if (accounts && accounts.length > 0) {
+        const address = accounts[0];
+        
+        // Verifica se está na rede correta (Polygon)
+        const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+        if (parseInt(chainId, 16) !== 137) {
+          // Tenta trocar para Polygon
+          try {
+            await window.ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: '0x89' }], // Polygon Mainnet
+            });
+          } catch (switchError) {
+            // Se a rede não existir, adiciona
+            if (switchError.code === 4902) {
+              await window.ethereum.request({
+                method: 'wallet_addEthereumChain',
+                params: [{
+                  chainId: '0x89',
+                  chainName: 'Polygon Mainnet',
+                  nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 },
+                  rpcUrls: ['https://polygon-rpc.com'],
+                  blockExplorerUrls: ['https://polygonscan.com']
+                }]
+              });
+            }
+          }
+        }
+
+        await this.handleConnect(address, 'MetaMask');
+        this.close();
+      }
+    } catch (error) {
+      window.Logger?.error('Erro ao conectar MetaMask:', error);
+      this.showNotification('Erro ao conectar MetaMask. Tente novamente.', 'error');
+    } finally {
+      this.hideLoading();
+    }
+  }
+
+  // Conexão via WalletConnect
+  async connectWalletConnect() {
+    if (!this.checkTermsAccepted()) return;
+    
+    this.showNotification('WalletConnect será integrado em breve. Use MetaMask por enquanto.', 'info');
+    // TODO: Implementar WalletConnect quando SDK estiver disponível
+    // Por enquanto, redireciona para MetaMask
+    setTimeout(() => {
+      this.connectMetaMask();
+    }, 2000);
   }
 
   // Conexão via Wallet externa (MetaMask, WalletConnect, etc)
@@ -1025,6 +1244,108 @@ class WalletManager {
     this.showToast('👋 Wallet desconectada');
   }
 
+  // Mostra notificação no modal
+  showNotification(message, type = 'info') {
+    const body = this.modal?.querySelector('.wallet-modal-body');
+    if (!body) {
+      this.showToast(message);
+      return;
+    }
+
+    // Remove notificação anterior se existir
+    const existing = body.querySelector('.wallet-notification');
+    if (existing) existing.remove();
+
+    const notification = document.createElement('div');
+    notification.className = `wallet-notification wallet-notification-${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      animation: notificationSlideIn 0.3s ease;
+      background: ${type === 'error' ? 'rgba(239, 68, 68, 0.2)' : type === 'success' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(59, 130, 246, 0.2)'};
+      border: 1px solid ${type === 'error' ? 'rgba(239, 68, 68, 0.4)' : type === 'success' ? 'rgba(16, 185, 129, 0.4)' : 'rgba(59, 130, 246, 0.4)'};
+      color: white;
+    `;
+
+    const disconnected = body.querySelector('#wallet-disconnected');
+    if (disconnected && disconnected.style.display !== 'none') {
+      disconnected.insertBefore(notification, disconnected.firstChild);
+    } else {
+      body.insertBefore(notification, body.firstChild);
+    }
+
+    setTimeout(() => {
+      notification.style.animation = 'notificationSlideOut 0.3s ease';
+      setTimeout(() => notification.remove(), 300);
+    }, 4000);
+  }
+
+  // Mostra loading no modal
+  showLoading(message = 'Carregando...') {
+    const body = this.modal?.querySelector('.wallet-modal-body');
+    if (!body) return;
+
+    // Remove loading anterior se existir
+    const existing = body.querySelector('.wallet-loading');
+    if (existing) existing.remove();
+
+    const loading = document.createElement('div');
+    loading.className = 'wallet-loading';
+    loading.innerHTML = `
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 24px;">
+        <div style="width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #ff2fb3; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+        <span style="color: rgba(255,255,255,0.8); font-size: 14px;">${message}</span>
+      </div>
+    `;
+    loading.style.cssText = `
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(10, 10, 16, 0.9);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      border-radius: 24px;
+    `;
+
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      @keyframes notificationSlideIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes notificationSlideOut {
+        from { opacity: 1; transform: translateY(0); }
+        to { opacity: 0; transform: translateY(-10px); }
+      }
+    `;
+    if (!document.querySelector('#wallet-animations')) {
+      style.id = 'wallet-animations';
+      document.head.appendChild(style);
+    }
+
+    body.style.position = 'relative';
+    body.appendChild(loading);
+  }
+
+  // Esconde loading
+  hideLoading() {
+    const body = this.modal?.querySelector('.wallet-modal-body');
+    const loading = body?.querySelector('.wallet-loading');
+    if (loading) loading.remove();
+  }
+
   // Toast notification com limpeza de timeout
   showToast(message) {
     // Limpa toast anterior se existir
@@ -1098,9 +1419,11 @@ window.WalletManager = new WalletManager();
 // Métodos estáticos para onclick
 WalletManager.toggle = () => window.WalletManager.toggle();
 WalletManager.close = () => window.WalletManager.close();
-WalletManager.connectEmail = () => window.WalletManager.connectEmail();
-WalletManager.connectGoogle = () => window.WalletManager.connectGoogle();
-WalletManager.connectWallet = () => window.WalletManager.connectWallet();
+WalletManager.connectEmail = () => window.WalletManager?.connectEmail();
+WalletManager.connectGoogle = () => window.WalletManager?.connectGoogle();
+WalletManager.connectMetaMask = () => window.WalletManager?.connectMetaMask();
+WalletManager.connectWalletConnect = () => window.WalletManager?.connectWalletConnect();
+WalletManager.connectWallet = () => window.WalletManager?.connectWallet();
 WalletManager.copyAddress = () => window.WalletManager.copyAddress();
 WalletManager.viewOnExplorer = () => window.WalletManager.viewOnExplorer();
 WalletManager.disconnect = () => window.WalletManager.disconnect();

@@ -1,127 +1,154 @@
-# NEØ FlowOFF PWA
+# NEOFlowOFF PWA - Token Integration
 
-PWA da NEØ·FlowOFF - Progressive Web Application para acesso ao ecossistema FlowOFF.
+Integração completa do token **NEOFlowOFF (NEOFLW)** com Account Abstraction usando MetaMask Smart Accounts.
 
-## 🚀 Sobre
+## 📦 Stack Tecnológica
 
-Aplicação web progressiva que oferece acesso ao ecossistema NEØ FlowOFF com chat IA, integração Web3 e funcionalidades offline.
+-  **Web3Auth**: Autenticação de usuários + RPC e Bundler próprios
+-  **IPFS.io + Storacha**: Armazenamento de dados
+-  **Infura**: RPC e Bundler (opcional - fallback se não usar Web3Auth)
+-  **MetaMask Smart Accounts**: Account Abstraction para o token
 
-## 📊 Arquitetura de Deploy
+## 🎯 Token NEOFlowOFF
 
-```mermaid
-flowchart TB
-subgraph SOURCE["📦 NEØ.FLOWOFF PWA"]
-CODE["Código Fonte<br/>GitHub"]
-end
-subgraph WEB2["🌐 WEB2 - Vercel"]
-    VERCEL["Vercel Edge<br/>CDN Global"]
-    FLOWXYZ["flowoff.xyz"]
-    FLOWBR["flowoff.com.br"]
-    PREVIEW["*.vercel.app"]
-end
+-  **Endereço:** `0xece94d3719fc6fde7275051a54caf1f7d5098d59`
+-  **Símbolo:** NEOFLW
+-  **Rede:** Polygon
+-  **Link:** [PolygonScan](https://polygonscan.com/token/0xece94d3719fc6fde7275051a54caf1f7d5098d59)
 
-subgraph WEB3["⛓️ WEB3 - Descentralizado"]
-    STORACHA["Storacha<br/>IPFS Upload"]
-    IPFS["IPFS<br/>Content Hash"]
-    IPNS["IPNS<br/>Mutable Pointer"]
-    ENS["ENS<br/>neoflowoff.eth"]
-end
+## 📋 Instalação
 
-subgraph GATEWAYS["🚪 Gateways IPFS"]
-    GW1["dweb.link"]
-    GW2["w3s.link"]
-    GW3["ipfs.io"]
-end
-
-subgraph USERS["👥 Usuários"]
-    USER1["🌍 Global"]
-    USER2["🇧🇷 Brasil"]
-    USER3["🦊 Web3 Native"]
-end
-
-CODE -->|"make deploy"| VERCEL
-CODE -->|"make deploy-ipfs"| STORACHA
-
-VERCEL --> FLOWXYZ
-VERCEL --> FLOWBR
-VERCEL --> PREVIEW
-
-STORACHA --> IPFS
-IPFS --> IPNS
-IPNS --> ENS
-IPNS --> GW1
-IPNS --> GW2
-IPNS --> GW3
-
-FLOWXYZ --> USER1
-FLOWBR --> USER2
-ENS --> USER3
-GW1 --> USER3
-
-style SOURCE fill:#1a1a2e,stroke:#8b5cf6,color:#fff
-style WEB2 fill:#0f172a,stroke:#3b82f6,color:#fff
-style WEB3 fill:#0f172a,stroke:#10b981,color:#fff
-style GATEWAYS fill:#1e1e2e,stroke:#f59e0b,color:#fff
-style USERS fill:#1e1e2e,stroke:#ec4899,color:#fff
-```
-
-## ⚡ Início Rápido
+### 1. Instalar Dependências
 
 ```bash
-# Clone e instale
-git clone git@github.com:neomello/neo-flowoff-pwa.git
-cd neo-flowoff-pwa
-npm install
-
-# Configure variáveis de ambiente
-cp env-example.txt .env
-
-# Desenvolvimento
-npm run dev
-
-# Build para produção
-npm run build
+npm install @metamask/smart-accounts-kit viem @web3auth/modal @web3auth/base
+# ou
+yarn add @metamask/smart-accounts-kit viem @web3auth/modal @web3auth/base
 ```
 
-## 🌐 Deploy
+### 2. Configurar Variáveis de Ambiente
 
-### Web2 (Vercel)
+Crie um arquivo `.env.local`:
 
 ```bash
-make deploy
+# Web3Auth (Autenticação)
+NEXT_PUBLIC_WEB3AUTH_CLIENT_ID=seu_web3auth_client_id
+
+# Web3Auth (RPC e Bundler - RECOMENDADO)
+# Obtenha estas URLs após configurar Polygon no dashboard Web3Auth
+WEB3AUTH_RPC_URL=https://api.web3auth.io/infura-service/v1/0x89/SEU_TOKEN
+WEB3AUTH_BUNDLER_URL=https://api.web3auth.io/infura-service/v1/0x89/SEU_TOKEN
+
+# Infura (OPCIONAL - fallback se não usar Web3Auth RPC/Bundler)
+INFURA_API_KEY=sua_infura_api_key
+
+# Storacha
+NEXT_PUBLIC_STORACHA_API_KEY=sua_storacha_api_key
+NEXT_PUBLIC_STORACHA_ENDPOINT=https://api.storacha.com
+
+# Wallet (para scripts de teste)
+PRIVATE_KEY=sua_private_key
 ```
 
-Deploy automático via Vercel para `flowoff.xyz` e `flowoff.com.br`.
+## 🚀 Scripts Disponíveis
 
-### Web3 (IPFS/IPNS)
+### Teste Básico
 
 ```bash
-make deploy-ipfs
+npx tsx examples/integrate-token-smart-accounts.ts
 ```
 
-Deploy descentralizado via Storacha para IPFS/IPNS e ENS (`neoflowoff.eth.link`).
+### Integração Completa
+
+```bash
+npx tsx examples/integrate-token-full-stack.ts
+```
 
 ## 📚 Documentação
 
--  [Domínios e Deploy](./docs/DOMINIOS.md) - Arquitetura completa de deploy
--  [Guia Storacha/IPFS](./GUIA_STORACHA_IPFS.md) - Configuração Web3
--  [Contribuindo](./CONTRIBUTING.md) - Padrões de contribuição
--  [Segurança](./SECURITY.md) - Política de segurança
+-  **Guia Completo:** `docs/integracao/GUIA_INTEGRACAO_STACK_COMPLETA.md`
+-  **Guia Básico:** `docs/integracao/GUIA_INTEGRACAO_TOKEN_SMART_ACCOUNTS.md`
+-  **Resumo:** `docs/integracao/RESUMO_INTEGRACAO_STACK.md`
 
-## 🛡️ Segurança
+## 💻 Uso no Website
 
-Implementa sanitização de entradas, rate limiting, CORS restrito e validação robusta. Consulte `SECURITY.md` para detalhes.
+### Exemplo Básico
 
-## 📄 Licença
+```typescript
+import { NEOFlowOFFIntegration } from './examples/integrate-token-website-example';
 
-MIT
+const integration = new NEOFlowOFFIntegration();
+await integration.initializeSmartAccount(signer, walletAddress);
+
+// Obter saldo
+const balance = await integration.getBalance(walletAddress);
+
+// Transferir
+const hash = await integration.transfer(recipientAddress, '100');
+```
+
+### Exemplo Completo (Web3Auth + IPFS)
+
+```typescript
+import { NEOFlowOFFFullStackIntegration } from './examples/integrate-token-full-stack';
+
+const integration = new NEOFlowOFFFullStackIntegration();
+await integration.initializeWeb3Auth();
+await integration.initializeSmartAccount(web3AuthSigner, address);
+
+// Transferir e salvar no IPFS
+const { txHash, ipfsHash } = await integration.transferAndSave(
+  recipientAddress,
+  '100'
+);
+```
+
+## 📁 Estrutura de Arquivos
+
+```text
+neo-flowoff-pwa/
+├── examples/
+│   ├── integrate-token-smart-accounts.ts      # Script básico de teste
+│   ├── integrate-token-full-stack.ts          # Classe completa de integração
+│   ├── integrate-token-website-example.ts     # Exemplo básico para website
+│   └── integrate-token-website-full-stack.tsx # Componente React/Next.js
+├── docs/
+│   └── integracao/
+│       ├── GUIA_INTEGRACAO_STACK_COMPLETA.md
+│       ├── GUIA_INTEGRACAO_TOKEN_SMART_ACCOUNTS.md
+│       └── RESUMO_INTEGRACAO_STACK.md
+└── README.md
+```
+
+## 🔗 Links Úteis
+
+-  **Token:** [PolygonScan](https://polygonscan.com/token/0xece94d3719fc6fde7275051a54caf1f7d5098d59)
+-  **Web3Auth:** [Documentação](https://web3auth.io/docs)
+-  **IPFS Gateway:** [IPFS.io](https://ipfs.io)
+-  **MetaMask Smart Accounts:** [Documentação](https://docs.gator.metamask.io)
+-  **Infura:** [Documentação](https://infura.io/docs)
+
+## 📝 Próximos Passos
+
+1.  Configure as variáveis de ambiente
+2.  Instale as dependências
+3.  Execute os scripts de teste
+4.  Integre no seu website
+5.  Deploy em produção
 
 ---
 
+## 🚀 Pronto para Integrar
+
+O projeto está configurado e pronto para uso.
+
+## Contact
+
+[neo@neoprotocol.space](mailto:neo@neoprotocol.space)
+
+</div>
+
 <div align="center">
-  <a href="mailto:neo@neoprotocol.space">
-    <img src="https://img.shields.io/badge/-neo@neoprotocol.space-ff008e?style=flat-square&logo=gmail&logoColor=white" alt="Email" />
-  </a>
   <a href="https://x.com/node_mello">
     <img src="https://img.shields.io/badge/-@node_mello-ff008e?style=flat-square&logo=twitter&logoColor=white" alt="Twitter @node_mello" />
   </a>

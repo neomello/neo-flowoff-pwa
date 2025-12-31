@@ -24,6 +24,7 @@ Ao acessar e usar os serviços da NEØ.FLOWOFF ("Nós", "Nosso", "Serviço"), vo
 ### 3.1 Elegibilidade
 
 Você declara e garante que:
+
 - Tem pelo menos 18 anos de idade ou possui autorização legal de um responsável
 - Tem capacidade legal para celebrar contratos vinculativos
 - Não está proibido de usar nossos serviços por qualquer lei aplicável
@@ -58,6 +59,7 @@ Você concorda em NÃO:
 ### 4.2 Riscos
 
 Você reconhece e aceita que:
+
 - Criptomoedas e tokens digitais são altamente voláteis
 - Você pode perder todo ou parte do valor do token
 - Transações blockchain são irreversíveis

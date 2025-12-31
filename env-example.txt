@@ -12,8 +12,112 @@ PORT=3000
 # ----------------------------------------------------------------------------
 # APIs DE IA (LLM) - Configure no painel Vercel para produção
 # ----------------------------------------------------------------------------
-# GOOGLE_API_KEY=seu_token_aqui
-# GEMINI_MODEL=gemini-2.0-flash-exp
+# Google API Key para Gemini (obtenha em https://makersuite.google.com/app/apikey)
+GOOGLE_API_KEY=seu_token_aqui
+
+# Modelo Gemini a ser usado (padrão: gemini-2.0-flash-exp)
+GEMINI_MODEL=gemini-2.0-flash-exp
+
+# Modelo LLM alternativo (fallback se GEMINI_MODEL não estiver definido)
+# LLM_MODEL=gemini-2.0-flash-exp
+
+# ----------------------------------------------------------------------------
+# METAMASK EMBEDDED WALLETS (Web3Auth) - Autenticação de Usuários
+# ----------------------------------------------------------------------------
+# MetaMask Embedded Wallets (anteriormente Web3Auth) fornece infraestrutura
+# de wallet embutida plugável para simplificar integração Web3 e onboarding.
+# 
+# Client ID do MetaMask Embedded Wallets (obtenha em https://dashboard.web3auth.io)
+# Versão privada (backend/scripts)
+WEB3AUTH_CLIENT_ID=seu_web3auth_client_id_aqui
+
+# Versão pública (frontend/Next.js) - ⚠️ EXPOSTA NO FRONTEND
+# Use esta variável em componentes React/Next.js
+NEXT_PUBLIC_WEB3AUTH_CLIENT_ID=seu_web3auth_client_id_aqui
+
+# ----------------------------------------------------------------------------
+# WEB3AUTH - RPC e Bundler (RECOMENDADO)
+# ----------------------------------------------------------------------------
+# ⚠️ IMPORTANTE: Web3Auth fornece RPC e Bundler próprios!
+# Após configurar a chain no dashboard do Web3Auth, você receberá URLs próprias
+# que substituem a necessidade do Infura
+#
+# RPC URL do Web3Auth (obtenha no dashboard após configurar Polygon chain)
+# Formato: https://api.web3auth.io/infura-service/v1/0x89/SEU_TOKEN
+WEB3AUTH_RPC_URL=https://api.web3auth.io/infura-service/v1/0x89/SEU_TOKEN_AQUI
+
+# Versão pública (frontend/Next.js) - ⚠️ EXPOSTA NO FRONTEND
+NEXT_PUBLIC_WEB3AUTH_RPC_URL=https://api.web3auth.io/infura-service/v1/0x89/SEU_TOKEN_AQUI
+
+# Bundler URL do Web3Auth (obtenha no dashboard após configurar Polygon chain)
+# Formato: https://api.web3auth.io/infura-service/v1/0x89/SEU_TOKEN
+WEB3AUTH_BUNDLER_URL=https://api.web3auth.io/infura-service/v1/0x89/SEU_TOKEN_AQUI
+
+# Versão pública (frontend/Next.js) - ⚠️ EXPOSTA NO FRONTEND
+NEXT_PUBLIC_WEB3AUTH_BUNDLER_URL=https://api.web3auth.io/infura-service/v1/0x89/SEU_TOKEN_AQUI
+
+# ----------------------------------------------------------------------------
+# INFURA - Bundler para Account Abstraction (OPCIONAL - FALLBACK)
+# ----------------------------------------------------------------------------
+# ⚠️ INFURA É OPCIONAL - Só necessário se NÃO usar Web3Auth Bundler
+# 
+# Se você configurou WEB3AUTH_BUNDLER_URL, não precisa de Infura
+# Infura é usado apenas como fallback se Web3Auth Bundler não estiver configurado
+#
+# API Key do Infura (obtenha em https://infura.io)
+# Versão privada (backend/scripts) - usado apenas como fallback
+# INFURA_API_KEY=sua_infura_api_key_aqui
+
+# Versão pública (frontend/Next.js) - ⚠️ EXPOSTA NO FRONTEND
+# Não é necessária se usar WEB3AUTH_BUNDLER_URL
+# NEXT_PUBLIC_INFURA_API_KEY=sua_infura_api_key_aqui
+
+# ----------------------------------------------------------------------------
+# STORACHA (Web3 Descentralizado - RECOMENDADO)
+# ----------------------------------------------------------------------------
+# Storacha é um serviço descentralizado Web3 para armazenamento IPFS
+# Configure seu DID e UCAN para upload permanente na rede IPFS
+# ⚠️ IMPORTANTE: Storacha usa UCAN tokens, NÃO API keys tradicionais
+
+# DID do seu agente/identidade Storacha
+# Obtenha via: node scripts/get-agent-did.js
+# IMPORTANTE: O UCAN deve ser gerado para este Agent DID específico
+STORACHA_DID=seu_agent_did_aqui
+
+# UCAN/Proof de delegação do espaço (gerado via Storacha CLI)
+# Para gerar:
+#   1. Obtenha seu Agent DID: node scripts/get-agent-did.js
+#   2. Use o espaço desejado: storacha space use <SPACE_DID>
+#   3. Gere o proof: storacha delegation create <AGENT_DID> \
+#        --can space/blob/add \
+#        --can space/index/add \
+#        --can filecoin/offer \
+#        --can upload/add \
+#        --base64
+#   4. Copie o output base64 completo e cole aqui (sem quebras de linha)
+STORACHA_UCAN=seu_ucan_token_aqui
+
+# Espaço Storacha específico para usar (DID do espaço)
+# Se não configurado, será criado um novo espaço automaticamente
+STORACHA_SPACE_DID=did:key:z6Mkjee3CCaP6q2vhRnE3wRBGNqMxEq645EvnYocsbbeZiBR
+
+# Endpoint da API Storacha (opcional, tem valor padrão)
+STORACHA_ENDPOINT=https://api.storacha.com
+
+# Versão pública (frontend/Next.js) - ⚠️ EXPOSTA NO FRONTEND
+# NOTA: Esta variável é usada em alguns exemplos, mas Storacha usa UCAN tokens
+# ao invés de API keys. Mantida para compatibilidade com código legado.
+# NEXT_PUBLIC_STORACHA_API_KEY=sua_storacha_api_key_aqui
+
+# Opcional: email para login (se necessário no futuro)
+# Login via GitHub é feito no console web (console.storacha.network)
+# STORACHA_EMAIL=neo@neoprotocol.space
+
+# Opcional: chave privada para signer (mantém mesmo Agent DID entre execuções)
+# STORACHA_PRIVATE_KEY=sua_chave_privada_aqui
+
+# ⚠️ NOTA: STORACHA_API_KEY e NEXT_PUBLIC_STORACHA_API_KEY não são usadas
+# Storacha usa UCAN tokens (STORACHA_UCAN) ao invés de API keys
 
 # ----------------------------------------------------------------------------
 # IPFS/IPNS (OBRIGATÓRIO para deploy IPFS)
@@ -30,40 +134,23 @@ IPNS_KEY_ID=k51qzi5uqu5dibn355zoh239agkln7mpvvu8iyk4jv2t1letihnm36s6ym4yts
 UCAN_TOKEN=seu_token_ucan_aqui
 
 # ----------------------------------------------------------------------------
-# STORACHA (Web3 Descentralizado - RECOMENDADO)
+# TOKEN E WALLET (Para scripts de teste)
 # ----------------------------------------------------------------------------
-# Storacha é um serviço descentralizado Web3 para armazenamento IPFS
-# Configure seu DID e UCAN para upload permanente na rede IPFS
+# ⚠️ ATENÇÃO: PRIVATE_KEY só deve ser usada em scripts de teste
+# NUNCA use PRIVATE_KEY no frontend ou em código exposto ao cliente
+# Para produção, use MetaMask Embedded Wallets para assinaturas
 
-# DID do seu agente/identidade Storacha
-# Obtenha via: node scripts/get-agent-did.js
-# IMPORTANTE: O UCAN deve ser gerado para este Agent DID específico
-# Substitua pelo seu Agent DID real (obtido via: node scripts/get-agent-did.js)
-STORACHA_DID=seu_agent_did_aqui
+# Chave privada para scripts de teste (formato: 0x... ou sem prefixo)
+# PRIVATE_KEY=sua_private_key_aqui
 
-# UCAN/Proof de delegação do espaço (gerado via Storacha CLI)
-# Para gerar:
-#   1. Obtenha seu Agent DID: node scripts/get-agent-did.js
-#   2. Use o espaço desejado: storacha space use <SPACE_DID>
-#   3. Gere o proof: storacha delegation create <AGENT_DID> \
-#        --can space/blob/add \
-#        --can space/index/add \
-#        --can filecoin/offer \
-#        --can upload/add \
-#        --base64
-#   4. Copie o output base64 completo e cole aqui
-STORACHA_UCAN=seu_ucan_token_aqui
+# ----------------------------------------------------------------------------
+# FACEBOOK MESSENGER (Opcional - para integração de chatbot)
+# ----------------------------------------------------------------------------
+# Token de verificação do Facebook Messenger (webhook)
+FB_MESSENGER_VERIFY_TOKEN=flowoff-messenger-verify-token
 
-# Espaço Storacha específico para usar (DID do espaço)
-# Se não configurado, será criado um novo espaço automaticamente
-STORACHA_SPACE_DID=did:key:z6Mkjee3CCaP6q2vhRnE3wRBGNqMxEq645EvnYocsbbeZiBR
-
-# Opcional: email para login (se necessário no futuro)
-# Login via GitHub é feito no console web (console.storacha.network)
-# STORACHA_EMAIL=neo@neoprotocol.space
-
-# Opcional: chave privada para signer (mantém mesmo Agent DID entre execuções)
-# STORACHA_PRIVATE_KEY=sua_chave_privada_aqui
+# App Secret do Facebook Messenger (para validação de webhooks)
+FB_MESSENGER_APP_SECRET=seu_app_secret_aqui
 
 # ----------------------------------------------------------------------------
 # WALLET PROVIDER (Token $NEOFLW)
@@ -73,12 +160,48 @@ STORACHA_SPACE_DID=did:key:z6Mkjee3CCaP6q2vhRnE3wRBGNqMxEq645EvnYocsbbeZiBR
 # WALLET_PROVIDER_API_KEY=seu_api_key_aqui
 
 # ----------------------------------------------------------------------------
+# BUILD E DEPLOY
+# ----------------------------------------------------------------------------
+# Versão para bump automático durante o build (ex: patch, minor, major)
+# BUILD_BUMP_VERSION=patch
+
+# Caminho do IPFS local (opcional, padrão: ~/.ipfs)
+# IPFS_PATH=~/.ipfs
+
+# ----------------------------------------------------------------------------
 # INSTRUÇÕES DE CONFIGURAÇÃO
 # ----------------------------------------------------------------------------
 # 1. Copie este arquivo para .env
-# 2. Configure STORACHA_DID e STORACHA_UCAN (obrigatório para deploy IPFS)
-# 3. Para gerar o proof/UCAN:
+# 2. Configure as variáveis obrigatórias:
+#    - STORACHA_DID e STORACHA_UCAN (obrigatório para deploy IPFS)
+#    - WEB3AUTH_CLIENT_ID (obrigatório para MetaMask Embedded Wallets)
+#    - INFURA_API_KEY (OPCIONAL - só necessário para Bundler/gasless)
+# 3. Para gerar o proof/UCAN do Storacha:
 #    - Execute: node scripts/get-agent-did.js
 #    - Use o Agent DID retornado para gerar a delegação via Storacha CLI
-#    - Veja docs/STORACHA-DELEGATION-GUIDE.md para instruções detalhadas
-# 4. Reinicie o servidor (npm run dev) ou execute o deploy (make deploy-ipfs)
+#    - Veja docs/GUIA_STORACHA_IPFS.md para instruções detalhadas
+# 4. Variáveis NEXT_PUBLIC_* são expostas no frontend (Next.js)
+# 5. Reinicie o servidor (npm run dev) ou execute o deploy (make deploy-ipfs)
+
+# ----------------------------------------------------------------------------
+# NOTAS SOBRE VARIÁVEIS PÚBLICAS vs PRIVADAS
+# ----------------------------------------------------------------------------
+# Variáveis com prefixo NEXT_PUBLIC_ são expostas no frontend (Next.js)
+# Use NEXT_PUBLIC_* apenas para valores que podem ser públicos
+# 
+# Variáveis PRIVADAS (sem prefixo):
+#   - PRIVATE_KEY (NUNCA exponha)
+#   - INFURA_API_KEY (pode ser pública, mas melhor privada)
+#   - WEB3AUTH_CLIENT_ID (pode ser pública - MetaMask Embedded Wallets)
+#   - STORACHA_UCAN (NUNCA exponha)
+#   - STORACHA_DID (pode ser pública)
+#   - STORACHA_PRIVATE_KEY (NUNCA exponha)
+#   - GOOGLE_API_KEY (NUNCA exponha - use apenas no backend)
+#   - FB_MESSENGER_APP_SECRET (NUNCA exponha)
+#   - FB_MESSENGER_VERIFY_TOKEN (pode ser pública, mas melhor privada)
+#   - BUILD_BUMP_VERSION (apenas para CI/CD)
+#
+# Variáveis PÚBLICAS (NEXT_PUBLIC_*):
+#   - NEXT_PUBLIC_INFURA_API_KEY (exposta no frontend)
+#   - NEXT_PUBLIC_WEB3AUTH_CLIENT_ID (exposta no frontend)
+#   - NEXT_PUBLIC_STORACHA_API_KEY (legado - não recomendado, use UCAN)
