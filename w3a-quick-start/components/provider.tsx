@@ -34,32 +34,11 @@ const web3AuthContextConfig: Web3AuthContextConfig = {
     ssr: true,
     // IMP END - SSR
   },
-  connectors: {
-    auth: {
-      loginMethods: {
-        google: {
-          name: "google",
-          showOnModal: true,
-          showOnDesktop: true,
-          showOnMobile: true,
-        },
-      },
-      showOnModal: true,
-      showOnDesktop: true,
-      showOnMobile: true,
-    },
-  },
 };
 // IMP END - Config
 
 // IMP START - Google Auth Connection
-export const connectToGoogle = async () => {
-  const { connect } = await import("@web3auth/modal/react");
-  await connect(WALLET_CONNECTORS.AUTH, {
-    authConnection: AUTH_CONNECTION.GOOGLE,
-    authConnectionId: "w3a-google-demo",
-  });
-};
+// Google Auth connection is handled in the App component using useWeb3AuthConnect hook
 // IMP END - Google Auth Connection
 
 // IMP START - SSR

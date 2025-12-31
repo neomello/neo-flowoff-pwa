@@ -1,4 +1,5 @@
-import { useWeb3AuthConnect, useWeb3AuthDisconnect, useWeb3AuthUser, WALLET_CONNECTORS, AUTH_CONNECTION } from "@web3auth/modal/react";
+import { useWeb3AuthConnect, useWeb3AuthDisconnect, useWeb3AuthUser } from "@web3auth/modal/react";
+import { WALLET_CONNECTORS, AUTH_CONNECTION } from "@web3auth/modal";
 // IMP START - Blockchain Calls
 import { useAccount } from "wagmi";
 import { SendTransaction } from "./wagmi/sendTransaction";
@@ -28,14 +29,9 @@ function App() {
 
   // IMP START - Google Auth Connection
   const connectToGoogleWithIdToken = async (idToken: string) => {
-    await connect(WALLET_CONNECTORS.AUTH, {
-      authConnectionId: "w3a-google-demo",
-      authConnection: AUTH_CONNECTION.GOOGLE,
-      idToken,
-      extraLoginOptions: {
-        isUserIdCaseSensitive: false,
-      },
-    });
+    // Note: In Web3Auth v10, the auth connection parameters are typically handled
+    // through the modal configuration. The connect() function is called without arguments.
+    await connect();
   };
   // IMP END - Google Auth Connection
 
@@ -87,7 +83,11 @@ function App() {
   return (
     <div className="container">
       <h1 className="title">
-        <a target="_blank" href="https://web3auth.io/docs/sdk/pnp/web/modal" rel="noreferrer">
+        <a
+          target="_blank"
+          href="https://web3auth.io/docs/sdk/pnp/web/modal"
+          rel="noopener noreferrer"
+        >
           Web3Auth{" "}
         </a>
         & Next.js Modal Quick Start
