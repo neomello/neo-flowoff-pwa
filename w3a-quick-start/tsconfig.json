@@ -27,11 +27,13 @@
     ]
   },
   "include": [
-    "src",
-    "src/components/sendTransaction.tsx",
-    "src/components/switchNetwork.tsx",
-    "src/components/writeContract.tsx",
-    "src/components/getBalance.tsx",
+    "components/wagmi/sendTransaction.tsx",
+    "components/wagmi/switchNetwork.tsx",
+    "components/wagmi/getBalance.tsx",
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "components/**/*.ts",
+    "components/**/*.tsx",
     ".next/types/**/*.ts"
   ],
   "references": [
@@ -43,3 +45,4 @@
     "node_modules"
   ]
 }
+  
