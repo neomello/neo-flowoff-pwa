@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [main, develop]
 
+permissions:
+  contents: read
+
 jobs:
   quality:
     name: Code Quality Checks
@@ -21,12 +24,12 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-  run: |
-    if [ -f package-lock.json ]; then
-      npm ci || npm install
-    else
-      npm install
-    fi
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci || npm install
+          else
+            npm install
+          fi
 
       - name: Run Prettier check
         run: |
@@ -50,4 +53,3 @@ jobs:
           else
             echo "markdownlint not installed, skipping..."
           fi
-
