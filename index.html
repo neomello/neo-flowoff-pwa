@@ -1383,6 +1383,10 @@
       console.warn('⚠️ Não foi possível carregar configurações do /api/config:', error);
     }
   })();
+
+  // ⚠️ WALLET: Desabilitada até backend Neon SQL estar implementado
+  // Para habilitar: defina window.WALLET_ENABLED = true antes de carregar wallet.js
+  window.WALLET_ENABLED = window.WALLET_ENABLED ?? false;
 </script>
 
 <!-- Wallet Manager -->

@@ -26,34 +26,66 @@ npm install @metamask/smart-accounts-kit viem @web3auth/modal @web3auth/base
 yarn add @metamask/smart-accounts-kit viem @web3auth/modal @web3auth/base
 ```
 
-### 2. Configurar Variáveis de Ambiente
+### 2. Backend Neon SQL (serverless)
 
-Crie um arquivo `.env.local`:
+**Variáveis obrigatórias para banco:**
+
+-  `DATABASE_URL` (pooler do Neon)
+-  Opcional: `DATABASE_URL_UNPOOLED` / `POSTGRES_URL_NON_POOLING`
+
+**Migrações:**
+
+-  `npm run db:migrate` (aplica `migrations/` e registra em `schema_migrations`)
+
+**Endpoints serverless:**
+
+-  `api/health-db.js` — `GET /api/health-db` (ping no Neon)
+-  `api/leads.js` — `POST /api/leads` (salva lead)
+-  `api/wallet-sessions.js` — `POST/GET` sessões de wallet
+-  `api/tx-logs.js` — `POST/GET` logs de transação
+
+### 3. Configurar Variáveis de Ambiente
+
+Crie um arquivo `.env` na raiz do projeto (veja `env-example.txt`):
 
 ```bash
+# Neon Postgres (Backend Database - OBRIGATÓRIO para backend)
+DATABASE_URL=postgresql://user:password@ep-xxx.region.aws.neon.tech/neondb?sslmode=require
+
 # Web3Auth (Autenticação)
+WEB3AUTH_CLIENT_ID=seu_web3auth_client_id
 NEXT_PUBLIC_WEB3AUTH_CLIENT_ID=seu_web3auth_client_id
 
-# DRPC (RPC Pago - MAIS RECOMENDADO)
-# RPC dedicado e confiável para Polygon - melhor performance
-# Obtenha em: https://drpc.org
-# ⚠️ IMPORTANTE: Use a URL completa (ex: https://lb.drpc.live/polygon/sua_chave_aqui)
+# DRPC (RPC Pago - RECOMENDADO)
+# ⚠️ IMPORTANTE: Use a URL completa
 DRPC_RPC_KEY=https://lb.drpc.live/polygon/sua_chave_aqui
 
-# Web3Auth (Autenticação - RECOMENDADO)
-# Client ID para autenticação Web3Auth
-NEXT_PUBLIC_WEB3AUTH_CLIENT_ID=seu_web3auth_client_id
-INFURA_API_KEY=sua_infura_api_key
-
-# Storacha
-NEXT_PUBLIC_STORACHA_API_KEY=sua_storacha_api_key
+# Storacha (IPFS)
+STORACHA_DID=seu_agent_did
+STORACHA_UCAN=seu_ucan_token
 NEXT_PUBLIC_STORACHA_ENDPOINT=https://api.storacha.com
 
-# Wallet (para scripts de teste)
-PRIVATE_KEY=sua_private_key
+# Wallet (para scripts de teste - opcional)
+# PRIVATE_KEY=sua_private_key
+```
+
+**Configure no Vercel:**
+
+```bash
+npm run check:env  # Verifica variáveis configuradas na Vercel
 ```
 
 ## 🚀 Scripts Disponíveis
+
+### Database (Backend)
+
+```bash
+# Aplicar migrações SQL ao banco Neon
+npm run db:migrate
+
+# Verificar variáveis de ambiente na Vercel
+npm run check:env
+```
 
 ### Teste Básico
 

@@ -5,7 +5,13 @@
  * Token: $NEOFLW na Polygon
  *
  * Nota: Preparado para integração futura com ZeroDev/WalletConnect/Base x402
+ * 
+ * ⚠️ STATUS: Wallet implementada mas aguardando backend Neon SQL
+ * Para habilitar: defina window.WALLET_ENABLED = true
  */
+
+// Flag de controle - Wallet desabilitada até backend Neon estar pronto
+const WALLET_ENABLED = window?.WALLET_ENABLED ?? false;
 
 // Configuração do Token
 const TOKEN_CONFIG = {
@@ -31,8 +37,28 @@ class WalletManager {
   }
 
   init() {
+    // Verifica se wallet está habilitada
+    if (!WALLET_ENABLED) {
+      console.log('⚠️ Wallet desabilitada - aguardando backend Neon SQL');
+      this.hideWalletButtons();
+      return;
+    }
+    
     this.createModal();
     this.loadState();
+  }
+
+  // Esconde botões de wallet quando desabilitada
+  hideWalletButtons() {
+    const desktopBtn = document.getElementById('wallet-btn');
+    const mobileBtn = document.getElementById('wallet-btn-mobile');
+    
+    if (desktopBtn) {
+      desktopBtn.style.display = 'none';
+    }
+    if (mobileBtn) {
+      mobileBtn.style.display = 'none';
+    }
   }
 
   // Carrega estado salvo
@@ -911,6 +937,41 @@ class WalletManager {
     this.updateModalState();
     this.fetchBalance();
     this.showToast(`✅ Wallet conectada com sucesso! (${method})`);
+
+    // Registra sessão no backend (se habilitado)
+    if (WALLET_ENABLED) {
+      this.recordWalletSession(address, method).catch(error => {
+        window.Logger?.warn('Falha ao registrar sessão no backend:', error);
+        // Não exibe erro ao usuário - operação em background
+      });
+    }
+  }
+
+  // Registra sessão de wallet no backend Neon
+  async recordWalletSession(walletAddress, provider) {
+    try {
+      const response = await fetch('/api/wallet-sessions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          wallet_address: walletAddress,
+          provider: provider,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erro ao registrar sessão: ${response.status}`);
+      }
+
+      const data = await response.json();
+      window.Logger?.info('Sessão de wallet registrada:', data);
+      return data;
+    } catch (error) {
+      window.Logger?.error('Erro ao registrar sessão de wallet:', error);
+      throw error;
+    }
   }
 
   // Callback quando Web3Auth conecta

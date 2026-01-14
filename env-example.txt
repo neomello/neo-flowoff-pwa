@@ -10,6 +10,19 @@ NODE_ENV=development
 PORT=3000
 
 # ----------------------------------------------------------------------------
+# NEON POSTGRES (Backend Database - OBRIGATÓRIO para backend serverless)
+# ----------------------------------------------------------------------------
+# URL de conexão pooled do Neon (recomendado para serverless)
+# Obtenha em: https://console.neon.tech → seu projeto → Connection Details
+# Formato: postgres://user:password@host/dbname?sslmode=require
+DATABASE_URL=postgresql://user:password@ep-xxx.region.aws.neon.tech/neondb?sslmode=require
+
+# URL de conexão não-pooled (opcional, para conexões longas ou transações)
+# Use apenas se necessário para operações que requerem conexão dedicada
+# DATABASE_URL_UNPOOLED=postgresql://user:password@ep-xxx.region.aws.neon.tech/neondb?sslmode=require
+# POSTGRES_URL_NON_POOLING=postgresql://user:password@ep-xxx.region.aws.neon.tech/neondb?sslmode=require
+
+# ----------------------------------------------------------------------------
 # METAMASK EMBEDDED WALLETS (Web3Auth) - Autenticação de Usuários
 # ----------------------------------------------------------------------------
 # MetaMask Embedded Wallets (anteriormente Web3Auth) fornece infraestrutura

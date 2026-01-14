@@ -1,4 +1,5 @@
 import { setCORSHeaders, handleOptions } from './utils.js';
+import { query } from './db.js';
 
 const MAX_BODY_SIZE = 10000; // 10KB máximo
 
@@ -19,6 +20,8 @@ export default async function handler(req, res) {
   }
 
   try {
+    setCORSHeaders(req, res);
+
     // No Vercel, o body pode vir parseado ou como string
     let leadData;
     
@@ -93,20 +96,28 @@ export default async function handler(req, res) {
       return;
     }
 
-    // Aqui você pode salvar no banco de dados, enviar email, etc.
-    // Por enquanto, apenas retornamos sucesso
+    // Persiste lead no Neon
+    const result = await query(
+      `
+        INSERT INTO leads (name, email, whats, type)
+        VALUES ($1, $2, $3, $4)
+        RETURNING id, created_at
+      `,
+      [leadData.name, leadData.email, leadData.whats, leadData.type]
+    );
 
-    setCORSHeaders(req, res);
+    const row = result?.[0];
+
     res.status(200).json({
       success: true,
       message: 'Lead recebido com sucesso',
       data: {
-        id: Date.now(),
+        id: row?.id,
+        created_at: row?.created_at,
         ...leadData
       }
     });
   } catch (error) {
-    setCORSHeaders(req, res);
     res.status(400).json({
       success: false,
       error: 'Erro ao processar lead',

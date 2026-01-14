@@ -1,28 +1,44 @@
+# robots.txt para flowoff.xyz
+# Seguindo as diretrizes do Google: https://developers.google.com/search/docs/crawling-indexing/robots/create-robots-txt
+
+# Permitir todos os crawlers
 User-agent: *
 Allow: /
 
-# Sitemap
-Sitemap: https://flowoff.xyz/sitemap.xml
-
-# Permitir acesso a recursos importantes
+# Permitir acesso a recursos estáticos importantes
 Allow: /public/
 Allow: /css/
 Allow: /js/
 Allow: /images/
 Allow: /icons/
 
-# Bloquear arquivos desnecessários para SEO
-Disallow: /node_modules/
-Disallow: /dist/
-Disallow: /*.log
-Disallow: /api/
-Disallow: /api/functions/
-Disallow: /pages/
-
-# Permitir acesso a arquivos específicos importantes
+# Permitir acesso a arquivos PWA e recursos essenciais
 Allow: /manifest.webmanifest
 Allow: /sw.js
 Allow: /favicon.ico
+Allow: /apple-touch-icon.png
+Allow: /robots.txt
 
-# Crawl-delay para evitar sobrecarga
-Crawl-delay: 1
+# Bloquear arquivos e diretórios desnecessários para SEO
+Disallow: /node_modules/
+Disallow: /dist/
+Disallow: /build/
+Disallow: /*.log$
+Disallow: /*.json$
+Disallow: /api/
+Disallow: /api/functions/
+Disallow: /pages/
+Disallow: /.git/
+Disallow: /.env
+Disallow: /.env.*
+
+# Bloquear arquivos de configuração e desenvolvimento
+Disallow: /package.json
+Disallow: /package-lock.json
+Disallow: /tsconfig.json
+Disallow: /vite.config.*
+Disallow: /tailwind.config.*
+Disallow: /postcss.config.*
+
+# Sitemap (deve estar no final)
+Sitemap: https://flowoff.xyz/sitemap.xml

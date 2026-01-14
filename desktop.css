@@ -74,8 +74,8 @@ html, body {
   height: 100vh;
   background: linear-gradient(180deg, rgba(15,15,24,.95), rgba(8,8,12,.85));
   border-right: 1px solid rgba(255,255,255,.08);
-  backdrop-filter: saturate(1.2) blur(20px);
   -webkit-backdrop-filter: saturate(1.2) blur(20px);
+  backdrop-filter: saturate(1.2) blur(20px);
   z-index: var(--z-sidebar);
   display: flex;
   flex-direction: column;
@@ -276,8 +276,8 @@ html, body {
   max-width: 100%;
   background: linear-gradient(180deg, rgba(15,15,24,.95), rgba(8,8,12,.85));
   border-bottom: 1px solid rgba(255,255,255,.08);
-  backdrop-filter: saturate(1.2) blur(20px);
   -webkit-backdrop-filter: saturate(1.2) blur(20px);
+  backdrop-filter: saturate(1.2) blur(20px);
   z-index: var(--z-header);
   display: flex;
   align-items: center;
@@ -404,8 +404,8 @@ html, body {
   border: 1px solid rgba(255,255,255,.06);
   border-radius: 16px;
   padding: 32px;
-  backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   position: relative;
   overflow: hidden;
   width: 100%;
@@ -600,8 +600,8 @@ html, body {
 
 .floating-card {
   background: rgba(255,255,255,.1);
-  backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   border: 1px solid rgba(255,255,255,.1);
   border-radius: 12px;
   padding: 16px;

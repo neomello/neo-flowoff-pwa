@@ -31,17 +31,21 @@ const EXPECTED_VARS = {
   ],
   // Privadas
   private: [
+    'DATABASE_URL', // Neon Postgres pooled connection
     'STORACHA_DID',
     'STORACHA_UCAN',
     'STORACHA_SPACE_DID',
     'INFURA_API_KEY',
     'WEB3AUTH_CLIENT_ID',
+    'DRPC_RPC_KEY', // URL completa do DRPC
     'IPNS_KEY_NAME',
     'IPNS_KEY_ID',
     'UCAN_TOKEN',
   ],
   // Opcionais
   optional: [
+    'DATABASE_URL_UNPOOLED', // Neon Postgres unpooled (conexão direta)
+    'POSTGRES_URL_NON_POOLING', // Alternativa para DATABASE_URL_UNPOOLED
     'STORACHA_ENDPOINT',
     'STORACHA_EMAIL',
     'STORACHA_PRIVATE_KEY',

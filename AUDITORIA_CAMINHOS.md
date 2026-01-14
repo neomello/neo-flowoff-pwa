@@ -18,39 +18,51 @@
 ## ✅ Resultado da Auditoria
 
 ### Makefile
+
 **Status:** ✅ **OK**
 Não contém referências a caminhos antigos. Todos os comandos usam caminhos relativos ou não dependem dos arquivos movidos.
 
 ### package.json
+
 **Status:** ✅ **ATUALIZADO**
+
 Scripts já foram atualizados para usar `examples/`:
+
 - `test:basic`: `tsx examples/integrate-token-smart-accounts.ts`
 - `test:full`: `tsx examples/integrate-token-full-stack.ts`
 - `dev`: `tsx examples/integrate-token-smart-accounts.ts`
 
 ### scripts/build.js
+
 **Status:** ✅ **AJUSTADO**
+
 - **Antes:** Referência a `WALLET-AUTH-FLOW.md` (arquivo inexistente)
 - **Depois:** Referência removida, comentário adicionado explicando que documentação agora está em `docs/`
 
 ### scripts/create-storacha-pr.sh
+
 **Status:** ✅ **OK**
 Já usa caminhos corretos:
 - `$PROJECT_ROOT/docs/BUG_REPORT_STORACHA_EN.md`
 - Cria `docs/bug-reports/` corretamente
 
 ### Outros Scripts
+
 **Status:** ✅ **OK**
 Nenhum outro script encontrado com referências problemáticas.
 
 ### Documentação (docs/)
+
 **Status:** ⚠️ **DOCUMENTAÇÃO**
+
 - `docs/PR_COMMANDS.md` contém caminhos absolutos do usuário (`/Users/nettomello/CODIGOS/...`)
 - **Nota:** É apenas documentação/exemplo, não afeta funcionamento
 - **Ação:** Opcional - pode ser atualizado para usar variáveis de ambiente se necessário
 
 ### docs/integracao/*.md
+
 **Status:** ✅ **ATUALIZADO**
+
 - Todos os imports corrigidos para `../examples/...`
 - Todos os comandos atualizados para `examples/integrate-token-*`
 

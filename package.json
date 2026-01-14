@@ -13,7 +13,9 @@
     "upload:cloudinary": "node scripts/upload-images-cloudinary.js",
     "upload:cloudinary:dry": "node scripts/upload-images-cloudinary.js --dry-run",
     "vercel:cloudinary": "node scripts/setup-vercel-cloudinary.js",
-    "vercel:cloudinary:all": "node scripts/setup-vercel-cloudinary.js --all"
+    "vercel:cloudinary:all": "node scripts/setup-vercel-cloudinary.js --all",
+    "db:migrate": "node scripts/db-migrate.js",
+    "check:env": "node scripts/check-vercel-env.js"
   },
   "type": "module",
   "keywords": [
@@ -39,6 +41,7 @@
   ],
   "dependencies": {
     "@metamask/smart-accounts-kit": "^0.3.0",
+    "@neondatabase/serverless": "^0.10.4",
     "@reown/walletkit": "^1.4.1",
     "@storacha/client": "latest",
     "@tanstack/react-query": "^5.90.16",
