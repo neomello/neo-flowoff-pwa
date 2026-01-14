@@ -1967,6 +1967,32 @@ body.modal-open #app > *:not(.project-modal):not(.toast-notifications-container)
   opacity: 1;
   text-decoration: underline;
 }
+.footer-legal-links{
+  text-align: center;
+  margin: 4px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.footer-legal-link{
+  font-size: 9px;
+  font-weight: 400;
+  color: var(--muted);
+  text-decoration: none;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+.footer-legal-link:hover,
+.footer-legal-link:focus{
+  opacity: 1;
+  text-decoration: underline;
+}
+.footer-separator{
+  font-size: 9px;
+  color: var(--muted);
+  opacity: 0.5;
+}
 
 /* Grande título recolhe ao rolar - removido por incompatibilidade */
 /* As propriedades animation-timeline e animation-range não são suportadas amplamente */

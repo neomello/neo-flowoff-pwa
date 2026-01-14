@@ -6,11 +6,11 @@
   /* Layout */
   --sidebar-width: 280px;
   --header-height: 64px;
-  --content-max-width: 1200px;
+  --content-max-width: 1400px;
 
   /* Spacing */
-  --section-spacing: 80px;
-  --block-spacing: 60px;
+  --section-spacing: 48px;
+  --block-spacing: 40px;
 
   /* Typography Scale */
   --text-xs: 12px;
@@ -44,12 +44,14 @@ html, body {
   margin: 0;
   padding: 0;
   height: 100%;
+  width: 100%;
   font-family: -apple-system, BlinkMacSystemFont, Inter, system-ui, Segoe UI, Roboto, Ubuntu, sans-serif;
   font-size: var(--text-base);
   line-height: 1.6;
   color: #e6e6f0;
   background: radial-gradient(1200px 800px at 70% -10%, #1a1030 0%, #0a0a0f 50%, #07070b 100%);
   overflow-x: hidden;
+  overflow-y: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -58,7 +60,9 @@ html, body {
 #desktop-app {
   display: flex;
   min-height: 100vh;
+  width: 100%;
   position: relative;
+  overflow-x: hidden;
 }
 
 /* === SIDEBAR === */
@@ -249,13 +253,18 @@ html, body {
   flex: 1;
   margin-left: var(--sidebar-width);
   min-height: 100vh;
+  width: calc(100% - var(--sidebar-width));
+  max-width: calc(100% - var(--sidebar-width));
   display: flex;
   flex-direction: column;
   transition: margin-left var(--transition-normal);
+  overflow-x: hidden;
 }
 
 .desktop-main.sidebar-collapsed {
   margin-left: 0;
+  width: 100%;
+  max-width: 100%;
 }
 
 /* Desktop Header */
@@ -263,6 +272,8 @@ html, body {
   position: sticky;
   top: 0;
   height: var(--header-height);
+  width: 100%;
+  max-width: 100%;
   background: linear-gradient(180deg, rgba(15,15,24,.95), rgba(8,8,12,.85));
   border-bottom: 1px solid rgba(255,255,255,.08);
   backdrop-filter: saturate(1.2) blur(20px);
@@ -271,7 +282,9 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 32px;
+  padding: 0 24px;
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 .header-left {
@@ -369,8 +382,10 @@ html, body {
 .content-container {
   flex: 1;
   max-width: var(--content-max-width);
+  width: 100%;
   margin: 0 auto;
-  padding: 0 32px var(--section-spacing);
+  padding: 0 24px var(--section-spacing);
+  box-sizing: border-box;
 }
 
 /* === SECTIONS & CONTENT BLOCKS === */
@@ -388,11 +403,13 @@ html, body {
   background: linear-gradient(135deg, rgba(15,15,24,.8), rgba(8,8,12,.6));
   border: 1px solid rgba(255,255,255,.06);
   border-radius: 16px;
-  padding: 48px;
+  padding: 32px;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   position: relative;
   overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .content-block::before {
@@ -408,7 +425,7 @@ html, body {
 /* Block Headers */
 .block-header {
   text-align: center;
-  margin-bottom: 48px;
+  margin-bottom: 32px;
 }
 
 .block-title {
@@ -432,11 +449,13 @@ html, body {
 
 /* === HERO BLOCK === */
 .hero-block {
-  padding: 80px 48px;
+  padding: 48px 32px;
   background: linear-gradient(135deg, rgba(15,15,24,.9), rgba(8,8,12,.7));
   border: 1px solid rgba(255,255,255,.08);
   position: relative;
   overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .hero-block::before {
@@ -454,10 +473,12 @@ html, body {
 .hero-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 80px;
+  gap: 48px;
   align-items: center;
   position: relative;
   z-index: 1;
+  width: 100%;
+  max-width: 100%;
 }
 
 .hero-content {
@@ -616,7 +637,9 @@ html, body {
 
 /* === SERVICES OVERVIEW === */
 .services-overview {
-  padding: 64px 48px;
+  padding: 48px 32px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .services-grid {
@@ -681,14 +704,18 @@ html, body {
 
 /* === PHILOSOPHY BLOCK === */
 .philosophy-block {
-  padding: 80px 48px;
+  padding: 48px 32px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .philosophy-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 80px;
+  gap: 48px;
   align-items: center;
+  width: 100%;
+  max-width: 100%;
 }
 
 .philosophy-text h2 {
@@ -805,7 +832,9 @@ html, body {
 
 /* === TESTIMONIALS BLOCK === */
 .testimonials-block {
-  padding: 64px 48px;
+  padding: 48px 32px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .testimonials-grid {
@@ -895,7 +924,9 @@ html, body {
 /* === ABOUT SECTION === */
 .about-hero {
   text-align: center;
-  padding: 80px 48px;
+  padding: 48px 32px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .about-hero h1 {
@@ -916,14 +947,18 @@ html, body {
 }
 
 .about-mission {
-  padding: 80px 48px;
+  padding: 48px 32px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .mission-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 80px;
+  gap: 48px;
   align-items: start;
+  width: 100%;
+  max-width: 100%;
 }
 
 .mission-content h2 {
@@ -1080,7 +1115,9 @@ html, body {
 
 /* === CONTACT SECTION === */
 .contact-form {
-  padding: 80px 48px;
+  padding: 48px 32px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .contact-header h1 {
@@ -1184,7 +1221,9 @@ html, body {
 }
 
 .contact-info {
-  padding: 64px 48px;
+  padding: 48px 32px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .contact-methods {
@@ -1244,9 +1283,13 @@ html, body {
 /* === DESKTOP FOOTER === */
 .desktop-footer {
   margin-top: auto;
-  padding: 48px 32px;
+  padding: 48px 24px;
+  width: 100%;
+  max-width: 100%;
   border-top: 1px solid rgba(255,255,255,.06);
   background: linear-gradient(180deg, rgba(8,8,12,.8), rgba(4,4,8,.9));
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 .footer-content {
@@ -1349,21 +1392,31 @@ html, body {
 }
 
 /* === RESPONSIVE DESIGN (Desktop-First) === */
+@media (max-width: 1600px) {
+  :root {
+    --content-max-width: 1200px;
+  }
+}
+
 @media (max-width: 1200px) {
   :root {
-    --content-max-width: 900px;
+    --content-max-width: 100%;
+  }
+
+  .content-container {
+    padding: 0 20px var(--section-spacing);
   }
 
   .hero-grid {
-    gap: 48px;
+    gap: 32px;
   }
 
   .philosophy-content {
-    gap: 48px;
+    gap: 32px;
   }
 
   .mission-grid {
-    gap: 48px;
+    gap: 32px;
   }
 }
 
@@ -1425,19 +1478,33 @@ html, body {
   }
 
   .desktop-header {
-    padding: 0 20px;
+    padding: 0 16px;
+  }
+
+  .desktop-footer {
+    padding: 32px 16px;
   }
 
   .content-container {
-    padding: 0 20px var(--section-spacing);
+    padding: 0 16px var(--section-spacing);
   }
 
   .content-block {
-    padding: 32px 24px;
+    padding: 24px 20px;
   }
 
   .hero-block {
-    padding: 48px 24px;
+    padding: 32px 20px;
+  }
+
+  .services-overview,
+  .philosophy-block,
+  .about-hero,
+  .about-mission,
+  .contact-form,
+  .contact-info,
+  .testimonials-block {
+    padding: 32px 20px;
   }
 
   .hero-title {
