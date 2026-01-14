@@ -18,10 +18,24 @@ let WalletKit = null;
 // Estado do sistema wallet
 const WALLET_SYSTEM_STATUS = {
   metamask: 'functional',
-  web3auth: 'functional',
-  walletconnect: 'functional',
+  web3auth: 'pending',
+  walletconnect: 'pending',
   embedded: 'functional'
 };
+
+const WEB3AUTH_MODAL_VERSION = '10.10.0';
+const WALLETKIT_VERSION = '1.4.1';
+
+async function importWithFallback(specifier, fallbackUrl) {
+  try {
+    return await import(specifier);
+  } catch (error) {
+    if (!fallbackUrl) {
+      throw error;
+    }
+    return await import(/* @vite-ignore */ fallbackUrl);
+  }
+}
 
 // Função para obter configuração Web3Auth (dinâmica para pegar valores atualizados)
 // ⚠️ IMPORTANTE: WEB3AUTH_CLIENT_ID deve ser configurado via variável de ambiente
@@ -130,7 +144,11 @@ async function initWeb3Auth() {
 
   try {
     // Import dinâmico
-    const { Web3AuthModal: Web3AuthModalClass } = await import('@web3auth/modal');
+    const web3authModule = await importWithFallback(
+      '@web3auth/modal',
+      `https://cdn.jsdelivr.net/npm/@web3auth/modal@${WEB3AUTH_MODAL_VERSION}/dist/lib.esm/packages/modal/src/index.js`
+    );
+    const { Web3AuthModal: Web3AuthModalClass } = web3authModule;
     Web3AuthModal = Web3AuthModalClass;
 
     // Obtém configuração dinamicamente (para pegar valores atualizados de window)
@@ -144,10 +162,12 @@ async function initWeb3Auth() {
 
     await web3authInstance.initModal();
     console.log('✅ Web3Auth inicializado');
+    WALLET_SYSTEM_STATUS.web3auth = 'functional';
 
     return web3authInstance;
   } catch (error) {
     console.error('❌ Erro ao inicializar Web3Auth:', error);
+    WALLET_SYSTEM_STATUS.web3auth = 'error';
     return null;
   }
 }
@@ -158,7 +178,11 @@ async function initWalletConnect() {
 
   try {
     // Import dinâmico
-    const { WalletKit: WalletKitClass } = await import('@reown/walletkit');
+    const walletKitModule = await importWithFallback(
+      '@reown/walletkit',
+      `https://cdn.jsdelivr.net/npm/@reown/walletkit@${WALLETKIT_VERSION}/dist/index.js`
+    );
+    const { WalletKit: WalletKitClass } = walletKitModule;
     WalletKit = WalletKitClass;
 
     walletKitInstance = WalletKitClass.init({
@@ -172,9 +196,11 @@ async function initWalletConnect() {
     });
 
     console.log('✅ WalletConnect (Reown) inicializado');
+    WALLET_SYSTEM_STATUS.walletconnect = 'functional';
     return walletKitInstance;
   } catch (error) {
     console.error('❌ Erro ao inicializar WalletConnect:', error);
+    WALLET_SYSTEM_STATUS.walletconnect = 'error';
     return null;
   }
 }
@@ -192,7 +218,14 @@ window.WalletProvider = {
       // Inicializar WalletConnect
       await initWalletConnect();
 
-      console.log('✅ Sistema de Wallets inicializado completamente');
+      const hasErrors =
+        WALLET_SYSTEM_STATUS.web3auth === 'error' ||
+        WALLET_SYSTEM_STATUS.walletconnect === 'error';
+      if (hasErrors) {
+        console.warn('⚠️ Sistema de Wallets inicializado com limitações');
+      } else {
+        console.log('✅ Sistema de Wallets inicializado completamente');
+      }
       console.log('📊 Status:', WALLET_SYSTEM_STATUS);
 
       // Notificar WalletManager sobre a disponibilidade
