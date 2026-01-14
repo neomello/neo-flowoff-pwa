@@ -1,4 +1,12 @@
-import { setCORSHeaders, handleOptions } from './utils.js';
+import {
+  setCORSHeaders,
+  handleOptions,
+  parseJsonBody,
+  enforceRateLimit,
+  sanitizeText,
+  isEmail,
+  setSecurityHeaders
+} from './utils.js';
 import { query } from './db.js';
 
 const MAX_BODY_SIZE = 10000; // 10KB máximo
@@ -21,52 +29,11 @@ export default async function handler(req, res) {
 
   try {
     setCORSHeaders(req, res);
+    setSecurityHeaders(res);
+    if (!enforceRateLimit(req, res, { limit: 30 })) return;
 
-    // No Vercel, o body pode vir parseado ou como string
-    let leadData;
-    
-    if (typeof req.body === 'string') {
-      // Se for string, fazer parse
-      const bodySize = Buffer.byteLength(req.body, 'utf8');
-      if (bodySize > MAX_BODY_SIZE) {
-        res.status(413).json({
-          success: false,
-          error: 'Payload muito grande'
-        });
-        return;
-      }
-      leadData = JSON.parse(req.body);
-    } else if (req.body && typeof req.body === 'object') {
-      // Se já estiver parseado
-      const bodySize = JSON.stringify(req.body).length;
-      if (bodySize > MAX_BODY_SIZE) {
-        res.status(413).json({
-          success: false,
-          error: 'Payload muito grande'
-        });
-        return;
-      }
-      leadData = req.body;
-    } else {
-      // Tentar ler do stream (fallback)
-      const chunks = [];
-      let bodySize = 0;
-      
-      for await (const chunk of req) {
-        bodySize += chunk.length;
-        if (bodySize > MAX_BODY_SIZE) {
-          res.status(413).json({
-            success: false,
-            error: 'Payload muito grande'
-          });
-          return;
-        }
-        chunks.push(chunk);
-      }
-      
-      const body = Buffer.concat(chunks).toString();
-      leadData = JSON.parse(body);
-    }
+    const leadData = await parseJsonBody(req, res, MAX_BODY_SIZE);
+    if (!leadData) return;
 
     // Validar estrutura básica
     if (!leadData || typeof leadData !== 'object') {
@@ -78,7 +45,12 @@ export default async function handler(req, res) {
     }
 
     // Validar campos obrigatórios
-    if (!leadData.name || !leadData.email || !leadData.whats || !leadData.type) {
+    const name = sanitizeText(leadData.name, 100);
+    const email = sanitizeText(leadData.email, 255);
+    const whats = sanitizeText(leadData.whats, 20);
+    const type = sanitizeText(leadData.type, 50);
+
+    if (!name || !email || !whats || !type) {
       res.status(400).json({
         success: false,
         error: 'Campos obrigatórios faltando'
@@ -86,12 +58,26 @@ export default async function handler(req, res) {
       return;
     }
 
-    // Validar tamanho dos campos
-    if (leadData.name.length > 100 || leadData.email.length > 255 ||
-        leadData.whats.length > 20 || leadData.type.length > 50) {
+    if (!isEmail(email)) {
       res.status(400).json({
         success: false,
-        error: 'Campos muito longos'
+        error: 'Email inválido'
+      });
+      return;
+    }
+
+    if (!/^\+?[0-9]{8,20}$/.test(whats)) {
+      res.status(400).json({
+        success: false,
+        error: 'Whats inválido'
+      });
+      return;
+    }
+
+    if (!/^[a-zA-Z0-9 _.-]{1,50}$/.test(type)) {
+      res.status(400).json({
+        success: false,
+        error: 'Tipo inválido'
       });
       return;
     }
@@ -103,7 +89,7 @@ export default async function handler(req, res) {
         VALUES ($1, $2, $3, $4)
         RETURNING id, created_at
       `,
-      [leadData.name, leadData.email, leadData.whats, leadData.type]
+      [name, email, whats, type]
     );
 
     const row = result?.[0];
@@ -114,14 +100,18 @@ export default async function handler(req, res) {
       data: {
         id: row?.id,
         created_at: row?.created_at,
-        ...leadData
+        name,
+        email,
+        whats,
+        type
       }
     });
   } catch (error) {
+    console.error('Erro ao processar lead:', error);
     res.status(400).json({
       success: false,
       error: 'Erro ao processar lead',
-      message: error.message
+      message: 'Falha ao processar a requisição'
     });
   }
 }

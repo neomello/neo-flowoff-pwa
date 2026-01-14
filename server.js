@@ -37,24 +37,161 @@ const mimeTypes = {
 };
 
 
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_DEFAULT = 120;
+const rateLimitStore = new Map();
+
+function normalizeHost(hostname) {
+  return hostname?.toLowerCase()?.trim() || '';
+}
+
+function isAllowedOrigin(origin, allowedOrigins) {
+  if (!origin) return false;
+  let parsed;
+  try {
+    parsed = new URL(origin);
+  } catch {
+    return false;
+  }
+
+  const originProtocol = parsed.protocol;
+  const originHost = normalizeHost(parsed.hostname);
+
+  return allowedOrigins.some((allowed) => {
+    if (allowed === '*') return true;
+    let allowedUrl;
+    try {
+      allowedUrl = new URL(allowed.replace('*.', ''));
+    } catch {
+      return false;
+    }
+    const allowedProtocol = allowedUrl.protocol;
+    const allowedHost = normalizeHost(allowedUrl.hostname);
+
+    if (allowed.includes('*.')) {
+      return (
+        originProtocol === allowedProtocol &&
+        originHost.endsWith(`.${allowedHost}`)
+      );
+    }
+    return originProtocol === allowedProtocol && originHost === allowedHost;
+  });
+}
+
 // Função auxiliar para configurar CORS de forma segura
 function setCORSHeaders(req, res) {
   const allowedOrigins = isProduction
-    ? ['https://flowoff.xyz', 'https://www.flowoff.xyz', 'https://neoflowoff.eth.link', 'https://*.storacha.link', 'https://*.w3s.link']
+    ? [
+      'https://flowoff.xyz',
+      'https://www.flowoff.xyz',
+      'https://neoflowoff.eth.link',
+      'https://*.storacha.link',
+      'https://*.w3s.link'
+    ]
     : ['http://localhost:3000', 'http://127.0.0.1:3000', '*'];
 
   const origin = req.headers.origin;
-  if (allowedOrigins.includes('*') || (origin && allowedOrigins.some(allowed => origin.includes(allowed.replace('*.', ''))))) {
-    res.setHeader('Access-Control-Allow-Origin', origin || '*');
+  const allowAnyOrigin = allowedOrigins.includes('*');
+  if (allowAnyOrigin || isAllowedOrigin(origin, allowedOrigins)) {
+    res.setHeader('Access-Control-Allow-Origin', allowAnyOrigin ? '*' : origin);
+    res.setHeader('Vary', 'Origin');
   }
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Form-Submission');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Content-Type, Authorization, X-Form-Submission, X-API-Key'
+  );
   res.setHeader('Access-Control-Max-Age', '86400'); // 24 horas
 }
 
+function setSecurityHeaders(res, options = {}) {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'no-referrer');
+  res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+  if (options.isHtml) {
+    res.setHeader(
+      'Content-Security-Policy',
+      "default-src 'self'; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
+    );
+  }
+  if (isProduction) {
+    res.setHeader('Strict-Transport-Security', 'max-age=15552000; includeSubDomains');
+  }
+}
+
+function sanitizeText(value, maxLength) {
+  if (typeof value !== 'string') return '';
+  const sanitized = value.replace(/[\u0000-\u001F\u007F]/g, '').trim();
+  if (Number.isFinite(maxLength)) {
+    return sanitized.slice(0, maxLength);
+  }
+  return sanitized;
+}
+
+function isEmail(value) {
+  if (typeof value !== 'string') return false;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+}
+
+function enforceRateLimit(req, res, options = {}) {
+  const limit = Number.isFinite(options.limit) ? options.limit : RATE_LIMIT_DEFAULT;
+  const windowMs = Number.isFinite(options.windowMs)
+    ? options.windowMs
+    : RATE_LIMIT_WINDOW_MS;
+  const key =
+    options.key ||
+    req.headers['x-forwarded-for']?.toString().split(',')[0].trim() ||
+    req.socket?.remoteAddress ||
+    'unknown';
+  const now = Date.now();
+
+  if (rateLimitStore.size > 1000) {
+    for (const [entryKey, entry] of rateLimitStore.entries()) {
+      if (now > entry.resetAt) {
+        rateLimitStore.delete(entryKey);
+      }
+    }
+  }
+
+  const record = rateLimitStore.get(key);
+  if (!record || now > record.resetAt) {
+    rateLimitStore.set(key, { count: 1, resetAt: now + windowMs });
+    return true;
+  }
+
+  if (record.count >= limit) {
+    const retryAfter = Math.max(1, Math.ceil((record.resetAt - now) / 1000));
+    res.setHeader('Retry-After', retryAfter.toString());
+    res.writeHead(429, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Rate limit excedido' }));
+    return false;
+  }
+
+  record.count += 1;
+  return true;
+}
+
 const server = http.createServer((req, res) => {
-  const parsedUrl = url.parse(req.url, true);
-  let pathname = decodeURIComponent(parsedUrl.pathname);
+  let parsedUrl;
+  try {
+    parsedUrl = url.parse(req.url, true);
+  } catch (error) {
+    setSecurityHeaders(res);
+    res.writeHead(400, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'URL inválida' }));
+    return;
+  }
+
+  let pathname;
+  try {
+    pathname = decodeURIComponent(parsedUrl.pathname);
+  } catch (error) {
+    setSecurityHeaders(res);
+    res.writeHead(400, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'URL inválida' }));
+    return;
+  }
 
   // Remove query parameters for file serving
   let cleanPath = pathname.split('?')[0];
@@ -62,6 +199,7 @@ const server = http.createServer((req, res) => {
   // Handle OPTIONS requests (preflight)
   if (req.method === 'OPTIONS') {
     setCORSHeaders(req, res);
+    setSecurityHeaders(res);
     res.writeHead(200);
     res.end();
     return;
@@ -72,6 +210,7 @@ const server = http.createServer((req, res) => {
   if (cleanPath === '/api/health') {
     res.setHeader('Content-Type', 'application/json');
     setCORSHeaders(req, res);
+    setSecurityHeaders(res);
     res.writeHead(200);
     res.end(JSON.stringify({
       status: 'ok',
@@ -104,12 +243,14 @@ const server = http.createServer((req, res) => {
 
     // Só permite se for localhost ou se não estiver em produção
     if (!isLocalhost && isProduction) {
+      setSecurityHeaders(res);
       res.writeHead(403, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ error: 'Forbidden: API config only available in development' }));
       return;
     }
     res.setHeader('Content-Type', 'application/json');
     setCORSHeaders(req, res);
+    setSecurityHeaders(res);
     res.writeHead(200);
     res.end(JSON.stringify({
       message: 'API config endpoint - apenas para desenvolvimento'
@@ -119,6 +260,7 @@ const server = http.createServer((req, res) => {
 
   // API endpoint para receber leads
   if (cleanPath === '/api/lead' && req.method === 'POST') {
+    if (!enforceRateLimit(req, res, { limit: 30 })) return;
     let body = '';
     let bodySize = 0;
     const MAX_BODY_SIZE = 10000; // 10KB máximo
@@ -126,11 +268,13 @@ const server = http.createServer((req, res) => {
     req.on('data', chunk => {
       bodySize += chunk.length;
       if (bodySize > MAX_BODY_SIZE) {
+        setSecurityHeaders(res);
         res.writeHead(413, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({
           success: false,
           error: 'Payload muito grande'
         }));
+        req.destroy();
         return;
       }
       body += chunk.toString();
@@ -140,6 +284,7 @@ const server = http.createServer((req, res) => {
       try {
         // Validar tamanho do body
         if (bodySize > MAX_BODY_SIZE) {
+          setSecurityHeaders(res);
           res.writeHead(413, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({
             success: false,
@@ -152,6 +297,7 @@ const server = http.createServer((req, res) => {
 
         // Validar estrutura básica
         if (!leadData || typeof leadData !== 'object') {
+          setSecurityHeaders(res);
           res.writeHead(400, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({
             success: false,
@@ -160,8 +306,14 @@ const server = http.createServer((req, res) => {
           return;
         }
 
+        const name = sanitizeText(leadData.name, 100);
+        const email = sanitizeText(leadData.email, 255);
+        const whats = sanitizeText(leadData.whats, 20);
+        const type = sanitizeText(leadData.type, 50);
+
         // Validar campos obrigatórios
-        if (!leadData.name || !leadData.email || !leadData.whats || !leadData.type) {
+        if (!name || !email || !whats || !type) {
+          setSecurityHeaders(res);
           res.writeHead(400, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({
             success: false,
@@ -170,13 +322,32 @@ const server = http.createServer((req, res) => {
           return;
         }
 
-        // Validar tamanho dos campos
-        if (leadData.name.length > 100 || leadData.email.length > 255 ||
-            leadData.whats.length > 20 || leadData.type.length > 50) {
+        if (!isEmail(email)) {
+          setSecurityHeaders(res);
           res.writeHead(400, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({
             success: false,
-            error: 'Campos muito longos'
+            error: 'Email inválido'
+          }));
+          return;
+        }
+
+        if (!/^\+?[0-9]{8,20}$/.test(whats)) {
+          setSecurityHeaders(res);
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            success: false,
+            error: 'Whats inválido'
+          }));
+          return;
+        }
+
+        if (!/^[a-zA-Z0-9 _.-]{1,50}$/.test(type)) {
+          setSecurityHeaders(res);
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            success: false,
+            error: 'Tipo inválido'
           }));
           return;
         }
@@ -186,23 +357,28 @@ const server = http.createServer((req, res) => {
 
         res.setHeader('Content-Type', 'application/json');
         setCORSHeaders(req, res);
+        setSecurityHeaders(res);
         res.writeHead(200);
         res.end(JSON.stringify({
           success: true,
           message: 'Lead recebido com sucesso',
           data: {
             id: Date.now(),
-            ...leadData
+            name,
+            email,
+            whats,
+            type
           }
         }));
       } catch (error) {
         res.setHeader('Content-Type', 'application/json');
         setCORSHeaders(req, res);
+        setSecurityHeaders(res);
         res.writeHead(400);
         res.end(JSON.stringify({
           success: false,
           error: 'Erro ao processar lead',
-          message: error.message
+          message: 'Falha ao processar a requisição'
         }));
       }
     });
@@ -216,6 +392,7 @@ const server = http.createServer((req, res) => {
     if (cep.length !== 8) {
       res.setHeader('Content-Type', 'application/json');
       setCORSHeaders(req, res);
+      setSecurityHeaders(res);
       res.writeHead(400);
       res.end(JSON.stringify({
         success: false,
@@ -229,6 +406,7 @@ const server = http.createServer((req, res) => {
     // O frontend faz validação local via SimpleValidator
     res.setHeader('Content-Type', 'application/json');
     setCORSHeaders(req, res);
+    setSecurityHeaders(res);
     res.writeHead(200);
     res.end(JSON.stringify({
       success: true,
@@ -255,23 +433,33 @@ const server = http.createServer((req, res) => {
     cleanPath = '/desktop.html';
   }
 
-  const filePath = path.join(__dirname, cleanPath);
-  const ext = path.extname(filePath).toLowerCase();
+  const safePath = path.resolve(__dirname, `.${cleanPath}`);
+  const basePath = `${__dirname}${path.sep}`;
+  if (!safePath.startsWith(basePath)) {
+    setSecurityHeaders(res);
+    res.writeHead(403, { 'Content-Type': 'text/plain' });
+    res.end('Forbidden');
+    return;
+  }
+  const ext = path.extname(safePath).toLowerCase();
   const mimeType = mimeTypes[ext] || 'text/plain';
 
   // CORS headers para arquivos estáticos
   setCORSHeaders(req, res);
 
-  fs.readFile(filePath, (err, data) => {
+  fs.readFile(safePath, (err, data) => {
     if (err) {
       if (err.code === 'ENOENT') {
         // File not found, serve index.html for SPA routing
-        fs.readFile(path.join(__dirname, 'index.html'), (err2, data2) => {
+        const indexPath = path.resolve(__dirname, './index.html');
+        fs.readFile(indexPath, (err2, data2) => {
           if (err2) {
             log('❌ Erro ao ler index.html:', err2.message);
+            setSecurityHeaders(res, { isHtml: true });
             res.writeHead(404, { 'Content-Type': 'text/html' });
             res.end(`<h1>404 - File not found</h1><p>Erro: ${err2.message}</p>`);
           } else {
+            setSecurityHeaders(res, { isHtml: true });
             res.writeHead(200, {
               'Content-Type': 'text/html',
               'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
@@ -282,14 +470,16 @@ const server = http.createServer((req, res) => {
           }
         });
       } else {
-        log('❌ Erro ao ler arquivo:', filePath, err.message, err.code);
+        log('❌ Erro ao ler arquivo:', safePath, err.message, err.code);
+        setSecurityHeaders(res, { isHtml: true });
         res.writeHead(500, { 'Content-Type': 'text/html' });
         const errorMsg = isProduction
           ? 'Internal Server Error'
-          : `<h1>500 - Server Error</h1><p>Erro: ${err.message}</p><p>Código: ${err.code}</p><p>Arquivo: ${filePath}</p>`;
+          : `<h1>500 - Server Error</h1><p>Erro: ${err.message}</p><p>Código: ${err.code}</p><p>Arquivo: ${safePath}</p>`;
         res.end(errorMsg);
       }
     } else {
+      setSecurityHeaders(res, { isHtml: mimeType === 'text/html' });
       // Headers para evitar cache apenas para arquivos estáticos
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0');
       res.setHeader('Pragma', 'no-cache');

@@ -81,6 +81,7 @@
 
   <link rel="stylesheet" href="desktop.css?v=1.0.0">
   <link rel="stylesheet" href="bento-grid.css?v=1.1.0">
+  <link rel="stylesheet" href="glass-morphism-bottom-bar.css?v=1.0.0">
 </head>
 <body>
   <!-- App Shell Desktop -->
@@ -775,6 +776,67 @@
 
     </main>
 
+    <!-- Glass Morphism Bottom Bar -->
+    <nav class="glass-morphism-tabbar">
+      <button class="glass-nav-item active" data-section="home" type="button" aria-label="Home">
+        <div class="glass-nav-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9 22V12H15V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="glass-nav-label">Home</div>
+        <div class="glass-nav-indicator"></div>
+      </button>
+
+      <button class="glass-nav-item" data-section="services" type="button" aria-label="Serviços">
+        <div class="glass-nav-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="glass-nav-label">Serviços</div>
+        <div class="glass-nav-indicator"></div>
+      </button>
+
+      <button class="glass-nav-item start-button" data-section="projects" type="button" aria-label="Projetos">
+        <div class="glass-nav-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22 19C22 19.5304 21.7893 20.0391 21.4142 20.4142C21.0391 21.7893 20.5304 22 20 22H4C3.46957 22 2.96086 21.7893 2.58579 21.4142C2.21071 21.0391 2 19.5304 2 19V5C2 4.46957 2.21071 3.96086 2.58579 3.58579C2.96086 3.21071 3.46957 3 4 3H20C20.5304 3 21.0391 3.21071 21.4142 3.58579C21.7893 3.96086 22 4.46957 22 5V19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8 7H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8 11H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8 15H12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="glass-nav-label">Projetos</div>
+        <div class="glass-nav-indicator"></div>
+      </button>
+
+      <button class="glass-nav-item" data-section="token" type="button" aria-label="Token">
+        <div class="glass-nav-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+            <path d="M2 12H22" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 2C14.5013 4.73835 15.9228 8.29203 15.9331 12C15.9228 15.708 14.5013 19.2616 12 22C9.49872 19.2616 8.07725 15.708 8.06688 12C8.07725 8.29203 9.49872 4.73835 12 2Z" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="glass-nav-label">$NEOFLW</div>
+        <div class="glass-nav-indicator"></div>
+      </button>
+
+      <button class="glass-nav-item" data-section="contact" type="button" aria-label="Contato">
+        <div class="glass-nav-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="glass-nav-label">Contato</div>
+        <div class="glass-nav-indicator"></div>
+      </button>
+    </nav>
+
   </div>
 
   <!-- Scripts -->
@@ -805,6 +867,22 @@
       if (yearElement) {
         yearElement.textContent = new Date().getFullYear();
       }
+    })();
+
+    // Navegação Bottom Bar (Desktop)
+    (function() {
+      const bottomBarItems = document.querySelectorAll('.glass-nav-item');
+      if (!bottomBarItems.length) return;
+
+      bottomBarItems.forEach((item) => {
+        item.addEventListener('click', (event) => {
+          event.preventDefault();
+          const section = item.dataset.section;
+          if (!section) return;
+          window.debugDesktop?.navigateTo(section);
+          bottomBarItems.forEach((btn) => btn.classList.toggle('active', btn === item));
+        });
+      });
     })();
   </script>
 </body>

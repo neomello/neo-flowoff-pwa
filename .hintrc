@@ -1,6 +1,6 @@
 {
   "extends": [
-    "development"
+    "production"
   ],
   "hints": {
     "no-inline-styles": "off"

@@ -167,26 +167,40 @@ window.applyUpdate = async function() {
 window.PWA_VERSION = PWA_VERSION;
 
 // Router super simples (hashless) - Compatível com Glass Morphism Bottom Bar
-const routes = ['home','projects','start','ecosystem'];
 const buttons = document.querySelectorAll('.glass-nav-item');
 const sections = [...document.querySelectorAll('.route')];
+const detectedRoutes = sections.map(section => section.id).filter(Boolean);
+const routes = detectedRoutes.length
+  ? detectedRoutes
+  : ['home','projects','start','ecosystem'];
 
 function go(route){
+  let hasSection = false;
   routes.forEach(r => {
     const element = document.getElementById(r);
+    if (!element) return;
     const isActive = r === route;
     element.classList.toggle('active', isActive);
+    if (isActive) {
+      hasSection = true;
+    }
   });
-  buttons.forEach(b => b.classList.toggle('active', b.dataset.route===route));
-  window.scrollTo({top:0, behavior:'smooth'});
+  if (buttons.length) {
+    buttons.forEach(b => b.classList.toggle('active', b.dataset.route===route));
+  }
+  if (hasSection) {
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
 }
 
 // Tornar função go() disponível globalmente para testes
 window.go = go;
 
 
-buttons.forEach(b => b.addEventListener('click', () => go(b.dataset.route)));
-go('home');
+if (buttons.length) {
+  buttons.forEach(b => b.addEventListener('click', () => go(b.dataset.route)));
+  go('home');
+}
 
 // Sheet modal
 document.querySelectorAll('[data-open]').forEach(el=>{
