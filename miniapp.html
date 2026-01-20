@@ -15,8 +15,10 @@
     <link rel="stylesheet" href="desktop.css">
     <link rel="stylesheet" href="miniapp-landing.css">
 
-    <!-- Favicon -->
+    <!-- Favicon & PWA -->
     <link rel="icon" type="image/png" href="dist/public/neo_ico.png">
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#050505">
 </head>
 
 <body>
@@ -134,6 +136,8 @@
         <p>© 2026 NEØ FlowOFF Protocol. All rights reserved.</p>
     </footer>
 
+    <!-- Service Worker & PWA Logic -->
+    <script type="module" src="js/app.js"></script>
 </body>
 
 </html>
