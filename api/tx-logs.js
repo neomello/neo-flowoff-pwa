@@ -6,7 +6,7 @@ import {
   requireApiToken,
   sanitizeText,
   isHexString,
-  setSecurityHeaders
+  setSecurityHeaders,
 } from './utils.js';
 import { query } from './db.js';
 
@@ -25,10 +25,11 @@ export default async function handler(req, res) {
       if (!enforceRateLimit(req, res, { limit: 120 })) return;
       if (!requireApiToken(req, res)) return;
 
-      const wallet = sanitizeText(
-        req.query?.wallet || req.query?.wallet_address || '',
-        128
-      ) || null;
+      const wallet =
+        sanitizeText(
+          req.query?.wallet || req.query?.wallet_address || '',
+          128
+        ) || null;
       const limit = Math.min(parseInt(req.query?.limit || '20', 10) || 20, 100);
 
       const rows = await query(
@@ -69,7 +70,7 @@ export default async function handler(req, res) {
 
     if (!txHashRaw || !walletRaw || !statusRaw || !Number.isInteger(chainId)) {
       res.status(400).json({
-        error: 'tx_hash, wallet_address, status e chain_id são obrigatórios'
+        error: 'tx_hash, wallet_address, status e chain_id são obrigatórios',
       });
       return;
     }
@@ -141,7 +142,7 @@ export default async function handler(req, res) {
         chainId,
         valueNumber,
         tokenRaw || null,
-        metadata
+        metadata,
       ]
     );
 

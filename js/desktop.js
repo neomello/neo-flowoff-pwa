@@ -71,7 +71,8 @@ class DesktopExperience {
       const lastMobileRedirect = localStorage.getItem('last-mobile-redirect');
       const now = Date.now();
 
-      if (!lastMobileRedirect || (now - parseInt(lastMobileRedirect)) > 30000) { // 30 segundos
+      if (!lastMobileRedirect || now - parseInt(lastMobileRedirect) > 30000) {
+        // 30 segundos
         return true;
       }
     }
@@ -83,9 +84,13 @@ class DesktopExperience {
    * Detecta se é um dispositivo móvel
    */
   detectMobileDevice() {
-    return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-           ('ontouchstart' in window) ||
-           (window.innerWidth < 768 && window.innerHeight < 1024);
+    return (
+      /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      ) ||
+      'ontouchstart' in window ||
+      (window.innerWidth < 768 && window.innerHeight < 1024)
+    );
   }
 
   /**
@@ -137,7 +142,7 @@ class DesktopExperience {
     }
 
     // Navegação
-    this.navItems.forEach(item => {
+    this.navItems.forEach((item) => {
       item.addEventListener('click', (e) => {
         e.preventDefault();
         const section = item.dataset.section;
@@ -149,7 +154,9 @@ class DesktopExperience {
 
     // Formulário de contato
     if (this.contactForm) {
-      this.contactForm.addEventListener('submit', (e) => this.handleContactSubmit(e));
+      this.contactForm.addEventListener('submit', (e) =>
+        this.handleContactSubmit(e)
+      );
     }
 
     // Resize da janela
@@ -169,7 +176,7 @@ class DesktopExperience {
    */
   initializeSections() {
     // Esconde todas as seções exceto a ativa
-    this.sections.forEach(section => {
+    this.sections.forEach((section) => {
       if (section.id === 'home-section') {
         section.classList.add('active');
       } else {
@@ -304,7 +311,15 @@ class DesktopExperience {
    * Verifica se a seção é válida
    */
   isValidSection(sectionId) {
-    const validSections = ['home', 'about', 'services', 'projects', 'token', 'insights', 'contact'];
+    const validSections = [
+      'home',
+      'about',
+      'services',
+      'projects',
+      'token',
+      'insights',
+      'contact',
+    ];
     return validSections.includes(sectionId);
   }
 
@@ -312,7 +327,7 @@ class DesktopExperience {
    * Atualiza navegação ativa
    */
   updateNavigation(sectionId) {
-    this.navItems.forEach(item => {
+    this.navItems.forEach((item) => {
       if (item.dataset.section === sectionId) {
         item.classList.add('active');
       } else {
@@ -350,17 +365,20 @@ class DesktopExperience {
     }
 
     // Animação de entrada
-    setTimeout(() => {
-      newSection.classList.add('active');
-      newSection.style.opacity = '0';
-      newSection.style.transform = 'translateX(20px)';
+    setTimeout(
+      () => {
+        newSection.classList.add('active');
+        newSection.style.opacity = '0';
+        newSection.style.transform = 'translateX(20px)';
 
-      setTimeout(() => {
-        newSection.style.transition = 'all 0.3s ease';
-        newSection.style.opacity = '1';
-        newSection.style.transform = 'translateX(0)';
-      }, 50);
-    }, currentSection ? 200 : 0);
+        setTimeout(() => {
+          newSection.style.transition = 'all 0.3s ease';
+          newSection.style.opacity = '1';
+          newSection.style.transform = 'translateX(0)';
+        }, 50);
+      },
+      currentSection ? 200 : 0
+    );
   }
 
   /**
@@ -404,7 +422,8 @@ class DesktopExperience {
    * Toggle tema
    */
   toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const currentTheme =
+      document.documentElement.getAttribute('data-theme') || 'dark';
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
 
     document.documentElement.setAttribute('data-theme', newTheme);
@@ -414,7 +433,10 @@ class DesktopExperience {
     this.updateThemeIcon(newTheme);
 
     // Feedback
-    this.showToast(`Tema ${newTheme === 'dark' ? 'escuro' : 'claro'} ativado`, 'success');
+    this.showToast(
+      `Tema ${newTheme === 'dark' ? 'escuro' : 'claro'} ativado`,
+      'success'
+    );
   }
 
   /**
@@ -423,7 +445,8 @@ class DesktopExperience {
   updateThemeIcon(theme) {
     const icon = this.themeToggle.querySelector('svg');
     if (icon) {
-      icon.style.transform = theme === 'dark' ? 'rotate(0deg)' : 'rotate(180deg)';
+      icon.style.transform =
+        theme === 'dark' ? 'rotate(0deg)' : 'rotate(180deg)';
     }
   }
 
@@ -438,7 +461,7 @@ class DesktopExperience {
 
       window.scrollTo({
         top: offsetTop,
-        behavior: 'smooth'
+        behavior: 'smooth',
       });
     }
   }
@@ -449,7 +472,7 @@ class DesktopExperience {
   scrollToTop() {
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: 'smooth',
     });
   }
 
@@ -478,7 +501,10 @@ class DesktopExperience {
     this.scrollPosition = window.scrollY;
 
     // Salva posição do scroll
-    localStorage.setItem('desktop-scroll-position', this.scrollPosition.toString());
+    localStorage.setItem(
+      'desktop-scroll-position',
+      this.scrollPosition.toString()
+    );
 
     // Atualiza header com efeito scroll
     if (this.scrollPosition > 50) {
@@ -524,7 +550,6 @@ class DesktopExperience {
       setTimeout(() => {
         window.open('https://wa.me/+5562983231110', '_blank');
       }, 2000);
-
     } catch (error) {
       window.Logger?.error('Erro ao enviar formulário:', error);
       this.showToast('Erro ao enviar mensagem. Tente novamente.', 'error');
@@ -553,7 +578,7 @@ class DesktopExperience {
   showToast(message, type = 'info') {
     // Remove toasts existentes
     const existingToasts = document.querySelectorAll('.desktop-toast');
-    existingToasts.forEach(toast => toast.remove());
+    existingToasts.forEach((toast) => toast.remove());
 
     // Cria novo toast
     const toast = document.createElement('div');
@@ -591,7 +616,7 @@ class DesktopExperience {
       projects: 'Projetos',
       token: '$NEOFLW',
       insights: 'Insights',
-      contact: 'Contato'
+      contact: 'Contato',
     };
     return titles[sectionId] || 'NEØ FlowOFF';
   }
@@ -693,8 +718,8 @@ window.debugDesktop = {
     currentSection: window.DesktopExperience?.currentSection,
     sidebarCollapsed: window.DesktopExperience?.sidebarCollapsed,
     isMobile: window.DesktopExperience?.isMobile,
-    scrollPosition: window.DesktopExperience?.scrollPosition
-  })
+    scrollPosition: window.DesktopExperience?.scrollPosition,
+  }),
 };
 
 window.Logger?.log('🎯 Desktop Experience v2.0.0 carregada');

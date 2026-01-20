@@ -22,7 +22,11 @@ export default async function handler(req, res) {
   // Retorna apenas variáveis públicas que podem ser expostas no frontend
   // WEB3AUTH_CLIENT_ID é público (pode ser exposto, é o Client ID da aplicação)
   res.status(200).json({
-    WEB3AUTH_CLIENT_ID: process.env.WEB3AUTH_CLIENT_ID || process.env.NEXT_PUBLIC_WEB3AUTH_CLIENT_ID || null,
-    DRPC_RPC_KEY: process.env.DRPC_RPC_KEY || process.env.NEXT_PUBLIC_DRPC_RPC_KEY || null
+    WEB3AUTH_CLIENT_ID:
+      process.env.WEB3AUTH_CLIENT_ID ||
+      process.env.NEXT_PUBLIC_WEB3AUTH_CLIENT_ID ||
+      null,
+    DRPC_RPC_KEY:
+      process.env.DRPC_RPC_KEY || process.env.NEXT_PUBLIC_DRPC_RPC_KEY || null,
   });
 }

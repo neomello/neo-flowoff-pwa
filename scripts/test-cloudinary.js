@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 /**
  * 🧪 Script de Teste do Cloudinary
- * 
+ *
  * Testa as funcionalidades do Cloudinary:
  * - Upload de imagem
  * - Otimização
  * - Fetch automático de URL externa
  * - Transformações
- * 
+ *
  * Uso:
  *   node scripts/test-cloudinary.js
  */
@@ -22,7 +22,7 @@ import {
   uploadImage,
   transformImage,
   CLOUDINARY_CONFIG,
-  ALLOWED_DOMAINS_LIST
+  ALLOWED_DOMAINS_LIST,
 } from './cloudinary-config.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -37,10 +37,18 @@ async function testCloudinary() {
 
   // Verifica configuração
   console.log('📋 Configuração:');
-  console.log(`   Cloud Name: ${CLOUDINARY_CONFIG.cloud_name || '❌ Não configurado'}`);
-  console.log(`   API Key: ${CLOUDINARY_CONFIG.api_key ? '✅ Configurado' : '❌ Não configurado'}`);
-  console.log(`   API Secret: ${CLOUDINARY_CONFIG.api_secret ? '✅ Configurado' : '❌ Não configurado'}`);
-  console.log(`\n   Domínios autorizados: ${ALLOWED_DOMAINS_LIST.join(', ')}\n`);
+  console.log(
+    `   Cloud Name: ${CLOUDINARY_CONFIG.cloud_name || '❌ Não configurado'}`
+  );
+  console.log(
+    `   API Key: ${CLOUDINARY_CONFIG.api_key ? '✅ Configurado' : '❌ Não configurado'}`
+  );
+  console.log(
+    `   API Secret: ${CLOUDINARY_CONFIG.api_secret ? '✅ Configurado' : '❌ Não configurado'}`
+  );
+  console.log(
+    `\n   Domínios autorizados: ${ALLOWED_DOMAINS_LIST.join(', ')}\n`
+  );
 
   try {
     // Teste 1: Upload de imagem de exemplo
@@ -51,7 +59,7 @@ async function testCloudinary() {
         {
           public_id: 'test-shoes',
           overwrite: true,
-          folder: 'flowoff/tests'
+          folder: 'flowoff/tests',
         }
       )
       .catch((error) => {
@@ -69,7 +77,7 @@ async function testCloudinary() {
     console.log('⚡ Teste 2: Otimização automática...');
     const optimizeUrl = optimizeImage('test-shoes', {
       fetch_format: 'auto',
-      quality: 'auto'
+      quality: 'auto',
     });
     console.log(`   ✅ URL otimizada: ${optimizeUrl}\n`);
 
@@ -79,7 +87,7 @@ async function testCloudinary() {
       crop: 'auto',
       gravity: 'auto',
       width: 500,
-      height: 500
+      height: 500,
     });
     console.log(`   ✅ URL transformada: ${autoCropUrl}\n`);
 
@@ -90,7 +98,7 @@ async function testCloudinary() {
       {
         fetch_format: 'auto',
         quality: 'auto',
-        width: 800
+        width: 800,
       }
     );
     console.log(`   ✅ URL com fetch: ${fetchUrl}\n`);
@@ -103,15 +111,19 @@ async function testCloudinary() {
         {
           public_id: 'test-shoes-helper',
           folder: 'flowoff/tests',
-          overwrite: true
+          overwrite: true,
         }
       );
       console.log('   ✅ Upload com helper bem-sucedido!');
       console.log(`   Public ID: ${helperUpload.public_id}`);
       console.log(`   URL: ${helperUpload.url}`);
-      console.log(`   Dimensões: ${helperUpload.width}x${helperUpload.height}\n`);
+      console.log(
+        `   Dimensões: ${helperUpload.width}x${helperUpload.height}\n`
+      );
     } catch (error) {
-      console.log(`   ⚠️ Erro no helper (esperado se já existir): ${error.message}\n`);
+      console.log(
+        `   ⚠️ Erro no helper (esperado se já existir): ${error.message}\n`
+      );
     }
 
     console.log('✅ Todos os testes concluídos!\n');
@@ -128,7 +140,6 @@ async function testCloudinary() {
     console.log('   - Use uploadImage() para novos uploads');
     console.log('   - Use optimizeImage() para otimizar imagens existentes');
     console.log('   - Use transformImage() para aplicar transformações\n');
-
   } catch (error) {
     console.error('❌ Erro durante os testes:', error.message);
     if (error.message.includes('não configurado')) {

@@ -18,12 +18,12 @@ export default async function handler(req, res) {
     res.status(200).json({
       status: ok ? 'ok' : 'degraded',
       db: ok ? 'connected' : 'error',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
-      message: error?.message || 'DB check failed'
+      message: error?.message || 'DB check failed',
     });
   }
 }

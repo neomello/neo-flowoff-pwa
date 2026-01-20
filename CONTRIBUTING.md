@@ -1,18 +1,20 @@
 # Contributing
 
-Thank you for considering contributing to this project! This document provides guidelines and standards for contributions.
+Thank you for considering contributing to this project! This document provides guidelines and
+standards for contributions.
 
 ## Code of Conduct
 
-This project follows NEØ development standards. Please maintain a respectful and professional environment in all interactions.
+This project follows NEØ development standards. Please maintain a respectful and professional
+environment in all interactions.
 
 ## Development Process
 
 This project uses a `main`-based branching model aligned with modern DevSecOps practices.
 
--  All new features and fixes are merged into the `main` branch via Pull Request
--  Use descriptive branches for features (`feature/feature-name`)
--  Use branches for experiments (`experiment/name`)
+- All new features and fixes are merged into the `main` branch via Pull Request
+- Use descriptive branches for features (`feature/feature-name`)
+- Use branches for experiments (`experiment/name`)
 
 ## How to Contribute
 
@@ -32,19 +34,19 @@ git checkout -b fix/bug-description
 
 ### 3. Development
 
--  **Always** follow established code standards
--  **Always** add tests if adding new functionality
--  **Never** commit credentials or private keys
--  **Always** verify security before committing
+- **Always** follow established code standards
+- **Always** add tests if adding new functionality
+- **Never** commit credentials or private keys
+- **Always** verify security before committing
 
 ### 4. Commit
 
--  Use descriptive commit messages
--  Follow the pattern: `type: brief description`
--  Examples:
--  `feat: add new feature`
--  `fix: fix specific bug`
--  `docs: update documentation`
+- Use descriptive commit messages
+- Follow the pattern: `type: brief description`
+- Examples:
+- `feat: add new feature`
+- `fix: fix specific bug`
+- `docs: update documentation`
 
 ### 5. Pull Request
 
@@ -57,26 +59,26 @@ git checkout -b fix/bug-description
 
 ### Formatting
 
--  Use 2 spaces for indentation (as per `.editorconfig`)
--  Use 4 spaces for Python/Solidity
--  **ALWAYS** add blank line after Markdown headers
--  Remove trailing whitespace
--  Add final newline
+- Use 2 spaces for indentation (as per `.editorconfig`)
+- Use 4 spaces for Python/Solidity
+- **ALWAYS** add blank line after Markdown headers
+- Remove trailing whitespace
+- Add final newline
 
 ### Security
 
--  **NEVER** commit `.env`, `.key`, `.secret` files
--  **NEVER** expose private keys or credentials
--  **ALWAYS** use environment variables for sensitive configurations
--  **ALWAYS** verify security before committing
+- **NEVER** commit `.env`, `.key`, `.secret` files
+- **NEVER** expose private keys or credentials
+- **ALWAYS** use environment variables for sensitive configurations
+- **ALWAYS** verify security before committing
 
 ### JavaScript/PWA
 
--  **Always** sanitize user input
--  **Always** implement rate limiting for API calls
--  **Always** validate data on both client and server
--  **Never** expose API keys in client-side code
--  **Always** handle errors gracefully
+- **Always** sanitize user input
+- **Always** implement rate limiting for API calls
+- **Always** validate data on both client and server
+- **Never** expose API keys in client-side code
+- **Always** handle errors gracefully
 
 ## Project Structure
 
@@ -105,21 +107,21 @@ make check-security
 
 ## Pull Request Checklist
 
--  [ ] Code follows established standards
--  [ ] Tests pass (if applicable)
--  [ ] Documentation updated
--  [ ] No credentials or private keys exposed
--  [ ] Descriptive commit messages
--  [ ] Correct formatting (blank line after headers)
+- [ ] Code follows established standards
+- [ ] Tests pass (if applicable)
+- [ ] Documentation updated
+- [ ] No credentials or private keys exposed
+- [ ] Descriptive commit messages
+- [ ] Correct formatting (blank line after headers)
 
 ## Reporting Issues
 
 Use GitHub Issues to report bugs or suggest features:
 
--  Use descriptive titles
--  Provide steps to reproduce (if bug)
--  Include environment information when relevant
--  Be clear and objective
+- Use descriptive titles
+- Provide steps to reproduce (if bug)
+- Include environment information when relevant
+- Be clear and objective
 
 ## Questions?
 
@@ -127,12 +129,11 @@ If you have questions about how to contribute, open an issue or contact the main
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under the same license as the project.
+By contributing, you agree that your contributions will be licensed under the same license as the
+project.
 
 ---
 
 **Author:** MELLØ // NEØ DEV
 
-This project follows NEØ development standards.
-Changes are allowed, inconsistency is not.
-
+This project follows NEØ development standards. Changes are allowed, inconsistency is not.

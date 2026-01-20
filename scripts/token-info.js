@@ -2,7 +2,7 @@
 /**
  * Token Info Script - $NEOFLW
  * Busca informações do token NEOFlowOFF na Polygon via Thirdweb API
- * 
+ *
  * Uso:
  *   node scripts/token-info.js
  *   npm run token:info
@@ -30,9 +30,9 @@ function formatTokenAmount(value, decimals = 18) {
   const divisor = BigInt(10 ** decimals);
   const intPart = num / divisor;
   const decPart = num % divisor;
-  
+
   if (decPart === 0n) return intPart.toLocaleString();
-  
+
   const decStr = decPart.toString().padStart(decimals, '0').slice(0, 4);
   return `${intPart.toLocaleString()}.${decStr}`;
 }
@@ -41,15 +41,15 @@ function formatTokenAmount(value, decimals = 18) {
 async function fetchContractData(config) {
   const { rpcUrl } = config.network;
   const { token } = config.contracts;
-  
+
   // Function selectors (keccak256 dos primeiros 4 bytes)
   const selectors = {
     name: '0x06fdde03',
-    symbol: '0x95d89b41', 
+    symbol: '0x95d89b41',
     decimals: '0x313ce567',
-    totalSupply: '0x18160ddd'
+    totalSupply: '0x18160ddd',
   };
-  
+
   async function callRpc(data) {
     const response = await fetch(rpcUrl, {
       method: 'POST',
@@ -58,21 +58,21 @@ async function fetchContractData(config) {
         jsonrpc: '2.0',
         id: 1,
         method: 'eth_call',
-        params: [{ to: token, data }, 'latest']
-      })
+        params: [{ to: token, data }, 'latest'],
+      }),
     });
     const json = await response.json();
     return json.result;
   }
-  
+
   try {
     const [nameHex, symbolHex, decimalsHex, supplyHex] = await Promise.all([
       callRpc(selectors.name),
       callRpc(selectors.symbol),
       callRpc(selectors.decimals),
-      callRpc(selectors.totalSupply)
+      callRpc(selectors.totalSupply),
     ]);
-    
+
     // Decode string (offset 32 bytes, length 32 bytes, then string)
     const decodeString = (hex) => {
       if (!hex || hex === '0x') return null;
@@ -81,18 +81,18 @@ async function fetchContractData(config) {
       const strHex = data.slice(128, 128 + length * 2);
       return Buffer.from(strHex, 'hex').toString('utf8');
     };
-    
+
     // Decode uint
     const decodeUint = (hex) => {
       if (!hex || hex === '0x') return '0';
       return BigInt(hex).toString();
     };
-    
+
     return {
       name: decodeString(nameHex),
       symbol: decodeString(symbolHex),
       decimals: parseInt(decimalsHex, 16),
-      totalSupply: decodeUint(supplyHex)
+      totalSupply: decodeUint(supplyHex),
     };
   } catch (error) {
     console.error('⚠️  Erro ao buscar dados RPC:', error.message);
@@ -106,51 +106,58 @@ async function main() {
   console.log('🪙  $NEOFLW - NEOFlowOFF Token');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log('');
-  
+
   const config = await loadTokenConfig();
-  
+
   // Info estática
   console.log('📋 CONFIGURAÇÃO');
   console.log(`   Nome: ${config.name}`);
   console.log(`   Símbolo: $${config.symbol}`);
   console.log(`   Decimals: ${config.decimals}`);
-  console.log(`   Rede: ${config.network.name} (Chain ID: ${config.network.chainId})`);
+  console.log(
+    `   Rede: ${config.network.name} (Chain ID: ${config.network.chainId})`
+  );
   console.log('');
-  
+
   console.log('📍 CONTRATOS');
   console.log(`   Token: ${config.contracts.token}`);
   console.log(`   Proxy: ${config.contracts.proxy}`);
   console.log('');
-  
+
   console.log('🔗 LINKS');
-  console.log(`   PolygonScan: ${config.links.polygonscan || config.links.contract}`);
+  console.log(
+    `   PolygonScan: ${config.links.polygonscan || config.links.contract}`
+  );
   console.log('');
-  
+
   console.log('⚙️  FEATURES');
-  config.metadata.features.forEach(f => {
+  config.metadata.features.forEach((f) => {
     console.log(`   ✓ ${f}`);
   });
   console.log('');
-  
+
   // Busca dados on-chain via RPC
   console.log('🔄 Buscando dados on-chain...');
   const data = await fetchContractData(config);
-  
+
   if (data) {
     console.log('');
     console.log('📊 DADOS ON-CHAIN (live)');
     console.log(`   Nome: ${data.name || config.name}`);
     console.log(`   Símbolo: ${data.symbol || config.symbol}`);
     console.log(`   Decimals: ${data.decimals || config.decimals}`);
-    
-    const supply = formatTokenAmount(data.totalSupply, data.decimals || config.decimals);
+
+    const supply = formatTokenAmount(
+      data.totalSupply,
+      data.decimals || config.decimals
+    );
     if (supply === '0') {
       console.log(`   Total Supply: 0 ${config.symbol} (nenhum token mintado)`);
     } else {
       console.log(`   Total Supply: ${supply} ${config.symbol}`);
     }
   }
-  
+
   console.log('');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log('✅ Informações carregadas com sucesso!');

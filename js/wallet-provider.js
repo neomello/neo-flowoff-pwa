@@ -20,7 +20,7 @@ const WALLET_SYSTEM_STATUS = {
   metamask: 'functional',
   web3auth: 'pending',
   walletconnect: 'pending',
-  embedded: 'functional'
+  embedded: 'functional',
 };
 
 const WEB3AUTH_MODAL_VERSION = '10.10.0';
@@ -53,7 +53,7 @@ function getWeb3AuthConfig() {
       blockExplorerUrl: 'https://polygonscan.com',
       ticker: 'MATIC',
       tickerName: 'MATIC',
-      avatarUrl: 'https://cryptologos.cc/logos/polygon-matic-logo.png'
+      avatarUrl: 'https://cryptologos.cc/logos/polygon-matic-logo.png',
     },
     uiConfig: {
       theme: 'dark',
@@ -63,9 +63,14 @@ function getWeb3AuthConfig() {
       // - LinkedIn
       // - Farcaster
       // MetaMask e External Wallets são conectores de wallet (não aparecem aqui)
-      loginMethodsOrder: ['email_passwordless', 'github', 'linkedin', 'farcaster'],
-      appLogo: 'https://flowoff.xyz/public/logos/pink_metalic.png'
-    }
+      loginMethodsOrder: [
+        'email_passwordless',
+        'github',
+        'linkedin',
+        'farcaster',
+      ],
+      appLogo: 'https://flowoff.xyz/public/logos/pink_metalic.png',
+    },
   };
 }
 
@@ -134,7 +139,7 @@ function showLoadingModal(message = 'Conectando wallet...') {
       modal.close();
       modal.remove();
       style.remove();
-    }
+    },
   };
 }
 
@@ -153,9 +158,11 @@ async function initWeb3Auth() {
 
     // Obtém configuração dinamicamente (para pegar valores atualizados de window)
     const config = getWeb3AuthConfig();
-    
+
     if (!config.clientId) {
-      console.warn('⚠️ WEB3AUTH_CLIENT_ID não configurado. Configure a variável no Vercel.');
+      console.warn(
+        '⚠️ WEB3AUTH_CLIENT_ID não configurado. Configure a variável no Vercel.'
+      );
     }
 
     web3authInstance = new Web3AuthModal(config);
@@ -191,8 +198,8 @@ async function initWalletConnect() {
         name: 'NEØ FlowOFF',
         description: 'Agência de Marketing na Blockchain',
         url: 'https://flowoff.xyz',
-        icons: ['https://flowoff.xyz/public/logos/pink_metalic.png']
-      }
+        icons: ['https://flowoff.xyz/public/logos/pink_metalic.png'],
+      },
     });
 
     console.log('✅ WalletConnect (Reown) inicializado');
@@ -232,7 +239,6 @@ window.WalletProvider = {
       if (window.WalletManager) {
         window.WalletManager.onProviderReady?.(this);
       }
-
     } catch (error) {
       console.error('❌ Erro na inicialização:', error);
       // Fallback para funcionalidades básicas
@@ -264,7 +270,6 @@ window.WalletProvider = {
 
       console.log('✅ Conectado via Web3Auth');
       return provider;
-
     } catch (error) {
       console.error('❌ Erro Web3Auth:', error);
       showLoadingModal('Erro na conexão').close();
@@ -296,7 +301,7 @@ window.WalletProvider = {
       const mockProvider = {
         type: 'walletconnect',
         connected: true,
-        address: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e' // Mock address
+        address: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e', // Mock address
       };
 
       currentProvider = mockProvider;
@@ -307,7 +312,6 @@ window.WalletProvider = {
 
       console.log('✅ Conectado via WalletConnect (simulado)');
       return mockProvider;
-
     } catch (error) {
       console.error('❌ Erro WalletConnect:', error);
       showLoadingModal('Erro na conexão').close();
@@ -524,16 +528,44 @@ window.WalletProvider = {
     }
 
     console.log('✅ Wallet desconectada');
-  }
+  },
 };
 
-// Inicialização automática quando DOM estiver pronto
+// Inicialização automática robusta: Busca config antes de iniciar
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    window.WalletProvider.init();
-  });
+  document.addEventListener('DOMContentLoaded', bootstrapWalletProvider);
 } else {
-  window.WalletProvider.init();
+  bootstrapWalletProvider();
+}
+
+async function bootstrapWalletProvider() {
+  try {
+    // 1. Tentar buscar configuração do backend
+    console.log('🔄 Buscando configuração de Web3Auth...');
+    const response = await fetch('/api/config');
+
+    if (response.ok) {
+      const config = await response.json();
+
+      // 2. Injetar na window para ser usado pelo initWeb3Auth
+      if (config.WEB3AUTH_CLIENT_ID) {
+        window.WEB3AUTH_CLIENT_ID = config.WEB3AUTH_CLIENT_ID;
+        console.log('✅ Config Web3Auth carregada');
+      }
+
+      if (config.DRPC_RPC_KEY) {
+        window.DRPC_RPC_KEY = config.DRPC_RPC_KEY;
+        console.log('✅ Config RPC carregada');
+      }
+    } else {
+      console.warn('⚠️ Falha ao buscar /api/config, usando defaults');
+    }
+  } catch (error) {
+    console.warn('⚠️ Erro de rede ao buscar config:', error);
+  } finally {
+    // 3. Iniciar o provider independentemente do resultado (tem fallbacks)
+    window.WalletProvider.init();
+  }
 }
 
 // Log inicial

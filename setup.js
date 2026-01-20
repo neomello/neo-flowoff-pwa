@@ -59,7 +59,10 @@ if (!fs.existsSync(envPath)) {
     fs.writeFileSync(envPath, envExample);
     log('info', '  ✓ Arquivo .env criado (configure suas variáveis)');
   } else {
-    log('warn', '  ⚠️  Arquivo .env não encontrado e env-example.txt não existe');
+    log(
+      'warn',
+      '  ⚠️  Arquivo .env não encontrado e env-example.txt não existe'
+    );
   }
 } else {
   log('info', '  ✓ Arquivo .env existe');
@@ -72,14 +75,14 @@ const requiredFiles = [
   'styles.css',
   'app.js',
   'manifest.webmanifest',
-  'sw.js'
+  'sw.js',
 ];
 
 const requiredDirs = ['public'];
 
 let allOk = true;
 
-requiredFiles.forEach(file => {
+requiredFiles.forEach((file) => {
   const filePath = path.join(__dirname, file);
   if (fs.existsSync(filePath)) {
     log(`  ✓ ${file}`);
@@ -89,7 +92,7 @@ requiredFiles.forEach(file => {
   }
 });
 
-requiredDirs.forEach(dir => {
+requiredDirs.forEach((dir) => {
   const dirPath = path.join(__dirname, dir);
   if (fs.existsSync(dirPath)) {
     log(`  ✓ ${dir}/`);

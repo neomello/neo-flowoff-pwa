@@ -1,15 +1,15 @@
 /**
  * Exemplo React/Next.js: Integração Completa do Token NEOFlowOFF
- * 
+ *
  * Stack:
  * - MetaMask Embedded Wallets (Web3Auth): Autenticação e wallet embutida
  * - IPFS.io + Storacha: Armazenamento
  * - Infura: RPC/Bundler
  * - MetaMask Smart Accounts: Account Abstraction
- * 
+ *
  * Nota: MetaMask Embedded Wallets (anteriormente Web3Auth) fornece infraestrutura
  * de wallet embutida plugável para simplificar integração Web3 e onboarding de usuários.
- * 
+ *
  * Uso em React/Next.js:
  * import { NEOFlowOFFFullStackIntegration } from './integrate-token-full-stack';
  */
@@ -33,7 +33,10 @@ const WEB3AUTH_RPC_URL = process.env.NEXT_PUBLIC_WEB3AUTH_RPC_URL || '';
 const WEB3AUTH_BUNDLER_URL = process.env.NEXT_PUBLIC_WEB3AUTH_BUNDLER_URL || '';
 // Fallback: Infura é opcional - só necessário se não usar Web3Auth RPC/Bundler
 const INFURA_API_KEY = process.env.NEXT_PUBLIC_INFURA_API_KEY || '';
-const ALCHEMY_API_URL = process.env.NEXT_PUBLIC_ALCHEMY_POLYGON_MAINNET_API_KEY || process.env.NEXT_PUBLIC_ALCHEMY_API_KEY || '';
+const ALCHEMY_API_URL =
+  process.env.NEXT_PUBLIC_ALCHEMY_POLYGON_MAINNET_API_KEY ||
+  process.env.NEXT_PUBLIC_ALCHEMY_API_KEY ||
+  '';
 const STORACHA_API_KEY = process.env.NEXT_PUBLIC_STORACHA_API_KEY || '';
 
 // ============================================
@@ -43,7 +46,8 @@ const STORACHA_API_KEY = process.env.NEXT_PUBLIC_STORACHA_API_KEY || '';
 export default function NEOFlowOFFTokenIntegration() {
   const [web3auth, setWeb3auth] = useState<Web3Auth | null>(null);
   const [provider, setProvider] = useState<IProvider | null>(null);
-  const [integration, setIntegration] = useState<NEOFlowOFFFullStackIntegration | null>(null);
+  const [integration, setIntegration] =
+    useState<NEOFlowOFFFullStackIntegration | null>(null);
   const [userAddress, setUserAddress] = useState<string>('');
   const [balance, setBalance] = useState<string>('0');
   const [loading, setLoading] = useState(false);
@@ -54,13 +58,15 @@ export default function NEOFlowOFFTokenIntegration() {
     const init = async () => {
       try {
         // Prioridade: Web3Auth RPC > Alchemy > Infura > RPC público
-        const rpcUrl = WEB3AUTH_RPC_URL 
+        const rpcUrl = WEB3AUTH_RPC_URL
           ? WEB3AUTH_RPC_URL
-          : (ALCHEMY_API_URL 
-            ? (ALCHEMY_API_URL.startsWith('http') ? ALCHEMY_API_URL : `https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_API_URL}`)
-            : (INFURA_API_KEY 
+          : ALCHEMY_API_URL
+            ? ALCHEMY_API_URL.startsWith('http')
+              ? ALCHEMY_API_URL
+              : `https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_API_URL}`
+            : INFURA_API_KEY
               ? `https://polygon-mainnet.infura.io/v3/${INFURA_API_KEY}`
-              : 'https://polygon-rpc.com')); // RPC público como fallback
+              : 'https://polygon-rpc.com'; // RPC público como fallback
 
         const chainConfig: CustomChainConfig = {
           chainNamespace: CHAIN_NAMESPACES.EIP155,
@@ -196,25 +202,36 @@ export default function NEOFlowOFFTokenIntegration() {
         <div>
           <div className="user-info">
             <h2>Informações do Usuário</h2>
-            <p><strong>Endereço:</strong> {userAddress}</p>
-            <p><strong>Saldo:</strong> {balance} NEOFLW</p>
+            <p>
+              <strong>Endereço:</strong> {userAddress}
+            </p>
+            <p>
+              <strong>Saldo:</strong> {balance} NEOFLW
+            </p>
             {userData && (
               <div>
-                <p><strong>Último Login:</strong> {new Date(userData.lastLogin).toLocaleString()}</p>
-                <p><strong>Transações:</strong> {userData.transactions.length}</p>
+                <p>
+                  <strong>Último Login:</strong>{' '}
+                  {new Date(userData.lastLogin).toLocaleString()}
+                </p>
+                <p>
+                  <strong>Transações:</strong> {userData.transactions.length}
+                </p>
               </div>
             )}
           </div>
 
           <div className="transfer-section">
             <h2>Transferir Tokens</h2>
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              const formData = new FormData(e.currentTarget);
-              const to = formData.get('to') as string;
-              const amount = formData.get('amount') as string;
-              handleTransfer(to, amount);
-            }}>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const formData = new FormData(e.currentTarget);
+                const to = formData.get('to') as string;
+                const amount = formData.get('amount') as string;
+                handleTransfer(to, amount);
+              }}
+            >
               <input
                 type="text"
                 name="to"

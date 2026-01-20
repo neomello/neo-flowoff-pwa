@@ -20,7 +20,10 @@ class OfflineQueue {
       request.onupgradeneeded = (e) => {
         const db = e.target.result;
         if (!db.objectStoreNames.contains(this.storeName)) {
-          const store = db.createObjectStore(this.storeName, { keyPath: 'id', autoIncrement: true });
+          const store = db.createObjectStore(this.storeName, {
+            keyPath: 'id',
+            autoIncrement: true,
+          });
           store.createIndex('timestamp', 'timestamp', { unique: false });
           store.createIndex('retries', 'retries', { unique: false });
         }
@@ -62,7 +65,7 @@ class OfflineQueue {
       timestamp: Date.now(),
       retries: 0,
       maxRetries: 5,
-      status: 'pending'
+      status: 'pending',
     };
 
     return new Promise((resolve, reject) => {
@@ -151,4 +154,3 @@ class OfflineQueue {
 
 // Exportar para uso global
 window.OfflineQueue = OfflineQueue;
-

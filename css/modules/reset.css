@@ -1,10 +1,39 @@
 /* reset.css - Reset e estilos base */
-*{box-sizing:border-box}
-html,body,#app{height:100%}
-body{
-  margin:0;background:radial-gradient(1200px 800px at 70% -10%, #1a1030 0%, #0a0a0f 50%, #07070b 100%);
-  color:var(--text); font: 16px/1.4 -apple-system, BlinkMacSystemFont, Inter, system-ui, Segoe UI, Roboto, Ubuntu;
-  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#app {
+  height: 100%;
+}
+body {
+  margin: 0;
+  background: radial-gradient(
+    1200px 800px at 70% -10%,
+    #1a1030 0%,
+    #0a0a0f 50%,
+    #07070b 100%
+  );
+  color: var(--text);
+  font:
+    16px/1.4 -apple-system,
+    BlinkMacSystemFont,
+    Inter,
+    system-ui,
+    Segoe UI,
+    Roboto,
+    Ubuntu;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-.blur{backdrop-filter:saturate(1.2) blur(12px); background:linear-gradient(180deg, rgba(16,16,24,.65), rgba(8,8,12,.35)); -webkit-backdrop-filter:saturate(1.2) blur(12px);}
+.blur {
+  backdrop-filter: saturate(1.2) blur(12px);
+  background: linear-gradient(
+    180deg,
+    rgba(16, 16, 24, 0.65),
+    rgba(8, 8, 12, 0.35)
+  );
+  -webkit-backdrop-filter: saturate(1.2) blur(12px);
+}

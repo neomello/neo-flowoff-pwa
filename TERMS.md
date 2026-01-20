@@ -4,7 +4,9 @@
 
 ## 1. Aceitação dos Termos
 
-Ao acessar e usar os serviços da NEØ.FLOWOFF ("Nós", "Nosso", "Serviço"), você concorda em cumprir e estar vinculado a estes Termos e Condições de Uso ("Termos"). Se você não concordar com qualquer parte destes termos, não deve usar nossos serviços.
+Ao acessar e usar os serviços da NEØ.FLOWOFF ("Nós", "Nosso", "Serviço"), você concorda em cumprir e
+estar vinculado a estes Termos e Condições de Uso ("Termos"). Se você não concordar com qualquer
+parte destes termos, não deve usar nossos serviços.
 
 ## 2. Definições
 
@@ -40,6 +42,7 @@ Você declara e garante que:
 ### 3.3 Uso Aceitável
 
 Você concorda em NÃO:
+
 - Usar o serviço para qualquer propósito ilegal ou não autorizado
 - Violar quaisquer leis ou regulamentos locais, estaduais, nacionais ou internacionais
 - Transmitir vírus, worms ou qualquer código malicioso
@@ -77,31 +80,38 @@ Você reconhece e aceita que:
 ### 5.1 Direitos da NEØ.FLOWOFF
 
 Todo o conteúdo do serviço, incluindo mas não limitado a:
+
 - Texto, gráficos, logos, ícones, imagens
 - Software e código-fonte
 - Compilações de dados
 - Design e layout
 
-São propriedade da NEØ.FLOWOFF ou de seus licenciadores e são protegidos por leis de direitos autorais, marcas registradas e outras leis de propriedade intelectual.
+São propriedade da NEØ.FLOWOFF ou de seus licenciadores e são protegidos por leis de direitos
+autorais, marcas registradas e outras leis de propriedade intelectual.
 
 ### 5.2 Licença Limitada
 
 Concedemos a você uma licença limitada, não exclusiva, não transferível e revogável para:
+
 - Acessar e usar o serviço para fins pessoais e não comerciais
 - Fazer download e imprimir conteúdo para uso pessoal
 
 Esta licença não inclui:
+
 - Revenda ou uso comercial do serviço
 - Modificação ou criação de trabalhos derivados
 - Uso de qualquer mineração de dados, robôs ou ferramentas similares
 
 ## 6. Privacidade
 
-Seu uso do serviço também é regido por nossa Política de Privacidade. Ao usar o serviço, você concorda com a coleta e uso de informações conforme descrito na Política de Privacidade.
+Seu uso do serviço também é regido por nossa Política de Privacidade. Ao usar o serviço, você
+concorda com a coleta e uso de informações conforme descrito na Política de Privacidade.
 
 ## 7. Isenção de Garantias
 
-O SERVIÇO É FORNECIDO "COMO ESTÁ" E "CONFORME DISPONÍVEL", SEM GARANTIAS DE QUALQUER TIPO, EXPRESSAS OU IMPLÍCITAS, INCLUINDO MAS NÃO LIMITADO A:
+O SERVIÇO É FORNECIDO "COMO ESTÁ" E "CONFORME DISPONÍVEL", SEM GARANTIAS DE QUALQUER TIPO, EXPRESSAS
+OU IMPLÍCITAS, INCLUINDO MAS NÃO LIMITADO A:
+
 - Garantias de comercialização
 - Adequação a um propósito específico
 - Não violação
@@ -110,6 +120,7 @@ O SERVIÇO É FORNECIDO "COMO ESTÁ" E "CONFORME DISPONÍVEL", SEM GARANTIAS DE 
 ## 8. Limitação de Responsabilidade
 
 EM NENHUMA CIRCUNSTÂNCIA A NEØ.FLOWOFF SERÁ RESPONSÁVEL POR:
+
 - Danos diretos, indiretos, incidentais, especiais ou consequenciais
 - Perda de lucros, dados, uso, boa vontade ou outras perdas intangíveis
 - Resultantes do uso ou incapacidade de usar o serviço
@@ -117,7 +128,10 @@ EM NENHUMA CIRCUNSTÂNCIA A NEØ.FLOWOFF SERÁ RESPONSÁVEL POR:
 
 ## 9. Indenização
 
-Você concorda em indenizar, defender e isentar a NEØ.FLOWOFF de e contra quaisquer reivindicações, danos, obrigações, perdas, passivos, custos ou dívidas, e despesas (incluindo honorários advocatícios) decorrentes de:
+Você concorda em indenizar, defender e isentar a NEØ.FLOWOFF de e contra quaisquer reivindicações,
+danos, obrigações, perdas, passivos, custos ou dívidas, e despesas (incluindo honorários
+advocatícios) decorrentes de:
+
 - Seu uso do serviço
 - Violação destes Termos
 - Violação de qualquer direito de terceiros
@@ -125,25 +139,31 @@ Você concorda em indenizar, defender e isentar a NEØ.FLOWOFF de e contra quais
 
 ## 10. Modificações dos Termos
 
-Reservamo-nos o direito de modificar estes Termos a qualquer momento. Alterações significativas serão notificadas através do serviço ou por e-mail. Seu uso continuado do serviço após tais modificações constitui sua aceitação dos novos Termos.
+Reservamo-nos o direito de modificar estes Termos a qualquer momento. Alterações significativas
+serão notificadas através do serviço ou por e-mail. Seu uso continuado do serviço após tais
+modificações constitui sua aceitação dos novos Termos.
 
 ## 11. Rescisão
 
-Podemos encerrar ou suspender seu acesso ao serviço imediatamente, sem aviso prévio, por qualquer motivo, incluindo se você violar estes Termos.
+Podemos encerrar ou suspender seu acesso ao serviço imediatamente, sem aviso prévio, por qualquer
+motivo, incluindo se você violar estes Termos.
 
 ## 12. Lei Aplicável
 
-Estes Termos serão regidos e interpretados de acordo com as leis do Brasil, sem dar efeito a quaisquer princípios de conflitos de leis.
+Estes Termos serão regidos e interpretados de acordo com as leis do Brasil, sem dar efeito a
+quaisquer princípios de conflitos de leis.
 
 ## 13. Disposições Gerais
 
 ### 13.1 Divisibilidade
 
-Se qualquer disposição destes Termos for considerada inválida ou inexequível, as disposições restantes permanecerão em pleno vigor e efeito.
+Se qualquer disposição destes Termos for considerada inválida ou inexequível, as disposições
+restantes permanecerão em pleno vigor e efeito.
 
 ### 13.2 Renúncia
 
-Nenhuma renúncia de qualquer termo será considerada uma renúncia adicional ou contínua de tal termo ou de qualquer outro termo.
+Nenhuma renúncia de qualquer termo será considerada uma renúncia adicional ou contínua de tal termo
+ou de qualquer outro termo.
 
 ### 13.3 Acordo Completo
 
@@ -158,5 +178,5 @@ Para questões sobre estes Termos, entre em contato:
 
 ---
 
-**Ao usar nossos serviços, você confirma que leu, entendeu e concorda com estes Termos e Condições de Uso.**
-
+**Ao usar nossos serviços, você confirma que leu, entendeu e concorda com estes Termos e Condições
+de Uso.**

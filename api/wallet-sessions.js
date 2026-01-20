@@ -6,7 +6,7 @@ import {
   requireApiToken,
   sanitizeText,
   isHexString,
-  setSecurityHeaders
+  setSecurityHeaders,
 } from './utils.js';
 import { query } from './db.js';
 
@@ -26,10 +26,11 @@ export default async function handler(req, res) {
       if (!enforceRateLimit(req, res, { limit: 120 })) return;
       if (!requireApiToken(req, res)) return;
 
-      const wallet = sanitizeText(
-        req.query?.wallet || req.query?.wallet_address || '',
-        128
-      ) || null;
+      const wallet =
+        sanitizeText(
+          req.query?.wallet || req.query?.wallet_address || '',
+          128
+        ) || null;
       const limit = Math.min(parseInt(req.query?.limit || '20', 10) || 20, 100);
 
       const rows = await query(
@@ -60,10 +61,9 @@ export default async function handler(req, res) {
 
     const walletAddress = sanitizeText(body.wallet_address || body.wallet, 128);
     const provider = sanitizeText(body.provider, 64);
-    const userAgent = sanitizeText(
-      body.user_agent || req.headers['user-agent'] || '',
-      256
-    ) || null;
+    const userAgent =
+      sanitizeText(body.user_agent || req.headers['user-agent'] || '', 256) ||
+      null;
     const ipRaw =
       sanitizeText(body.ip, 64) ||
       req.headers['x-forwarded-for']?.toString().split(',')[0].trim() ||

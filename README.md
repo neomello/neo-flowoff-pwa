@@ -1,20 +1,21 @@
 # NEOFlowOFF PWA - Token Integration
 
-Integração completa do token **NEOFlowOFF (NEOFLW)** com Account Abstraction usando MetaMask Smart Accounts.
+Integração completa do token **NEOFlowOFF (NEOFLW)** com Account Abstraction usando MetaMask Smart
+Accounts.
 
 ## 📦 Stack Tecnológica
 
--  **Web3Auth**: Autenticação de usuários + RPC e Bundler próprios
--  **IPFS.io + Storacha**: Armazenamento de dados
--  **Infura**: RPC e Bundler (opcional - fallback se não usar Web3Auth)
--  **MetaMask Smart Accounts**: Account Abstraction para o token
+- **Web3Auth**: Autenticação de usuários + RPC e Bundler próprios
+- **IPFS.io + Storacha**: Armazenamento de dados
+- **Infura**: RPC e Bundler (opcional - fallback se não usar Web3Auth)
+- **MetaMask Smart Accounts**: Account Abstraction para o token
 
 ## 🎯 Token NEOFlowOFF
 
--  **Endereço:** `0xece94d3719fc6fde7275051a54caf1f7d5098d59`
--  **Símbolo:** NEOFLW
--  **Rede:** Polygon
--  **Link:** [PolygonScan](https://polygonscan.com/token/0xece94d3719fc6fde7275051a54caf1f7d5098d59)
+- **Endereço:** `0xece94d3719fc6fde7275051a54caf1f7d5098d59`
+- **Símbolo:** NEOFLW
+- **Rede:** Polygon
+- **Link:** [PolygonScan](https://polygonscan.com/token/0xece94d3719fc6fde7275051a54caf1f7d5098d59)
 
 ## 📋 Instalação
 
@@ -30,19 +31,19 @@ yarn add @metamask/smart-accounts-kit viem @web3auth/modal @web3auth/base
 
 **Variáveis obrigatórias para banco:**
 
--  `DATABASE_URL` (pooler do Neon)
--  Opcional: `DATABASE_URL_UNPOOLED` / `POSTGRES_URL_NON_POOLING`
+- `DATABASE_URL` (pooler do Neon)
+- Opcional: `DATABASE_URL_UNPOOLED` / `POSTGRES_URL_NON_POOLING`
 
 **Migrações:**
 
--  `npm run db:migrate` (aplica `migrations/` e registra em `schema_migrations`)
+- `npm run db:migrate` (aplica `migrations/` e registra em `schema_migrations`)
 
 **Endpoints serverless:**
 
--  `api/health-db.js` — `GET /api/health-db` (ping no Neon)
--  `api/leads.js` — `POST /api/leads` (salva lead)
--  `api/wallet-sessions.js` — `POST/GET` sessões de wallet
--  `api/tx-logs.js` — `POST/GET` logs de transação
+- `api/health-db.js` — `GET /api/health-db` (ping no Neon)
+- `api/leads.js` — `POST /api/leads` (salva lead)
+- `api/wallet-sessions.js` — `POST/GET` sessões de wallet
+- `api/tx-logs.js` — `POST/GET` logs de transação
 
 ### 3. Configurar Variáveis de Ambiente
 
@@ -101,9 +102,9 @@ npx tsx examples/integrate-token-full-stack.ts
 
 ## 📚 Documentação
 
--  **Guia Completo:** `docs/integracao/GUIA_INTEGRACAO_STACK_COMPLETA.md`
--  **Guia Básico:** `docs/integracao/GUIA_INTEGRACAO_TOKEN_SMART_ACCOUNTS.md`
--  **Resumo:** `docs/integracao/RESUMO_INTEGRACAO_STACK.md`
+- **Guia Completo:** `docs/integracao/GUIA_INTEGRACAO_STACK_COMPLETA.md`
+- **Guia Básico:** `docs/integracao/GUIA_INTEGRACAO_TOKEN_SMART_ACCOUNTS.md`
+- **Resumo:** `docs/integracao/RESUMO_INTEGRACAO_STACK.md`
 
 ## 💻 Uso no Website
 
@@ -132,10 +133,7 @@ await integration.initializeWeb3Auth();
 await integration.initializeSmartAccount(web3AuthSigner, address);
 
 // Transferir e salvar no IPFS
-const { txHash, ipfsHash } = await integration.transferAndSave(
-  recipientAddress,
-  '100'
-);
+const { txHash, ipfsHash } = await integration.transferAndSave(recipientAddress, '100');
 ```
 
 ## 📁 Estrutura de Arquivos
@@ -157,11 +155,11 @@ neo-flowoff-pwa/
 
 ## 🔗 Links Úteis
 
--  **Token:** [PolygonScan](https://polygonscan.com/token/0xece94d3719fc6fde7275051a54caf1f7d5098d59)
--  **Web3Auth:** [Documentação](https://web3auth.io/docs)
--  **IPFS Gateway:** [IPFS.io](https://ipfs.io)
--  **MetaMask Smart Accounts:** [Documentação](https://docs.gator.metamask.io)
--  **Infura:** [Documentação](https://infura.io/docs)
+- **Token:** [PolygonScan](https://polygonscan.com/token/0xece94d3719fc6fde7275051a54caf1f7d5098d59)
+- **Web3Auth:** [Documentação](https://web3auth.io/docs)
+- **IPFS Gateway:** [IPFS.io](https://ipfs.io)
+- **MetaMask Smart Accounts:** [Documentação](https://docs.gator.metamask.io)
+- **Infura:** [Documentação](https://infura.io/docs)
 
 ## 📝 Próximos Passos
 

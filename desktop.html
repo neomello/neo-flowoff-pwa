@@ -1,927 +1,1335 @@
 <!doctype html>
 <html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <meta
+      http-equiv="Cache-Control"
+      content="no-cache, no-store, must-revalidate, max-age=0"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta name="cache-control" content="no-cache" />
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-  <meta name="cache-control" content="no-cache">
+    <!-- Meta descriptions -->
+    <meta
+      name="description"
+      content="NEØ.FLOWOFF - Agência de Marketing na blockchain. Desenvolvimento de sistemas, WebApp's, IAs e tokenização. Transformamos estratégia em tecnologia e tecnologia em resultado."
+    />
+    <meta
+      name="keywords"
+      content="marketing digital, desenvolvimento web, WebApp, PWA, blockchain, tokenização, IA, chatbots, agência digital, FlowOFF, MELLØ"
+    />
+    <meta name="author" content="MELLØ™@NEØ.FLOWOFF.ETH" />
+    <link rel="canonical" href="https://flowoff.xyz/desktop" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <title>NEØ.FLOWOFF - Desktop Experience</title>
 
-  <!-- Meta descriptions -->
-  <meta name="description"
-    content="NEØ.FLOWOFF - Agência de Marketing na blockchain. Desenvolvimento de sistemas, WebApp's, IAs e tokenização. Transformamos estratégia em tecnologia e tecnologia em resultado.">
-  <meta name="keywords"
-    content="marketing digital, desenvolvimento web, WebApp, PWA, blockchain, tokenização, IA, chatbots, agência digital, FlowOFF, MELLØ">
-  <meta name="author" content="MELLØ™@NEØ.FLOWOFF.ETH">
-  <link rel="canonical" href="https://flowoff.xyz/desktop">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="manifest" href="manifest.webmanifest">
-  <title>NEØ.FLOWOFF - Desktop Experience</title>
+    <!-- Content Security Policy -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self' blob: data: https://*.storacha.link https://*.w3s.link https://*.nftstorage.link https://*.dweb.link https://ipfs.io https://*.githubusercontent.com https://*.storacha.network https://cdn.jsdelivr.net https://unpkg.com https://*.unpkg.com https://vercel.live; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://*.unpkg.com https://vercel.live https://*.vercel.live; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; connect-src 'self' https: wss:; font-src 'self' data: https:; frame-src 'self' https://vercel.live; base-uri 'self'; form-action 'self' https://wa.me; upgrade-insecure-requests;"
+    />
 
-  <!-- Content Security Policy -->
-  <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self' blob: data: https://*.storacha.link https://*.w3s.link https://*.nftstorage.link https://*.dweb.link https://ipfs.io https://*.githubusercontent.com https://*.storacha.network https://cdn.jsdelivr.net https://unpkg.com https://*.unpkg.com https://vercel.live; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://*.unpkg.com https://vercel.live https://*.vercel.live; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; connect-src 'self' https: wss:; font-src 'self' data: https:; frame-src 'self' https://vercel.live; base-uri 'self'; form-action 'self' https://wa.me; upgrade-insecure-requests;">
+    <!-- iOS PWA -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
 
-  <!-- iOS PWA -->
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-  <!-- Schema.org Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
       {
-        "@type": "Organization",
-        "@id": "https://flowoff.xyz/desktop/#organization",
-        "name": "FlowOFF",
-        "alternateName": "NEØ.FLOWOFF",
-        "url": "https://flowoff.xyz/desktop",
-        "logo": "https://flowoff.xyz/public/flowoff logo.png",
-        "description": "Agência de Marketing na blockchain. Desenvolvimento de sistemas, WebApp's e IAs.",
-        "sameAs": [
-          "mailto:neoprotocol.eth@ethermail.io"
-        ],
-        "contactPoint": {
-          "@type": "ContactPoint",
-          "email": "neoprotocol.eth@ethermail.io",
-          "contactType": "Customer Service",
-          "availableLanguage": "Portuguese"
-        }
-      },
-      {
-        "@type": "SoftwareApplication",
-        "name": "NEØ FlowOFF Desktop Experience",
-        "description": "Experiência completa de desktop com navegação lateral e conteúdo aprofundado sobre marketing digital e blockchain",
-        "applicationCategory": "BusinessApplication",
-        "operatingSystem": "Web",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "BRL"
-        },
-        "author": {
-          "@type": "Person",
-          "name": "MELLØ",
-          "url": "mailto:neoprotocol.eth@ethermail.io"
-        }
-      },
-      {
-        "@type": "WebSite",
-        "@id": "https://flowoff.xyz/desktop/#website",
-        "url": "https://flowoff.xyz/desktop",
-        "name": "NEØ.FLOWOFF Desktop",
-        "description": "Experiência desktop completa de marketing na blockchain",
-        "publisher": {
-          "@id": "https://flowoff.xyz/desktop/#organization"
-        }
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://flowoff.xyz/desktop/#organization",
+            "name": "FlowOFF",
+            "alternateName": "NEØ.FLOWOFF",
+            "url": "https://flowoff.xyz/desktop",
+            "logo": "https://flowoff.xyz/public/flowoff logo.png",
+            "description": "Agência de Marketing na blockchain. Desenvolvimento de sistemas, WebApp's e IAs.",
+            "sameAs": ["mailto:neoprotocol.eth@ethermail.io"],
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "email": "neoprotocol.eth@ethermail.io",
+              "contactType": "Customer Service",
+              "availableLanguage": "Portuguese"
+            }
+          },
+          {
+            "@type": "SoftwareApplication",
+            "name": "NEØ FlowOFF Desktop Experience",
+            "description": "Experiência completa de desktop com navegação lateral e conteúdo aprofundado sobre marketing digital e blockchain",
+            "applicationCategory": "BusinessApplication",
+            "operatingSystem": "Web",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "BRL"
+            },
+            "author": {
+              "@type": "Person",
+              "name": "MELLØ",
+              "url": "mailto:neoprotocol.eth@ethermail.io"
+            }
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://flowoff.xyz/desktop/#website",
+            "url": "https://flowoff.xyz/desktop",
+            "name": "NEØ.FLOWOFF Desktop",
+            "description": "Experiência desktop completa de marketing na blockchain",
+            "publisher": {
+              "@id": "https://flowoff.xyz/desktop/#organization"
+            }
+          }
+        ]
       }
-    ]
-  }
-  </script>
+    </script>
 
-  <link rel="stylesheet" href="desktop.css?v=1.0.0">
-  <link rel="stylesheet" href="bento-grid.css?v=1.1.0">
-  <link rel="stylesheet" href="glass-morphism-bottom-bar.css?v=1.0.0">
-</head>
+    <link rel="stylesheet" href="desktop.css?v=1.0.0" />
+    <link rel="stylesheet" href="bento-grid.css?v=1.1.0" />
+    <link rel="stylesheet" href="glass-morphism-bottom-bar.css?v=1.0.0" />
+  </head>
 
-<body>
-  <!-- App Shell Desktop -->
-  <div id="desktop-app">
-
-    <!-- Sidebar Navegação -->
-    <aside id="desktop-sidebar" class="desktop-sidebar">
-      <div class="sidebar-header">
-        <div class="sidebar-logo">
-          <img src="public/logos/pink_metalic.png" alt="FlowOFF" class="sidebar-logo-img">
-          <div class="sidebar-brand">
-            <h1>NEØ</h1>
-            <p>FLOWOFF</p>
-          </div>
-        </div>
-      </div>
-
-      <nav class="sidebar-nav">
-        <div class="nav-section">
-          <h3 class="nav-section-title">EXPERIÊNCIA</h3>
-          <ul class="nav-list">
-            <li class="nav-item active" data-section="home">
-              <div class="nav-item-content">
-                <div class="nav-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 9L12 2L21 9V20C21 20.5304 20.0391 21 19 21H5C3.96086 21 3 20.5304 3 20V9Z" />
-                    <path d="M9 21V12H15V21" />
-                  </svg>
-                </div>
-                <span class="nav-label">Home</span>
-              </div>
-            </li>
-            <li class="nav-item" data-section="about">
-              <div class="nav-item-content">
-                <div class="nav-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-                    <path d="M12 17h.01" />
-                  </svg>
-                </div>
-                <span class="nav-label">Sobre</span>
-              </div>
-            </li>
-            <li class="nav-item" data-section="services">
-              <div class="nav-item-content">
-                <div class="nav-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2L2 7L12 12L22 7L12 2Z" />
-                    <path d="M2 17L12 22L22 17" />
-                    <path d="M2 12L12 17L22 12" />
-                  </svg>
-                </div>
-                <span class="nav-label">Serviços</span>
-              </div>
-            </li>
-            <li class="nav-item" data-section="projects">
-              <div class="nav-item-content">
-                <div class="nav-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                    <path d="M8 7H16" />
-                    <path d="M8 11H16" />
-                    <path d="M8 15H12" />
-                  </svg>
-                </div>
-                <span class="nav-label">Projetos</span>
-              </div>
-            </li>
-            <li class="nav-item" data-section="token">
-              <div class="nav-item-content">
-                <div class="nav-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M2 12H22" />
-                    <path
-                      d="M12 2C14.5013 4.73835 15.9228 8.29203 15.9331 12C15.9228 15.708 14.5013 19.2616 12 22C9.49872 19.2616 8.07725 15.708 8.06688 12C8.07725 8.29203 9.49872 4.73835 12 2Z" />
-                    <path d="M8 12L10 14L16 8" />
-                  </svg>
-                </div>
-                <span class="nav-label">$NEOFLW</span>
-              </div>
-            </li>
-          </ul>
-        </div>
-
-        <div class="nav-section">
-          <h3 class="nav-section-title">CONTEÚDO</h3>
-          <ul class="nav-list">
-            <li class="nav-item" data-section="insights">
-              <div class="nav-item-content">
-                <div class="nav-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-                  </svg>
-                </div>
-                <span class="nav-label">Insights</span>
-              </div>
-            </li>
-            <li class="nav-item" data-section="contact">
-              <div class="nav-item-content">
-                <div class="nav-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path
-                      d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-                  </svg>
-                </div>
-                <span class="nav-label">Contato</span>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </nav>
-
-      <div class="sidebar-footer">
-        <div class="sidebar-status">
-          <div class="status-indicator online"></div>
-          <span>Online</span>
-        </div>
-        <div class="sidebar-version">
-          <span>v2.0.0</span>
-        </div>
-      </div>
-    </aside>
-
-    <!-- Main Content Area -->
-    <main id="desktop-main" class="desktop-main">
-
-      <!-- Top Bar -->
-      <header class="desktop-header">
-        <div class="header-left">
-          <button id="sidebar-toggle" class="sidebar-toggle-btn" aria-label="Toggle sidebar">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          </button>
-          <div class="breadcrumb">
-            <span class="breadcrumb-item">NEØ FlowOFF</span>
-            <span class="breadcrumb-separator">/</span>
-            <span class="breadcrumb-item active">Home</span>
+  <body>
+    <!-- App Shell Desktop -->
+    <div id="desktop-app">
+      <!-- Sidebar Navegação -->
+      <aside id="desktop-sidebar" class="desktop-sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-logo">
+            <img
+              src="public/logos/pink_metalic.png"
+              alt="FlowOFF"
+              class="sidebar-logo-img"
+            />
+            <div class="sidebar-brand">
+              <h1>NEØ</h1>
+              <p>FLOWOFF</p>
+            </div>
           </div>
         </div>
 
-        <div class="header-right">
-          <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-            </svg>
-          </button>
-          <button id="wallet-btn-desktop" class="wallet-connect-btn">
-            <span class="wallet-btn-text">ACESSAR</span>
-            <span class="wallet-btn-icon">→</span>
-          </button>
+        <nav class="sidebar-nav">
+          <div class="nav-section">
+            <h3 class="nav-section-title">EXPERIÊNCIA</h3>
+            <ul class="nav-list">
+              <li class="nav-item active" data-section="home">
+                <div class="nav-item-content">
+                  <div class="nav-icon">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        d="M3 9L12 2L21 9V20C21 20.5304 20.0391 21 19 21H5C3.96086 21 3 20.5304 3 20V9Z"
+                      />
+                      <path d="M9 21V12H15V21" />
+                    </svg>
+                  </div>
+                  <span class="nav-label">Home</span>
+                </div>
+              </li>
+              <li class="nav-item" data-section="about">
+                <div class="nav-item-content">
+                  <div class="nav-icon">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                      <path d="M12 17h.01" />
+                    </svg>
+                  </div>
+                  <span class="nav-label">Sobre</span>
+                </div>
+              </li>
+              <li class="nav-item" data-section="services">
+                <div class="nav-item-content">
+                  <div class="nav-icon">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path d="M12 2L2 7L12 12L22 7L12 2Z" />
+                      <path d="M2 17L12 22L22 17" />
+                      <path d="M2 12L12 17L22 12" />
+                    </svg>
+                  </div>
+                  <span class="nav-label">Serviços</span>
+                </div>
+              </li>
+              <li class="nav-item" data-section="projects">
+                <div class="nav-item-content">
+                  <div class="nav-icon">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                      <path d="M8 7H16" />
+                      <path d="M8 11H16" />
+                      <path d="M8 15H12" />
+                    </svg>
+                  </div>
+                  <span class="nav-label">Projetos</span>
+                </div>
+              </li>
+              <li class="nav-item" data-section="token">
+                <div class="nav-item-content">
+                  <div class="nav-icon">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M2 12H22" />
+                      <path
+                        d="M12 2C14.5013 4.73835 15.9228 8.29203 15.9331 12C15.9228 15.708 14.5013 19.2616 12 22C9.49872 19.2616 8.07725 15.708 8.06688 12C8.07725 8.29203 9.49872 4.73835 12 2Z"
+                      />
+                      <path d="M8 12L10 14L16 8" />
+                    </svg>
+                  </div>
+                  <span class="nav-label">$NEOFLW</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="nav-section">
+            <h3 class="nav-section-title">CONTEÚDO</h3>
+            <ul class="nav-list">
+              <li class="nav-item" data-section="insights">
+                <div class="nav-item-content">
+                  <div class="nav-icon">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                    </svg>
+                  </div>
+                  <span class="nav-label">Insights</span>
+                </div>
+              </li>
+              <li class="nav-item" data-section="contact">
+                <div class="nav-item-content">
+                  <div class="nav-icon">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      />
+                    </svg>
+                  </div>
+                  <span class="nav-label">Contato</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="sidebar-status">
+            <div class="status-indicator online"></div>
+            <span>Online</span>
+          </div>
+          <div class="sidebar-version">
+            <span>v2.0.0</span>
+          </div>
         </div>
-      </header>
+      </aside>
 
-      <!-- Content Container -->
-      <div class="content-container">
-
-        <!-- HOME SECTION -->
-        <section class="desktop-section active" id="home-section">
-
-          <!-- Hero Block -->
-          <div class="content-block hero-block">
-            <div class="hero-grid">
-              <div class="hero-content">
-                <div class="hero-badge">
-                  <span class="badge-icon">🚀</span>
-                  <span class="badge-text">EXPERIÊNCIA DESKTOP</span>
-                </div>
-                <h1 class="hero-title">
-                  NEØ FlowOFF 2.0
-                  <br>
-                  <span class="hero-subtitle">do branding ao backend</span>
-                </h1>
-                <p class="hero-description">
-                  Transformamos estratégia em tecnologia e tecnologia em resultado.
-                  Arquitetura web2 > web3 para empresas que querem sistema, não só mais uma campanha.
-                </p>
-
-                <!-- CTA Hacker -->
-                <div class="hacker-cta-container">
-                  <a href="https://t.me/AgenteFlow_Bot?start=flowoff" target="_blank" rel="noopener" class="hacker-btn">
-                    INICIAR SIMULAÇÃO <span class="terminal-cursor"></span>
-                  </a>
-                </div>
-
-                <div class="hero-stats">
-                  <div class="stat-item">
-                    <div class="stat-number">98%</div>
-                    <div class="stat-label">Performance</div>
-                  </div>
-                  <div class="stat-item">
-                    <div class="stat-number">24/7</div>
-                    <div class="stat-label">Disponibilidade</div>
-                  </div>
-                  <div class="stat-item">
-                    <div class="stat-number">∞</div>
-                    <div class="stat-label">Escalabilidade</div>
-                  </div>
-                </div>
-              </div>
-              <div class="hero-visual">
-                <div class="hero-bg-image">
-                  <img src="public/images/capa_neo_flowoff_webapp.png" alt="NEØ FlowOFF Background" class="hero-bg-img">
-                </div>
-                <div class="hero-overlay">
-                  <div class="floating-elements">
-                    <div class="floating-card card-1">
-                      <div class="card-icon">⚡</div>
-                      <div class="card-text">Rápido</div>
-                    </div>
-                    <div class="floating-card card-2">
-                      <div class="card-icon">🔒</div>
-                      <div class="card-text">Seguro</div>
-                    </div>
-                    <div class="floating-card card-3">
-                      <div class="card-icon">📱</div>
-                      <div class="card-text">Responsivo</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+      <!-- Main Content Area -->
+      <main id="desktop-main" class="desktop-main">
+        <!-- Top Bar -->
+        <header class="desktop-header">
+          <div class="header-left">
+            <button
+              id="sidebar-toggle"
+              class="sidebar-toggle-btn"
+              aria-label="Toggle sidebar"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+            </button>
+            <div class="breadcrumb">
+              <span class="breadcrumb-item">NEØ FlowOFF</span>
+              <span class="breadcrumb-separator">/</span>
+              <span class="breadcrumb-item active">Home</span>
             </div>
           </div>
 
-          <!-- Services Overview -->
-          <div class="content-block services-overview">
-            <div class="block-header">
-              <h2 class="block-title">Nossos Serviços</h2>
-              <p class="block-subtitle">Soluções completas para transformação digital</p>
-            </div>
-
-            <div class="services-grid">
-              <div class="service-card" data-service="webapps">
-                <div class="service-icon">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
-                    <line x1="8" y1="21" x2="16" y2="21" />
-                    <line x1="12" y1="17" x2="12" y2="21" />
-                  </svg>
-                </div>
-                <h3>WebApp's</h3>
-                <p>Aplicações rápidas, seguras e escaláveis para negócios que exigem performance real.</p>
-                <div class="service-features">
-                  <span class="feature-tag">PWA</span>
-                  <span class="feature-tag">SEO</span>
-                  <span class="feature-tag">Mobile First</span>
-                </div>
-              </div>
-
-              <div class="service-card" data-service="saas">
-                <div class="service-icon">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2L2 7L12 12L22 7L12 2Z" />
-                    <path d="M2 17L12 22L22 17" />
-                    <path d="M2 12L12 17L22 12" />
-                  </svg>
-                </div>
-                <h3>SAAS / BAAS</h3>
-                <p>Soluções white-label ou sistemas sob medida. Do MVP à plataforma robusta.</p>
-                <div class="service-features">
-                  <span class="feature-tag">API</span>
-                  <span class="feature-tag">Dashboard</span>
-                  <span class="feature-tag">Integração</span>
-                </div>
-              </div>
-
-              <div class="service-card" data-service="blockchain">
-                <div class="service-icon">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M2 12H22" />
-                    <path
-                      d="M12 2C14.5013 4.73835 15.9228 8.29203 15.9331 12C15.9228 15.708 14.5013 19.2616 12 22C9.49872 19.2616 8.07725 15.708 8.06688 12C8.07725 8.29203 9.49872 4.73835 12 2Z" />
-                  </svg>
-                </div>
-                <h3>Tokenização</h3>
-                <p>Sua empresa com sua própria cripto. Gamificação avançada e ecossistemas tokenizados.</p>
-                <div class="service-features">
-                  <span class="feature-tag">ERC-20</span>
-                  <span class="feature-tag">Polygon</span>
-                  <span class="feature-tag">$NEOFLW</span>
-                </div>
-              </div>
-
-              <div class="service-card" data-service="ai">
-                <div class="service-icon">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path
-                      d="M12 2C13.1046 2 14 2.89543 14 4V6H16C17.1046 6 18 6.89543 18 8V10H20C21.1046 10 22 10.8954 22 12C22 13.1046 21.1046 14 20 14H18V16C18 17.1046 17.1046 18 16 18H14V20C14 21.1046 13.1046 22 12 22C10.8954 22 10 21.1046 10 20V18H8C6.89543 18 6 17.1046 6 16V14H4C2.89543 14 2 13.1046 2 12C2 10.8954 2.89543 10 4 10H6V8C6 6.89543 6.89543 6 8 6H10V4C10 2.89543 10.8954 2 12 2Z" />
-                  </svg>
-                </div>
-                <h3>IA & Chatbots</h3>
-                <p>Agentes de IA treinados para seu negócio. Atendimento 24/7 sem perder a personalidade.</p>
-                <div class="service-features">
-                  <span class="feature-tag">GPTs</span>
-                  <span class="feature-tag">WhatsApp</span>
-                  <span class="feature-tag">CRM</span>
-                </div>
-              </div>
-            </div>
+          <div class="header-right">
+            <button
+              id="theme-toggle"
+              class="theme-toggle-btn"
+              aria-label="Toggle theme"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+            </button>
+            <button id="wallet-btn-desktop" class="wallet-connect-btn">
+              <span class="wallet-btn-text">ACESSAR</span>
+              <span class="wallet-btn-icon">→</span>
+            </button>
           </div>
+        </header>
 
-          <!-- Philosophy Block -->
-          <div class="content-block philosophy-block">
-            <div class="philosophy-content">
-              <div class="philosophy-text">
-                <h2>A diferença NEØ</h2>
-                <p>
-                  Enquanto a maioria das agências vende "presença digital", nós construímos ecossistemas.
-                  Cada projeto é uma arquitetura completa: do design ao backend, da estratégia ao token.
-                </p>
-                <p>
-                  Não somos mais uma campanha. Somos a infraestrutura que faz seu negócio escalar
-                  para o futuro digital. Web2 para web3, com tecnologia que funciona hoje e amanhã.
-                </p>
-                <div class="philosophy-highlights">
-                  <div class="highlight-item">
-                    <div class="highlight-icon">🎯</div>
-                    <div class="highlight-content">
-                      <h4>Objetivo Claro</h4>
-                      <p>Resultado mensurável, não métricas vazias</p>
-                    </div>
+        <!-- Content Container -->
+        <div class="content-container">
+          <!-- HOME SECTION -->
+          <section class="desktop-section active" id="home-section">
+            <!-- Hero Block -->
+            <div class="content-block hero-block">
+              <div class="hero-grid">
+                <div class="hero-content">
+                  <div class="hero-badge">
+                    <span class="badge-icon">🚀</span>
+                    <span class="badge-text">EXPERIÊNCIA DESKTOP</span>
                   </div>
-                  <div class="highlight-item">
-                    <div class="highlight-icon">⚡</div>
-                    <div class="highlight-content">
-                      <h4>Performance Real</h4>
-                      <p>Sistemas que carregam em menos de 2 segundos</p>
-                    </div>
-                  </div>
-                  <div class="highlight-item">
-                    <div class="highlight-icon">🔗</div>
-                    <div class="highlight-content">
-                      <h4>Ecossistema</h4>
-                      <p>Conectamos todas as partes do seu negócio</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="philosophy-visual">
-                <div class="architecture-diagram">
-                  <div class="diagram-layer layer-1">
-                    <span>Interface</span>
-                  </div>
-                  <div class="diagram-layer layer-2">
-                    <span>Lógica</span>
-                  </div>
-                  <div class="diagram-layer layer-3">
-                    <span>Dados</span>
-                  </div>
-                  <div class="diagram-layer layer-4">
-                    <span>Blockchain</span>
-                  </div>
-                  <div class="diagram-connector"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Testimonials Block -->
-          <div class="content-block testimonials-block">
-            <div class="block-header">
-              <h2 class="block-title">Resultados Reais</h2>
-              <p class="block-subtitle">O que nossos clientes dizem sobre a transformação</p>
-            </div>
-
-            <div class="testimonials-grid">
-              <div class="testimonial-card">
-                <div class="testimonial-content">
-                  <p>"A NEØ FlowOFF não fez só um site. Construiu nossa infraestrutura digital completa. De campanhas
-                    pontuais para um ecossistema que cresce sozinho."</p>
-                  <div class="testimonial-author">
-                    <div class="author-avatar">C</div>
-                    <div class="author-info">
-                      <div class="author-name">Carlos Mendes</div>
-                      <div class="author-role">CEO, TechCorp</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="testimonial-metrics">
-                  <div class="metric">
-                    <span class="metric-value">+300%</span>
-                    <span class="metric-label">Conversões</span>
-                  </div>
-                  <div class="metric">
-                    <span class="metric-value">-50%</span>
-                    <span class="metric-label">Custo por lead</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="testimonial-card">
-                <div class="testimonial-content">
-                  <p>"Implementaram tokenização no nosso negócio de uma forma que fez sentido. Não foi só 'ter uma
-                    cripto', foi criar valor real para clientes e comunidade."</p>
-                  <div class="testimonial-author">
-                    <div class="author-avatar">A</div>
-                    <div class="author-info">
-                      <div class="author-name">Ana Silva</div>
-                      <div class="author-role">COO, FitnessPro</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="testimonial-metrics">
-                  <div class="metric">
-                    <span class="metric-value">+150%</span>
-                    <span class="metric-label">Engajamento</span>
-                  </div>
-                  <div class="metric">
-                    <span class="metric-value">45k</span>
-                    <span class="metric-label">Usuários ativos</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="testimonial-card">
-                <div class="testimonial-content">
-                  <p>"O chatbot com IA deles pensa como a gente. Não responde automático, entende contexto e resolve
-                    problemas reais dos clientes."</p>
-                  <div class="testimonial-author">
-                    <div class="author-avatar">R</div>
-                    <div class="author-info">
-                      <div class="author-name">Roberto Lima</div>
-                      <div class="author-role">Diretor, E-commerce Plus</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="testimonial-metrics">
-                  <div class="metric">
-                    <span class="metric-value">24/7</span>
-                    <span class="metric-label">Disponibilidade</span>
-                  </div>
-                  <div class="metric">
-                    <span class="metric-value">85%</span>
-                    <span class="metric-label">Satisfação</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </section>
-
-        <!-- ABOUT SECTION -->
-        <section class="desktop-section" id="about-section">
-          <div class="content-block about-hero">
-            <h1>Sobre a NEØ FlowOFF</h1>
-            <p class="about-intro">A agência que constrói o futuro digital das empresas</p>
-          </div>
-
-          <div class="content-block about-mission">
-            <div class="mission-grid">
-              <div class="mission-content">
-                <h2>Nossa Missão</h2>
-                <p>
-                  Acelerar a transformação digital das empresas através de tecnologia aplicada,
-                  estratégias data-driven e inovação constante. Não vendemos soluções temporárias,
-                  construímos ecossistemas que evoluem com seu negócio.
-                </p>
-                <div class="mission-values">
-                  <div class="value-item">
-                    <h4>🏆 Excelência Técnica</h4>
-                    <p>Código que funciona, performance que impressiona</p>
-                  </div>
-                  <div class="value-item">
-                    <h4>🎯 Resultados Mensuráveis</h4>
-                    <p>Métricas claras, crescimento real</p>
-                  </div>
-                  <div class="value-item">
-                    <h4>🚀 Inovação Constante</h4>
-                    <p>Sempre à frente das tendências</p>
-                  </div>
-                </div>
-              </div>
-              <div class="mission-visual">
-                <div class="tech-stack">
-                  <div class="stack-category">
-                    <h4>Frontend</h4>
-                    <div class="stack-items">
-                      <span class="stack-item">React</span>
-                      <span class="stack-item">Vue.js</span>
-                      <span class="stack-item">PWA</span>
-                    </div>
-                  </div>
-                  <div class="stack-category">
-                    <h4>Backend</h4>
-                    <div class="stack-items">
-                      <span class="stack-item">Node.js</span>
-                      <span class="stack-item">Python</span>
-                      <span class="stack-item">GraphQL</span>
-                    </div>
-                  </div>
-                  <div class="stack-category">
-                    <h4>Blockchain</h4>
-                    <div class="stack-items">
-                      <span class="stack-item">Web3</span>
-                      <span class="stack-item">Solidity</span>
-                      <span class="stack-item">IPFS</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="content-block team-section">
-            <h2>Conheça MELLØ</h2>
-            <div class="team-grid">
-              <div class="team-member main-member">
-                <div class="member-photo">
-                  <img src="public/mello.webp" alt="MELLØ">
-                </div>
-                <div class="member-info">
-                  <h3>MELLØ™</h3>
-                  <p class="member-role">Node IPFS na WEB3 | DEV | Gestor de Dados</p>
-                  <p class="member-desc">
-                    Expert em Marketing Digital e Blockchain. Constrói sistemas que conectam
-                    estratégia, tecnologia e resultado. Do branding ao backend, da ideia ao token.
+                  <h1 class="hero-title">
+                    NEØ FlowOFF 2.0
+                    <br />
+                    <span class="hero-subtitle">do branding ao backend</span>
+                  </h1>
+                  <p class="hero-description">
+                    Transformamos estratégia em tecnologia e tecnologia em
+                    resultado. Arquitetura web2 > web3 para empresas que querem
+                    sistema, não só mais uma campanha.
                   </p>
-                  <div class="member-skills">
-                    <span class="skill-tag">Marketing Digital</span>
-                    <span class="skill-tag">Blockchain</span>
-                    <span class="skill-tag">IA & Chatbots</span>
-                    <span class="skill-tag">Desenvolvimento Web</span>
-                    <span class="skill-tag">Tokenização</span>
+
+                  <!-- CTA Hacker -->
+                  <div class="hacker-cta-container">
+                    <a
+                      href="https://t.me/AgenteFlow_Bot?start=flowoff"
+                      target="_blank"
+                      rel="noopener"
+                      class="hacker-btn"
+                    >
+                      INICIAR SIMULAÇÃO <span class="terminal-cursor"></span>
+                    </a>
+                  </div>
+
+                  <div class="hero-stats">
+                    <div class="stat-item">
+                      <div class="stat-number">98%</div>
+                      <div class="stat-label">Performance</div>
+                    </div>
+                    <div class="stat-item">
+                      <div class="stat-number">24/7</div>
+                      <div class="stat-label">Disponibilidade</div>
+                    </div>
+                    <div class="stat-item">
+                      <div class="stat-number">∞</div>
+                      <div class="stat-label">Escalabilidade</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="hero-visual">
+                  <div class="hero-bg-image">
+                    <img
+                      src="public/images/capa_neo_flowoff_webapp.png"
+                      alt="NEØ FlowOFF Background"
+                      class="hero-bg-img"
+                    />
+                  </div>
+                  <div class="hero-overlay">
+                    <div class="floating-elements">
+                      <div class="floating-card card-1">
+                        <div class="card-icon">⚡</div>
+                        <div class="card-text">Rápido</div>
+                      </div>
+                      <div class="floating-card card-2">
+                        <div class="card-icon">🔒</div>
+                        <div class="card-text">Seguro</div>
+                      </div>
+                      <div class="floating-card card-3">
+                        <div class="card-icon">📱</div>
+                        <div class="card-text">Responsivo</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </section>
 
-        <!-- CONTACT SECTION -->
-        <section class="desktop-section" id="contact-section">
-          <div class="content-block contact-form">
-            <div class="contact-header">
-              <h1>Vamos Conversar</h1>
-              <p>Conte-nos sobre seu projeto. Vamos encontrar a melhor solução juntos.</p>
-            </div>
-
-            <form id="desktop-lead-form" class="desktop-form">
-              <div class="form-grid">
-                <div class="form-group">
-                  <label for="desktop-name">Nome</label>
-                  <input type="text" id="desktop-name" name="name" placeholder="Seu nome completo" required>
-                </div>
-
-                <div class="form-group">
-                  <label for="desktop-email">Email</label>
-                  <input type="email" id="desktop-email" name="email" placeholder="seuemail@empresa.com" required>
-                </div>
-
-                <div class="form-group">
-                  <label for="desktop-whatsapp">WhatsApp</label>
-                  <input type="tel" id="desktop-whatsapp" name="whats" placeholder="+55 (00) 00000-0000" required>
-                </div>
-
-                <div class="form-group">
-                  <label for="desktop-company">Empresa</label>
-                  <input type="text" id="desktop-company" name="company" placeholder="Nome da empresa">
-                </div>
-
-                <div class="form-group full-width">
-                  <label for="desktop-service">Serviço de Interesse</label>
-                  <select id="desktop-service" name="type" required>
-                    <option value="" disabled selected>Selecione uma opção</option>
-                    <option value="site">Sites e WebApp's</option>
-                    <option value="saas">SAAS / BAAS</option>
-                    <option value="token">Tokenização de Ativos</option>
-                    <option value="ia">Agentes IA e Chatbots</option>
-                    <option value="consultoria">Consultoria Estratégica</option>
-                  </select>
-                </div>
-
-                <div class="form-group full-width">
-                  <label for="desktop-message">Mensagem</label>
-                  <textarea id="desktop-message" name="message" placeholder="Conte-nos mais sobre seu projeto..."
-                    rows="4"></textarea>
-                </div>
+            <!-- Services Overview -->
+            <div class="content-block services-overview">
+              <div class="block-header">
+                <h2 class="block-title">Nossos Serviços</h2>
+                <p class="block-subtitle">
+                  Soluções completas para transformação digital
+                </p>
               </div>
 
-              <button type="submit" class="desktop-btn primary">
-                <span>Enviar Mensagem</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M7 17L17 7" />
-                  <path d="M7 7H17V17" />
-                </svg>
-              </button>
-            </form>
-          </div>
+              <div class="services-grid">
+                <div class="service-card" data-service="webapps">
+                  <div class="service-icon">
+                    <svg
+                      width="32"
+                      height="32"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                      <line x1="8" y1="21" x2="16" y2="21" />
+                      <line x1="12" y1="17" x2="12" y2="21" />
+                    </svg>
+                  </div>
+                  <h3>WebApp's</h3>
+                  <p>
+                    Aplicações rápidas, seguras e escaláveis para negócios que
+                    exigem performance real.
+                  </p>
+                  <div class="service-features">
+                    <span class="feature-tag">PWA</span>
+                    <span class="feature-tag">SEO</span>
+                    <span class="feature-tag">Mobile First</span>
+                  </div>
+                </div>
 
-          <div class="content-block contact-info">
-            <div class="contact-methods">
-              <div class="contact-method">
-                <div class="method-icon">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <div class="service-card" data-service="saas">
+                  <div class="service-icon">
+                    <svg
+                      width="32"
+                      height="32"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path d="M12 2L2 7L12 12L22 7L12 2Z" />
+                      <path d="M2 17L12 22L22 17" />
+                      <path d="M2 12L12 17L22 12" />
+                    </svg>
+                  </div>
+                  <h3>SAAS / BAAS</h3>
+                  <p>
+                    Soluções white-label ou sistemas sob medida. Do MVP à
+                    plataforma robusta.
+                  </p>
+                  <div class="service-features">
+                    <span class="feature-tag">API</span>
+                    <span class="feature-tag">Dashboard</span>
+                    <span class="feature-tag">Integração</span>
+                  </div>
+                </div>
+
+                <div class="service-card" data-service="blockchain">
+                  <div class="service-icon">
+                    <svg
+                      width="32"
+                      height="32"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M2 12H22" />
+                      <path
+                        d="M12 2C14.5013 4.73835 15.9228 8.29203 15.9331 12C15.9228 15.708 14.5013 19.2616 12 22C9.49872 19.2616 8.07725 15.708 8.06688 12C8.07725 8.29203 9.49872 4.73835 12 2Z"
+                      />
+                    </svg>
+                  </div>
+                  <h3>Tokenização</h3>
+                  <p>
+                    Sua empresa com sua própria cripto. Gamificação avançada e
+                    ecossistemas tokenizados.
+                  </p>
+                  <div class="service-features">
+                    <span class="feature-tag">ERC-20</span>
+                    <span class="feature-tag">Polygon</span>
+                    <span class="feature-tag">$NEOFLW</span>
+                  </div>
+                </div>
+
+                <div class="service-card" data-service="ai">
+                  <div class="service-icon">
+                    <svg
+                      width="32"
+                      height="32"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        d="M12 2C13.1046 2 14 2.89543 14 4V6H16C17.1046 6 18 6.89543 18 8V10H20C21.1046 10 22 10.8954 22 12C22 13.1046 21.1046 14 20 14H18V16C18 17.1046 17.1046 18 16 18H14V20C14 21.1046 13.1046 22 12 22C10.8954 22 10 21.1046 10 20V18H8C6.89543 18 6 17.1046 6 16V14H4C2.89543 14 2 13.1046 2 12C2 10.8954 2.89543 10 4 10H6V8C6 6.89543 6.89543 6 8 6H10V4C10 2.89543 10.8954 2 12 2Z"
+                      />
+                    </svg>
+                  </div>
+                  <h3>IA & Chatbots</h3>
+                  <p>
+                    Agentes de IA treinados para seu negócio. Atendimento 24/7
+                    sem perder a personalidade.
+                  </p>
+                  <div class="service-features">
+                    <span class="feature-tag">GPTs</span>
+                    <span class="feature-tag">WhatsApp</span>
+                    <span class="feature-tag">CRM</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Philosophy Block -->
+            <div class="content-block philosophy-block">
+              <div class="philosophy-content">
+                <div class="philosophy-text">
+                  <h2>A diferença NEØ</h2>
+                  <p>
+                    Enquanto a maioria das agências vende "presença digital",
+                    nós construímos ecossistemas. Cada projeto é uma arquitetura
+                    completa: do design ao backend, da estratégia ao token.
+                  </p>
+                  <p>
+                    Não somos mais uma campanha. Somos a infraestrutura que faz
+                    seu negócio escalar para o futuro digital. Web2 para web3,
+                    com tecnologia que funciona hoje e amanhã.
+                  </p>
+                  <div class="philosophy-highlights">
+                    <div class="highlight-item">
+                      <div class="highlight-icon">🎯</div>
+                      <div class="highlight-content">
+                        <h4>Objetivo Claro</h4>
+                        <p>Resultado mensurável, não métricas vazias</p>
+                      </div>
+                    </div>
+                    <div class="highlight-item">
+                      <div class="highlight-icon">⚡</div>
+                      <div class="highlight-content">
+                        <h4>Performance Real</h4>
+                        <p>Sistemas que carregam em menos de 2 segundos</p>
+                      </div>
+                    </div>
+                    <div class="highlight-item">
+                      <div class="highlight-icon">🔗</div>
+                      <div class="highlight-content">
+                        <h4>Ecossistema</h4>
+                        <p>Conectamos todas as partes do seu negócio</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="philosophy-visual">
+                  <div class="architecture-diagram">
+                    <div class="diagram-layer layer-1">
+                      <span>Interface</span>
+                    </div>
+                    <div class="diagram-layer layer-2">
+                      <span>Lógica</span>
+                    </div>
+                    <div class="diagram-layer layer-3">
+                      <span>Dados</span>
+                    </div>
+                    <div class="diagram-layer layer-4">
+                      <span>Blockchain</span>
+                    </div>
+                    <div class="diagram-connector"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Testimonials Block -->
+            <div class="content-block testimonials-block">
+              <div class="block-header">
+                <h2 class="block-title">Resultados Reais</h2>
+                <p class="block-subtitle">
+                  O que nossos clientes dizem sobre a transformação
+                </p>
+              </div>
+
+              <div class="testimonials-grid">
+                <div class="testimonial-card">
+                  <div class="testimonial-content">
+                    <p>
+                      "A NEØ FlowOFF não fez só um site. Construiu nossa
+                      infraestrutura digital completa. De campanhas pontuais
+                      para um ecossistema que cresce sozinho."
+                    </p>
+                    <div class="testimonial-author">
+                      <div class="author-avatar">C</div>
+                      <div class="author-info">
+                        <div class="author-name">Carlos Mendes</div>
+                        <div class="author-role">CEO, TechCorp</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="testimonial-metrics">
+                    <div class="metric">
+                      <span class="metric-value">+300%</span>
+                      <span class="metric-label">Conversões</span>
+                    </div>
+                    <div class="metric">
+                      <span class="metric-value">-50%</span>
+                      <span class="metric-label">Custo por lead</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="testimonial-card">
+                  <div class="testimonial-content">
+                    <p>
+                      "Implementaram tokenização no nosso negócio de uma forma
+                      que fez sentido. Não foi só 'ter uma cripto', foi criar
+                      valor real para clientes e comunidade."
+                    </p>
+                    <div class="testimonial-author">
+                      <div class="author-avatar">A</div>
+                      <div class="author-info">
+                        <div class="author-name">Ana Silva</div>
+                        <div class="author-role">COO, FitnessPro</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="testimonial-metrics">
+                    <div class="metric">
+                      <span class="metric-value">+150%</span>
+                      <span class="metric-label">Engajamento</span>
+                    </div>
+                    <div class="metric">
+                      <span class="metric-value">45k</span>
+                      <span class="metric-label">Usuários ativos</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="testimonial-card">
+                  <div class="testimonial-content">
+                    <p>
+                      "O chatbot com IA deles pensa como a gente. Não responde
+                      automático, entende contexto e resolve problemas reais dos
+                      clientes."
+                    </p>
+                    <div class="testimonial-author">
+                      <div class="author-avatar">R</div>
+                      <div class="author-info">
+                        <div class="author-name">Roberto Lima</div>
+                        <div class="author-role">Diretor, E-commerce Plus</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="testimonial-metrics">
+                    <div class="metric">
+                      <span class="metric-value">24/7</span>
+                      <span class="metric-label">Disponibilidade</span>
+                    </div>
+                    <div class="metric">
+                      <span class="metric-value">85%</span>
+                      <span class="metric-label">Satisfação</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ABOUT SECTION -->
+          <section class="desktop-section" id="about-section">
+            <div class="content-block about-hero">
+              <h1>Sobre a NEØ FlowOFF</h1>
+              <p class="about-intro">
+                A agência que constrói o futuro digital das empresas
+              </p>
+            </div>
+
+            <div class="content-block about-mission">
+              <div class="mission-grid">
+                <div class="mission-content">
+                  <h2>Nossa Missão</h2>
+                  <p>
+                    Acelerar a transformação digital das empresas através de
+                    tecnologia aplicada, estratégias data-driven e inovação
+                    constante. Não vendemos soluções temporárias, construímos
+                    ecossistemas que evoluem com seu negócio.
+                  </p>
+                  <div class="mission-values">
+                    <div class="value-item">
+                      <h4>🏆 Excelência Técnica</h4>
+                      <p>Código que funciona, performance que impressiona</p>
+                    </div>
+                    <div class="value-item">
+                      <h4>🎯 Resultados Mensuráveis</h4>
+                      <p>Métricas claras, crescimento real</p>
+                    </div>
+                    <div class="value-item">
+                      <h4>🚀 Inovação Constante</h4>
+                      <p>Sempre à frente das tendências</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="mission-visual">
+                  <div class="tech-stack">
+                    <div class="stack-category">
+                      <h4>Frontend</h4>
+                      <div class="stack-items">
+                        <span class="stack-item">React</span>
+                        <span class="stack-item">Vue.js</span>
+                        <span class="stack-item">PWA</span>
+                      </div>
+                    </div>
+                    <div class="stack-category">
+                      <h4>Backend</h4>
+                      <div class="stack-items">
+                        <span class="stack-item">Node.js</span>
+                        <span class="stack-item">Python</span>
+                        <span class="stack-item">GraphQL</span>
+                      </div>
+                    </div>
+                    <div class="stack-category">
+                      <h4>Blockchain</h4>
+                      <div class="stack-items">
+                        <span class="stack-item">Web3</span>
+                        <span class="stack-item">Solidity</span>
+                        <span class="stack-item">IPFS</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="content-block team-section">
+              <h2>Conheça MELLØ</h2>
+              <div class="team-grid">
+                <div class="team-member main-member">
+                  <div class="member-photo">
+                    <img src="public/mello.webp" alt="MELLØ" />
+                  </div>
+                  <div class="member-info">
+                    <h3>MELLØ™</h3>
+                    <p class="member-role">
+                      Node IPFS na WEB3 | DEV | Gestor de Dados
+                    </p>
+                    <p class="member-desc">
+                      Expert em Marketing Digital e Blockchain. Constrói
+                      sistemas que conectam estratégia, tecnologia e resultado.
+                      Do branding ao backend, da ideia ao token.
+                    </p>
+                    <div class="member-skills">
+                      <span class="skill-tag">Marketing Digital</span>
+                      <span class="skill-tag">Blockchain</span>
+                      <span class="skill-tag">IA & Chatbots</span>
+                      <span class="skill-tag">Desenvolvimento Web</span>
+                      <span class="skill-tag">Tokenização</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- CONTACT SECTION -->
+          <section class="desktop-section" id="contact-section">
+            <div class="content-block contact-form">
+              <div class="contact-header">
+                <h1>Vamos Conversar</h1>
+                <p>
+                  Conte-nos sobre seu projeto. Vamos encontrar a melhor solução
+                  juntos.
+                </p>
+              </div>
+
+              <form id="desktop-lead-form" class="desktop-form">
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="desktop-name">Nome</label>
+                    <input
+                      type="text"
+                      id="desktop-name"
+                      name="name"
+                      placeholder="Seu nome completo"
+                      required
+                    />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="desktop-email">Email</label>
+                    <input
+                      type="email"
+                      id="desktop-email"
+                      name="email"
+                      placeholder="seuemail@empresa.com"
+                      required
+                    />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="desktop-whatsapp">WhatsApp</label>
+                    <input
+                      type="tel"
+                      id="desktop-whatsapp"
+                      name="whats"
+                      placeholder="+55 (00) 00000-0000"
+                      required
+                    />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="desktop-company">Empresa</label>
+                    <input
+                      type="text"
+                      id="desktop-company"
+                      name="company"
+                      placeholder="Nome da empresa"
+                    />
+                  </div>
+
+                  <div class="form-group full-width">
+                    <label for="desktop-service">Serviço de Interesse</label>
+                    <select id="desktop-service" name="type" required>
+                      <option value="" disabled selected>
+                        Selecione uma opção
+                      </option>
+                      <option value="site">Sites e WebApp's</option>
+                      <option value="saas">SAAS / BAAS</option>
+                      <option value="token">Tokenização de Ativos</option>
+                      <option value="ia">Agentes IA e Chatbots</option>
+                      <option value="consultoria">
+                        Consultoria Estratégica
+                      </option>
+                    </select>
+                  </div>
+
+                  <div class="form-group full-width">
+                    <label for="desktop-message">Mensagem</label>
+                    <textarea
+                      id="desktop-message"
+                      name="message"
+                      placeholder="Conte-nos mais sobre seu projeto..."
+                      rows="4"
+                    ></textarea>
+                  </div>
+                </div>
+
+                <button type="submit" class="desktop-btn primary">
+                  <span>Enviar Mensagem</span>
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M7 17L17 7" />
+                    <path d="M7 7H17V17" />
+                  </svg>
+                </button>
+              </form>
+            </div>
+
+            <div class="content-block contact-info">
+              <div class="contact-methods">
+                <div class="contact-method">
+                  <div class="method-icon">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                      />
+                    </svg>
+                  </div>
+                  <div class="method-content">
+                    <h4>WhatsApp Direto</h4>
+                    <p>Resposta rápida e conversa fluida</p>
+                    <a
+                      href="https://wa.me/+5562983231110"
+                      target="_blank"
+                      rel="noopener"
+                      class="method-link"
+                    >
+                      +55 62 98323-1110
+                    </a>
+                  </div>
+                </div>
+
+                <div class="contact-method">
+                  <div class="method-icon">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                      />
+                      <polyline points="22,6 12,13 2,6" />
+                    </svg>
+                  </div>
+                  <div class="method-content">
+                    <h4>Email Corporativo</h4>
+                    <p>Para propostas formais e documentação</p>
+                    <a
+                      href="mailto:neoprotocol.eth@ethermail.io"
+                      class="method-link"
+                    >
+                      neoprotocol.eth@ethermail.io
+                    </a>
+                  </div>
+                </div>
+
+                <div class="contact-method">
+                  <div class="method-icon">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M2 12H22" />
+                      <path
+                        d="M12 2C14.5013 4.73835 15.9228 8.29203 15.9331 12C15.9228 15.708 14.5013 19.2616 12 22C9.49872 19.2616 8.07725 15.708 8.06688 12C8.07725 8.29203 9.49872 4.73835 12 2Z"
+                      />
+                    </svg>
+                  </div>
+                  <div class="method-content">
+                    <h4>Web3 Contact</h4>
+                    <p>Comunicação decentralizada</p>
+                    <span class="method-link">neoprotocol.eth</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Footer -->
+        <footer class="desktop-footer">
+          <div class="footer-content">
+            <div class="footer-section">
+              <h4>NEØ FlowOFF</h4>
+              <p>
+                Transformamos estratégia em tecnologia e tecnologia em
+                resultado.
+              </p>
+            </div>
+            <div class="footer-section">
+              <h4>Links Úteis</h4>
+              <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">Sobre</a></li>
+                <li><a href="#services">Serviços</a></li>
+                <li><a href="#contact">Contato</a></li>
+              </ul>
+            </div>
+            <div class="footer-section">
+              <h4>Ecossistema</h4>
+              <ul>
+                <li>
+                  <a href="https://flowoff.xyz" target="_blank" rel="noopener"
+                    >FlowOFF</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://flowpaycash.netlify.app/"
+                    target="_blank"
+                    rel="noopener"
+                    >FlowPay</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://polygonscan.com/token/0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2"
+                    target="_blank"
+                    rel="noopener"
+                    >$NEOFLW</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="footer-section">
+              <h4>Redes Sociais</h4>
+              <div class="social-links">
+                <a
+                  href="https://www.instagram.com/neoflowoff.eth"
+                  target="_blank"
+                  rel="noopener"
+                  aria-label="Instagram"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                  </svg>
+                </a>
+
+                <a
+                  href="https://x.com/flowoff_mkt"
+                  target="_blank"
+                  rel="noopener"
+                  aria-label="Twitter"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
                     <path
-                      d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                      d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"
+                    />
                   </svg>
-                </div>
-                <div class="method-content">
-                  <h4>WhatsApp Direto</h4>
-                  <p>Resposta rápida e conversa fluida</p>
-                  <a href="https://wa.me/+5562983231110" target="_blank" rel="noopener" class="method-link">
-                    +55 62 98323-1110
-                  </a>
-                </div>
-              </div>
-
-              <div class="contact-method">
-                <div class="method-icon">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                    <polyline points="22,6 12,13 2,6" />
+                </a>
+                <a
+                  href="https://t.me/NEO_FlowOFF"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Telegram"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M22 5.77L10 14.23M22 5.77l-7 19-4-9-9-4 19-6z" />
                   </svg>
-                </div>
-                <div class="method-content">
-                  <h4>Email Corporativo</h4>
-                  <p>Para propostas formais e documentação</p>
-                  <a href="mailto:neoprotocol.eth@ethermail.io" class="method-link">
-                    neoprotocol.eth@ethermail.io
-                  </a>
-                </div>
-              </div>
-
-              <div class="contact-method">
-                <div class="method-icon">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M2 12H22" />
-                    <path
-                      d="M12 2C14.5013 4.73835 15.9228 8.29203 15.9331 12C15.9228 15.708 14.5013 19.2616 12 22C9.49872 19.2616 8.07725 15.708 8.06688 12C8.07725 8.29203 9.49872 4.73835 12 2Z" />
-                  </svg>
-                </div>
-                <div class="method-content">
-                  <h4>Web3 Contact</h4>
-                  <p>Comunicação decentralizada</p>
-                  <span class="method-link">neoprotocol.eth</span>
-                </div>
+                </a>
               </div>
             </div>
           </div>
-        </section>
-
-      </div>
-
-      <!-- Footer -->
-      <footer class="desktop-footer">
-        <div class="footer-content">
-          <div class="footer-section">
-            <h4>NEØ FlowOFF</h4>
-            <p>Transformamos estratégia em tecnologia e tecnologia em resultado.</p>
-          </div>
-          <div class="footer-section">
-            <h4>Links Úteis</h4>
-            <ul>
-              <li><a href="#home">Home</a></li>
-              <li><a href="#about">Sobre</a></li>
-              <li><a href="#services">Serviços</a></li>
-              <li><a href="#contact">Contato</a></li>
-            </ul>
-          </div>
-          <div class="footer-section">
-            <h4>Ecossistema</h4>
-            <ul>
-              <li><a href="https://flowoff.xyz" target="_blank" rel="noopener">FlowOFF</a></li>
-              <li><a href="https://flowpaycash.netlify.app/" target="_blank" rel="noopener">FlowPay</a></li>
-              <li><a href="https://polygonscan.com/token/0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2" target="_blank"
-                  rel="noopener">$NEOFLW</a></li>
-            </ul>
-          </div>
-          <div class="footer-section">
-            <h4>Redes Sociais</h4>
-            <div class="social-links">
-              <a href="https://www.instagram.com/neoflowoff.eth" target="_blank" rel="noopener" aria-label="Instagram">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-                </svg>
-              </a>
-              </svg>
-              </svg>
-              </a>
-              <a href="https://x.com/flowoff_mkt" target="_blank" rel="noopener" aria-label="Twitter">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path
-                    d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z" />
-                </svg>
-              </a>
-              <a href="https://t.me/NEO_FlowOFF" target="_blank" rel="noopener noreferrer" aria-label="Telegram">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M22 5.77L10 14.23M22 5.77l-7 19-4-9-9-4 19-6z" />
-                </svg>
-              </a>
+          <div class="footer-bottom">
+            <p>
+              © <span id="current-year"></span> NEØ FlowOFF. Desenvolvido sob
+              licença NΞØ PROTOCOL
+            </p>
+            <div class="footer-links">
+              <a href="privacy.html" rel="noopener">Privacidade</a>
+              <a href="terms.html" rel="noopener">Termos</a>
             </div>
           </div>
-        </div>
-        <div class="footer-bottom">
-          <p>© <span id="current-year"></span> NEØ FlowOFF. Desenvolvido sob licença NΞØ PROTOCOL</p>
-          <div class="footer-links">
-            <a href="privacy.html" rel="noopener">Privacidade</a>
-            <a href="terms.html" rel="noopener">Termos</a>
+        </footer>
+      </main>
+
+      <!-- Glass Morphism Bottom Bar -->
+      <nav class="glass-morphism-tabbar">
+        <button
+          class="glass-nav-item active"
+          data-section="home"
+          type="button"
+          aria-label="Home"
+        >
+          <div class="glass-nav-icon">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M9 22V12H15V22"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
           </div>
-        </div>
-      </footer>
+          <div class="glass-nav-label">Home</div>
+          <div class="glass-nav-indicator"></div>
+        </button>
 
-    </main>
+        <button
+          class="glass-nav-item"
+          data-section="services"
+          type="button"
+          aria-label="Serviços"
+        >
+          <div class="glass-nav-icon">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 2L2 7L12 12L22 7L12 2Z"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M2 17L12 22L22 17"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M2 12L12 17L22 12"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+          <div class="glass-nav-label">Serviços</div>
+          <div class="glass-nav-indicator"></div>
+        </button>
 
-    <!-- Glass Morphism Bottom Bar -->
-    <nav class="glass-morphism-tabbar">
-      <button class="glass-nav-item active" data-section="home" type="button" aria-label="Home">
-        <div class="glass-nav-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M9 22V12H15V22" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round" />
-          </svg>
-        </div>
-        <div class="glass-nav-label">Home</div>
-        <div class="glass-nav-indicator"></div>
-      </button>
+        <button
+          class="glass-nav-item start-button"
+          data-section="projects"
+          type="button"
+          aria-label="Projetos"
+        >
+          <div class="glass-nav-icon">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M22 19C22 19.5304 21.7893 20.0391 21.4142 20.4142C21.0391 21.7893 20.5304 22 20 22H4C3.46957 22 2.96086 21.7893 2.58579 21.4142C2.21071 21.0391 2 19.5304 2 19V5C2 4.46957 2.21071 3.96086 2.58579 3.58579C2.96086 3.21071 3.46957 3 4 3H20C20.5304 3 21.0391 3.21071 21.4142 3.58579C21.7893 3.96086 22 4.46957 22 5V19Z"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M8 7H16"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M8 11H16"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M8 15H12"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+          <div class="glass-nav-label">Projetos</div>
+          <div class="glass-nav-indicator"></div>
+        </button>
 
-      <button class="glass-nav-item" data-section="services" type="button" aria-label="Serviços">
-        <div class="glass-nav-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round" />
-            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round" />
-            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round" />
-          </svg>
-        </div>
-        <div class="glass-nav-label">Serviços</div>
-        <div class="glass-nav-indicator"></div>
-      </button>
+        <button
+          class="glass-nav-item"
+          data-section="token"
+          type="button"
+          aria-label="Token"
+        >
+          <div class="glass-nav-icon">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <path d="M2 12H22" stroke="currentColor" stroke-width="2" />
+              <path
+                d="M12 2C14.5013 4.73835 15.9228 8.29203 15.9331 12C15.9228 15.708 14.5013 19.2616 12 22C9.49872 19.2616 8.07725 15.708 8.06688 12C8.07725 8.29203 9.49872 4.73835 12 2Z"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+            </svg>
+          </div>
+          <div class="glass-nav-label">$NEOFLW</div>
+          <div class="glass-nav-indicator"></div>
+        </button>
 
-      <button class="glass-nav-item start-button" data-section="projects" type="button" aria-label="Projetos">
-        <div class="glass-nav-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M22 19C22 19.5304 21.7893 20.0391 21.4142 20.4142C21.0391 21.7893 20.5304 22 20 22H4C3.46957 22 2.96086 21.7893 2.58579 21.4142C2.21071 21.0391 2 19.5304 2 19V5C2 4.46957 2.21071 3.96086 2.58579 3.58579C2.96086 3.21071 3.46957 3 4 3H20C20.5304 3 21.0391 3.21071 21.4142 3.58579C21.7893 3.96086 22 4.46957 22 5V19Z"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M8 7H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M8 11H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M8 15H12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </div>
-        <div class="glass-nav-label">Projetos</div>
-        <div class="glass-nav-indicator"></div>
-      </button>
+        <button
+          class="glass-nav-item"
+          data-section="contact"
+          type="button"
+          aria-label="Contato"
+        >
+          <div class="glass-nav-icon">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+          <div class="glass-nav-label">Contato</div>
+          <div class="glass-nav-indicator"></div>
+        </button>
+      </nav>
+    </div>
 
-      <button class="glass-nav-item" data-section="token" type="button" aria-label="Token">
-        <div class="glass-nav-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
-            <path d="M2 12H22" stroke="currentColor" stroke-width="2" />
-            <path
-              d="M12 2C14.5013 4.73835 15.9228 8.29203 15.9331 12C15.9228 15.708 14.5013 19.2616 12 22C9.49872 19.2616 8.07725 15.708 8.06688 12C8.07725 8.29203 9.49872 4.73835 12 2Z"
-              stroke="currentColor" stroke-width="2" />
-          </svg>
-        </div>
-        <div class="glass-nav-label">$NEOFLW</div>
-        <div class="glass-nav-indicator"></div>
-      </button>
+    <!-- Scripts -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/p5@1.7.0/lib/p5.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="js/p5-background.js?v=1.4.6"></script>
+    <script src="js/form-validator.js?v=1.0.0"></script>
+    <script src="js/wallet.js?v=2.4.0"></script>
+    <script src="js/desktop.js?v=1.0.0"></script>
 
-      <button class="glass-nav-item" data-section="contact" type="button" aria-label="Contato">
-        <div class="glass-nav-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </div>
-        <div class="glass-nav-label">Contato</div>
-        <div class="glass-nav-indicator"></div>
-      </button>
-    </nav>
-
-  </div>
-
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/p5@1.7.0/lib/p5.min.js" crossorigin="anonymous"></script>
-  <script src="js/p5-background.js?v=1.4.6"></script>
-  <script src="js/form-validator.js?v=1.0.0"></script>
-  <script src="js/wallet.js?v=2.4.0"></script>
-  <script src="js/desktop.js?v=1.0.0"></script>
-
-  <!-- Service Worker Registration -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', async () => {
-        try {
-          const registration = await navigator.serviceWorker.register('./sw.js', {
-            scope: './'
-          });
-          console.log('Service Worker registrado com sucesso:', registration.scope);
-        } catch (error) {
-          console.error('Erro ao registrar Service Worker:', error);
-        }
-      });
-    }
-
-    // Atualizar ano do copyright dinamicamente
-    (function () {
-      const yearElement = document.getElementById('current-year');
-      if (yearElement) {
-        yearElement.textContent = new Date().getFullYear();
-      }
-    })();
-
-    // Navegação Bottom Bar (Desktop)
-    (function () {
-      const bottomBarItems = document.querySelectorAll('.glass-nav-item');
-      if (!bottomBarItems.length) return;
-
-      bottomBarItems.forEach((item) => {
-        item.addEventListener('click', (event) => {
-          event.preventDefault();
-          const section = item.dataset.section;
-          if (!section) return;
-          window.debugDesktop?.navigateTo(section);
-          bottomBarItems.forEach((btn) => btn.classList.toggle('active', btn === item));
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', async () => {
+          try {
+            const registration = await navigator.serviceWorker.register(
+              './sw.js',
+              {
+                scope: './',
+              }
+            );
+            console.log(
+              'Service Worker registrado com sucesso:',
+              registration.scope
+            );
+          } catch (error) {
+            console.error('Erro ao registrar Service Worker:', error);
+          }
         });
-      });
-    })();
-  </script>
-</body>
+      }
 
+      // Atualizar ano do copyright dinamicamente
+      (function () {
+        const yearElement = document.getElementById('current-year');
+        if (yearElement) {
+          yearElement.textContent = new Date().getFullYear();
+        }
+      })();
+
+      // Navegação Bottom Bar (Desktop)
+      (function () {
+        const bottomBarItems = document.querySelectorAll('.glass-nav-item');
+        if (!bottomBarItems.length) return;
+
+        bottomBarItems.forEach((item) => {
+          item.addEventListener('click', (event) => {
+            event.preventDefault();
+            const section = item.dataset.section;
+            if (!section) return;
+            window.debugDesktop?.navigateTo(section);
+            bottomBarItems.forEach((btn) =>
+              btn.classList.toggle('active', btn === item)
+            );
+          });
+        });
+      })();
+    </script>
+  </body>
 </html>

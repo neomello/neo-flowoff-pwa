@@ -9,13 +9,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
-      exclude: [
-        'node_modules/',
-        'tests/',
-        '*.config.js',
-        'scripts/',
-        'sw.js'
-      ]
-    }
-  }
+      exclude: ['node_modules/', 'tests/', '*.config.js', 'scripts/', 'sw.js'],
+    },
+  },
 });

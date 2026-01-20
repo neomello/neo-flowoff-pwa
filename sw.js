@@ -4,24 +4,46 @@ const MAX_RETRIES = 5;
 const RETRY_DELAYS = [1000, 2000, 5000, 10000, 30000]; // Exponential backoff em ms
 
 const ASSETS = [
-  './', './index.html', './styles.css',
-  './js/app.js', './js/wallet.js', './js/p5-background.js', './js/logger.js', './js/form-validator.js',
-  './js/webp-support.js', './js/index-scripts.js', './js/offline-queue.js',
-  './js/glass-morphism-bottom-bar.js', './js/utils.js',
-  './manifest.webmanifest', './public/icon-192.png', './public/icon-512.png', './public/maskable-512.png',
-  './public/flowoff logo.png', './public/FLOWPAY.png', './public/neo_ico.png',
-  './public/logos/pink_metalic.png', './public/logos/neowhite.png', './public/logos/proia.png',
-  './public/icons/icon-48x48.webp', './public/icons/icon-72x72.webp', './public/icons/icon-96x96.webp',
-  './public/icons/icon-128x128.webp', './public/icons/icon-144x144.webp', './public/icons/icon-152x152.webp',
-  './public/icons/icon-192x192.webp', './public/icons/icon-256x256.webp', './public/icons/icon-384x384.webp',
-  './public/icons/icon-512x512.webp'
+  './',
+  './index.html',
+  './styles.css',
+  './js/app.js',
+  './js/wallet.js',
+  './js/p5-background.js',
+  './js/logger.js',
+  './js/form-validator.js',
+  './js/webp-support.js',
+  './js/index-scripts.js',
+  './js/offline-queue.js',
+  './js/glass-morphism-bottom-bar.js',
+  './js/utils.js',
+  './manifest.webmanifest',
+  './public/icon-192.png',
+  './public/icon-512.png',
+  './public/maskable-512.png',
+  './public/flowoff logo.png',
+  './public/FLOWPAY.png',
+  './public/neo_ico.png',
+  './public/logos/pink_metalic.png',
+  './public/logos/neowhite.png',
+  './public/logos/proia.png',
+  './public/icons/icon-48x48.webp',
+  './public/icons/icon-72x72.webp',
+  './public/icons/icon-96x96.webp',
+  './public/icons/icon-128x128.webp',
+  './public/icons/icon-144x144.webp',
+  './public/icons/icon-152x152.webp',
+  './public/icons/icon-192x192.webp',
+  './public/icons/icon-256x256.webp',
+  './public/icons/icon-384x384.webp',
+  './public/icons/icon-512x512.webp',
 ];
 
-self.addEventListener('install', e=>{
+self.addEventListener('install', (e) => {
   e.waitUntil(
-    caches.open(CACHE).then(cache => {
+    caches.open(CACHE).then((cache) => {
       return Promise.allSettled(
-        ASSETS.map(asset =>
+        ASSETS.map((asset) =>
           cache.add(asset).catch(() => {
             // Falhas silenciosas - alguns assets podem não existir
             return null;
@@ -34,23 +56,29 @@ self.addEventListener('install', e=>{
 });
 
 // Listener para mensagem SKIP_WAITING do cliente
-self.addEventListener('message', event => {
+self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
 });
 
-self.addEventListener('activate', e=>{
+self.addEventListener('activate', (e) => {
   e.waitUntil(
     Promise.all([
-      caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))),
-      processQueue().catch(() => {}) // Tentar processar fila na ativação
+      caches
+        .keys()
+        .then((keys) =>
+          Promise.all(
+            keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))
+          )
+        ),
+      processQueue().catch(() => {}), // Tentar processar fila na ativação
     ])
   );
   self.clients.claim();
 });
 
-self.addEventListener('fetch', e=>{
+self.addEventListener('fetch', (e) => {
   const req = e.request;
   const url = new URL(req.url);
 
@@ -73,48 +101,65 @@ self.addEventListener('fetch', e=>{
 
   // Interceptar submissões de formulário para Background Sync
   // Validação mais robusta
-  const isFormSubmission = req.method === 'POST' &&
-    (url.pathname.includes('/api/lead') || req.headers.get('X-Form-Submission') === 'true');
+  const isFormSubmission =
+    req.method === 'POST' &&
+    (url.pathname.includes('/api/lead') ||
+      req.headers.get('X-Form-Submission') === 'true');
 
   if (isFormSubmission) {
-    e.respondWith(handleFormSubmission(req).catch(error => {
-      console.error('Erro ao processar submissão de formulário:', error);
-      return new Response(JSON.stringify({
-        success: false,
-        error: 'Erro ao processar formulário. Tente novamente.'
-      }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }));
+    e.respondWith(
+      handleFormSubmission(req).catch((error) => {
+        console.error('Erro ao processar submissão de formulário:', error);
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: 'Erro ao processar formulário. Tente novamente.',
+          }),
+          {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        );
+      })
+    );
     return;
   }
 
   // Para CSS e JS, sempre buscar da rede primeiro
   if (req.url.includes('.css') || req.url.includes('.js')) {
     e.respondWith(
-      fetch(req).then(res => {
-        if (res.status === 200) {
-          const copy = res.clone();
-          caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
-        }
-        return res;
-      }).catch(() => caches.match(req))
+      fetch(req)
+        .then((res) => {
+          if (res.status === 200) {
+            const copy = res.clone();
+            caches
+              .open(CACHE)
+              .then((c) => c.put(req, copy))
+              .catch(() => {});
+          }
+          return res;
+        })
+        .catch(() => caches.match(req))
     );
   } else {
     e.respondWith(
-      fetch(req).then(res => {
-        if (res.status === 200) {
-          const copy = res.clone();
-          caches.open(CACHE).then(c=>c.put(req, copy)).catch(() => {});
-        }
-        return res;
-      }).catch(() => {
-        return caches.match(req).then(cached => {
-          if (cached) return cached;
-          return new Response('Resource not available', { status: 404 });
-        });
-      })
+      fetch(req)
+        .then((res) => {
+          if (res.status === 200) {
+            const copy = res.clone();
+            caches
+              .open(CACHE)
+              .then((c) => c.put(req, copy))
+              .catch(() => {});
+          }
+          return res;
+        })
+        .catch(() => {
+          return caches.match(req).then((cached) => {
+            if (cached) return cached;
+            return new Response('Resource not available', { status: 404 });
+          });
+        })
     );
   }
 });
@@ -132,7 +177,7 @@ async function handleFormSubmission(request) {
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
 
     const response = await fetch(request.clone(), {
-      signal: controller.signal
+      signal: controller.signal,
     });
 
     clearTimeout(timeoutId);
@@ -185,15 +230,19 @@ async function queueForRetry(request, data) {
   try {
     // Validar tamanho dos dados antes de enfileirar
     const dataSize = JSON.stringify(data).length;
-    if (dataSize > 50000) { // 50KB máximo
+    if (dataSize > 50000) {
+      // 50KB máximo
       console.warn('Dados muito grandes para enfileirar');
-      return new Response(JSON.stringify({
-        success: false,
-        error: 'Dados muito grandes'
-      }), {
-        status: 413,
-        headers: { 'Content-Type': 'application/json' }
-      });
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: 'Dados muito grandes',
+        }),
+        {
+          status: 413,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
     }
 
     // Verificar tamanho da fila antes de adicionar
@@ -208,13 +257,16 @@ async function queueForRetry(request, data) {
     });
 
     if (count >= MAX_QUEUE_SIZE) {
-      return new Response(JSON.stringify({
-        success: false,
-        error: 'Fila cheia. Tente novamente mais tarde.'
-      }), {
-        status: 503,
-        headers: { 'Content-Type': 'application/json' }
-      });
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: 'Fila cheia. Tente novamente mais tarde.',
+        }),
+        {
+          status: 503,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
     }
 
     const queueItem = {
@@ -224,7 +276,7 @@ async function queueForRetry(request, data) {
       body: data,
       timestamp: Date.now(),
       retries: 0,
-      lastAttempt: null
+      lastAttempt: null,
     };
 
     await new Promise((resolve, reject) => {
@@ -240,18 +292,22 @@ async function queueForRetry(request, data) {
     console.error('Erro ao enfileirar:', error);
   }
 
-  return new Response(JSON.stringify({
-    success: false,
-    queued: true,
-    message: 'Formulário enfileirado. Será enviado quando a conexão for restaurada.'
-  }), {
-    status: 202,
-    headers: { 'Content-Type': 'application/json' }
-  });
+  return new Response(
+    JSON.stringify({
+      success: false,
+      queued: true,
+      message:
+        'Formulário enfileirado. Será enviado quando a conexão for restaurada.',
+    }),
+    {
+      status: 202,
+      headers: { 'Content-Type': 'application/json' },
+    }
+  );
 }
 
 // Background Sync event handler
-self.addEventListener('sync', event => {
+self.addEventListener('sync', (event) => {
   if (event.tag === QUEUE_NAME) {
     event.waitUntil(processQueue());
   }
@@ -289,8 +345,13 @@ async function processQueue() {
 
     // Limitar tamanho da fila - remover itens mais antigos se exceder limite
     if (requests.length > MAX_QUEUE_SIZE) {
-      const sortedRequests = requests.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
-      const toRemove = sortedRequests.slice(0, requests.length - MAX_QUEUE_SIZE);
+      const sortedRequests = requests.sort(
+        (a, b) => (a.timestamp || 0) - (b.timestamp || 0)
+      );
+      const toRemove = sortedRequests.slice(
+        0,
+        requests.length - MAX_QUEUE_SIZE
+      );
 
       for (const item of toRemove) {
         await new Promise((resolve, reject) => {
@@ -337,7 +398,7 @@ async function processQueue() {
           method: item.method,
           headers: item.headers,
           body: JSON.stringify(item.body),
-          signal: controller.signal
+          signal: controller.signal,
         });
 
         const response = await fetch(fetchRequest);
@@ -354,15 +415,17 @@ async function processQueue() {
           // Notificar clientes (com tratamento de erro para evitar mensagens fechadas)
           try {
             const clients = await self.clients.matchAll();
-            clients.forEach(client => {
+            clients.forEach((client) => {
               // Verificar se o cliente ainda está ativo antes de enviar
               if (client && !client.closed) {
-                client.postMessage({
-                  type: 'FORM_SYNC_SUCCESS',
-                  id: item.id
-                }).catch(() => {
-                  // Ignorar erros de mensagens fechadas
-                });
+                client
+                  .postMessage({
+                    type: 'FORM_SYNC_SUCCESS',
+                    id: item.id,
+                  })
+                  .catch(() => {
+                    // Ignorar erros de mensagens fechadas
+                  });
               }
             });
           } catch (error) {
@@ -382,7 +445,8 @@ async function processQueue() {
       } catch (error) {
         // Incrementar retries com exponential backoff
         item.retries++;
-        item.lastError = error.name === 'AbortError' ? 'Timeout' : error.message;
+        item.lastError =
+          error.name === 'AbortError' ? 'Timeout' : error.message;
         item.lastAttempt = Date.now();
 
         await new Promise((resolve, reject) => {
@@ -393,7 +457,8 @@ async function processQueue() {
 
         // Agendar próximo retry apenas se não excedeu max retries
         if (item.retries < MAX_RETRIES) {
-          const delay = RETRY_DELAYS[Math.min(item.retries - 1, RETRY_DELAYS.length - 1)];
+          const delay =
+            RETRY_DELAYS[Math.min(item.retries - 1, RETRY_DELAYS.length - 1)];
           setTimeout(() => processQueue(), delay);
         }
       }
@@ -422,7 +487,10 @@ function openQueueDB() {
     request.onupgradeneeded = (e) => {
       const db = e.target.result;
       if (!db.objectStoreNames.contains('queue')) {
-        const store = db.createObjectStore('queue', { keyPath: 'id', autoIncrement: true });
+        const store = db.createObjectStore('queue', {
+          keyPath: 'id',
+          autoIncrement: true,
+        });
         store.createIndex('timestamp', 'timestamp', { unique: false });
         store.createIndex('retries', 'retries', { unique: false });
       }
@@ -439,11 +507,17 @@ self.addEventListener('online', () => {
 });
 
 // Processar fila na ativação
-self.addEventListener('activate', e => {
+self.addEventListener('activate', (e) => {
   e.waitUntil(
     Promise.all([
-      caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))),
-      processQueue()
+      caches
+        .keys()
+        .then((keys) =>
+          Promise.all(
+            keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))
+          )
+        ),
+      processQueue(),
     ])
   );
   self.clients.claim();

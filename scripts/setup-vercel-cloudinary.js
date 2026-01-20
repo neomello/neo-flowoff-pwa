@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /**
  * ☁️ Configuração de Variáveis Cloudinary na Vercel
- * 
+ *
  * Envia as variáveis de ambiente do Cloudinary para a Vercel
  * Suporta: production, preview, development
- * 
+ *
  * Uso:
  *   node scripts/setup-vercel-cloudinary.js
  *   node scripts/setup-vercel-cloudinary.js --production
@@ -28,14 +28,14 @@ dotenv.config({ path: join(PROJECT_ROOT, '.env') });
 const CLOUDINARY_VARS = [
   'CLOUDINARY_CLOUD_NAME',
   'CLOUDINARY_API_KEY',
-  'CLOUDINARY_API_SECRET'
+  'CLOUDINARY_API_SECRET',
 ];
 
 // Fallback para nomes alternativos
 const VAR_ALIASES = {
-  'CLOUDINARY_CLOUD_NAME': ['CLOUD_NAME'],
-  'CLOUDINARY_API_KEY': ['CLOUD_API_KEY'],
-  'CLOUDINARY_API_SECRET': ['CLOUD_API_SECRET']
+  CLOUDINARY_CLOUD_NAME: ['CLOUD_NAME'],
+  CLOUDINARY_API_KEY: ['CLOUD_API_KEY'],
+  CLOUDINARY_API_SECRET: ['CLOUD_API_SECRET'],
 };
 
 /**
@@ -44,7 +44,7 @@ const VAR_ALIASES = {
 function getEnvValue(varName) {
   // Tenta nome principal
   let value = process.env[varName];
-  
+
   // Se não encontrou, tenta aliases
   if (!value && VAR_ALIASES[varName]) {
     for (const alias of VAR_ALIASES[varName]) {
@@ -52,7 +52,7 @@ function getEnvValue(varName) {
       if (value) break;
     }
   }
-  
+
   return value;
 }
 
@@ -80,34 +80,43 @@ function validateEnvVars() {
  */
 function setVercelEnvSync(varName, value, environment = 'production') {
   try {
-    const envFlag = environment === 'production' ? '--prod' : 
-                   environment === 'preview' ? '' : 
-                   '--env development';
-    
+    const envFlag =
+      environment === 'production'
+        ? '--prod'
+        : environment === 'preview'
+          ? ''
+          : '--env development';
+
     console.log(`   📤 Enviando ${varName} para ${environment}...`);
-    
+
     // Usa echo para passar valor
     const command = `echo "${value.replace(/"/g, '\\"')}" | vercel env add ${varName} ${envFlag}`;
-    
+
     execSync(command, {
       stdio: 'inherit',
       cwd: PROJECT_ROOT,
-      shell: true
+      shell: true,
     });
-    
+
     console.log(`   ✅ ${varName} configurado em ${environment}`);
     return true;
   } catch (error) {
-    const errorMsg = error.message || error.stdout?.toString() || error.stderr?.toString() || '';
-    
+    const errorMsg =
+      error.message ||
+      error.stdout?.toString() ||
+      error.stderr?.toString() ||
+      '';
+
     if (errorMsg.includes('already exists') || errorMsg.includes('already')) {
       console.log(`   ⚠️  ${varName} já existe em ${environment}`);
       console.log(`   💡 Para atualizar, execute manualmente:`);
       console.log(`      vercel env rm ${varName} ${envFlag} --yes`);
-      console.log(`      echo "${value.replace(/"/g, '\\"')}" | vercel env add ${varName} ${envFlag}`);
+      console.log(
+        `      echo "${value.replace(/"/g, '\\"')}" | vercel env add ${varName} ${envFlag}`
+      );
       return false;
     }
-    
+
     console.error(`   ❌ Erro: ${errorMsg}`);
     return false;
   }
@@ -120,12 +129,14 @@ function listEnvironments() {
   try {
     const output = execSync('vercel env ls', {
       encoding: 'utf-8',
-      cwd: PROJECT_ROOT
+      cwd: PROJECT_ROOT,
     });
     console.log('\n📋 Variáveis atuais na Vercel:');
     console.log(output);
   } catch (error) {
-    console.log('   ℹ️  Execute "vercel env ls" manualmente para ver variáveis');
+    console.log(
+      '   ℹ️  Execute "vercel env ls" manualmente para ver variáveis'
+    );
   }
 }
 
@@ -149,7 +160,7 @@ async function setupVercelCloudinary() {
 
   if (missing.length > 0) {
     console.error('❌ Variáveis faltando no .env:');
-    missing.forEach(varName => {
+    missing.forEach((varName) => {
       console.error(`   - ${varName}`);
       const aliases = VAR_ALIASES[varName] || [];
       if (aliases.length > 0) {
@@ -161,9 +172,9 @@ async function setupVercelCloudinary() {
   }
 
   console.log('✅ Variáveis encontradas no .env:');
-  Object.keys(values).forEach(varName => {
+  Object.keys(values).forEach((varName) => {
     const value = values[varName];
-    const masked = varName.includes('SECRET') 
+    const masked = varName.includes('SECRET')
       ? value.substring(0, 4) + '...' + value.substring(value.length - 4)
       : value;
     console.log(`   ${varName}: ${masked}`);
@@ -186,7 +197,9 @@ async function setupVercelCloudinary() {
     // Pergunta interativamente (simulado - sempre production por padrão)
     console.log('📤 Ambiente: production (padrão)');
     console.log('   Use --all para enviar para todos os ambientes');
-    console.log('   Use --production, --preview ou --development para escolher\n');
+    console.log(
+      '   Use --production, --preview ou --development para escolher\n'
+    );
     environments = ['production'];
   }
 
@@ -210,7 +223,9 @@ async function setupVercelCloudinary() {
   }
 
   console.log('\n' + '='.repeat(50));
-  console.log(`✅ Concluído: ${successCount}/${totalCount} variáveis configuradas\n`);
+  console.log(
+    `✅ Concluído: ${successCount}/${totalCount} variáveis configuradas\n`
+  );
 
   // Lista variáveis configuradas
   listEnvironments();
@@ -222,7 +237,7 @@ async function setupVercelCloudinary() {
 }
 
 // Executa
-setupVercelCloudinary().catch(error => {
+setupVercelCloudinary().catch((error) => {
   console.error('\n❌ Erro:', error.message);
   process.exit(1);
 });

@@ -1,8 +1,8 @@
-import { useChainId, useSwitchChain } from 'wagmi'
+import { useChainId, useSwitchChain } from 'wagmi';
 
 export function SwitchChain() {
-  const chainId = useChainId()
-  const { chains, switchChain, error } = useSwitchChain()
+  const chainId = useChainId();
+  const { chains, switchChain, error } = useSwitchChain();
 
   return (
     <div>
@@ -22,5 +22,5 @@ export function SwitchChain() {
 
       {error?.message}
     </div>
-  )
+  );
 }

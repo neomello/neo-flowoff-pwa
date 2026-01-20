@@ -8,10 +8,12 @@ const requiredFiles = [
   // app.js na raiz foi removido, apenas js/app.js é necessário
   'js/app.js',
   'manifest.webmanifest',
-  'sw.js'
+  'sw.js',
 ];
 
-const missing = requiredFiles.filter((file) => !existsSync(path.join(root, file)));
+const missing = requiredFiles.filter(
+  (file) => !existsSync(path.join(root, file))
+);
 
 if (missing.length) {
   console.error('✗ Arquivos essenciais ausentes:', missing.join(', '));

@@ -6,7 +6,7 @@ function createFormDOM() {
   const form = document.createElement('form');
   form.id = 'lead-form';
   form.className = 'card form glow';
-  
+
   // Campo Nome
   const nameLabel = document.createElement('label');
   nameLabel.textContent = 'Nome';
@@ -17,7 +17,7 @@ function createFormDOM() {
   nameInput.required = true;
   nameLabel.appendChild(nameInput);
   form.appendChild(nameLabel);
-  
+
   // Campo Email
   const emailLabel = document.createElement('label');
   emailLabel.textContent = 'Email';
@@ -29,7 +29,7 @@ function createFormDOM() {
   emailInput.required = true;
   emailLabel.appendChild(emailInput);
   form.appendChild(emailLabel);
-  
+
   // Campo WhatsApp
   const whatsLabel = document.createElement('label');
   whatsLabel.textContent = 'WhatsApp';
@@ -41,7 +41,7 @@ function createFormDOM() {
   whatsInput.required = true;
   whatsLabel.appendChild(whatsInput);
   form.appendChild(whatsLabel);
-  
+
   // Campo Tipo de Serviço
   const typeLabel = document.createElement('label');
   typeLabel.textContent = 'Serviço que procura';
@@ -49,17 +49,17 @@ function createFormDOM() {
   typeSelect.name = 'type';
   typeSelect.autocomplete = 'off';
   typeSelect.required = true;
-  
+
   const options = [
     { value: '', text: 'Selecione uma opção', disabled: true, selected: true },
     { value: 'site', text: 'Site / WebApp' },
     { value: 'saas', text: 'SAAS / BAAS' },
     { value: 'cripto', text: 'Tokenização / Cripto' },
     { value: 'poston', text: 'POSTØN' },
-    { value: 'proia', text: 'PRO.IA' }
+    { value: 'proia', text: 'PRO.IA' },
   ];
-  
-  options.forEach(opt => {
+
+  options.forEach((opt) => {
     const option = document.createElement('option');
     option.value = opt.value;
     option.textContent = opt.text;
@@ -67,25 +67,25 @@ function createFormDOM() {
     if (opt.selected) option.selected = true;
     typeSelect.appendChild(option);
   });
-  
+
   typeLabel.appendChild(typeSelect);
   form.appendChild(typeLabel);
-  
+
   // Botão Submit
   const submitBtn = document.createElement('button');
   submitBtn.type = 'submit';
   submitBtn.className = 'btn primary';
   submitBtn.textContent = 'Enviar';
   form.appendChild(submitBtn);
-  
+
   // Status element
   const statusEl = document.createElement('p');
   statusEl.id = 'lead-status';
   statusEl.className = 'muted center';
   form.appendChild(statusEl);
-  
+
   document.body.appendChild(form);
-  
+
   return form;
 }
 
@@ -105,7 +105,7 @@ async function loadFormValidator() {
         validarEmail: (email) => {
           const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
           return regex.test(email);
-        }
+        },
       };
       this.setupForm();
     }
@@ -125,13 +125,17 @@ async function loadFormValidator() {
     setupRealTimeValidation(form) {
       const nameInput = form.querySelector('input[name="name"]');
       if (nameInput) {
-        nameInput.addEventListener('blur', () => this.validateName(nameInput.value));
+        nameInput.addEventListener('blur', () =>
+          this.validateName(nameInput.value)
+        );
         nameInput.addEventListener('input', () => this.clearError('name'));
       }
 
       const emailInput = form.querySelector('input[name="email"]');
       if (emailInput) {
-        emailInput.addEventListener('blur', () => this.validateEmail(emailInput.value));
+        emailInput.addEventListener('blur', () =>
+          this.validateEmail(emailInput.value)
+        );
         emailInput.addEventListener('input', () => this.clearError('email'));
       }
 
@@ -141,7 +145,9 @@ async function loadFormValidator() {
           this.formatPhone(e.target);
           this.clearError('whats');
         });
-        whatsInput.addEventListener('blur', () => this.validatePhone(whatsInput.value));
+        whatsInput.addEventListener('blur', () =>
+          this.validatePhone(whatsInput.value)
+        );
       }
 
       const serviceSelect = form.querySelector('select[name="type"]');
@@ -152,7 +158,7 @@ async function loadFormValidator() {
 
     formatPhone(input) {
       let value = input.value.replace(/\D/g, '');
-      
+
       if (value.length > 0) {
         if (value.length <= 2) {
           value = `+${value}`;
@@ -164,7 +170,7 @@ async function loadFormValidator() {
           value = `+${value.slice(0, 2)} (${value.slice(2, 4)}) ${value.slice(4, 9)}-${value.slice(9, 13)}`;
         }
       }
-      
+
       input.value = value;
     }
 
@@ -187,7 +193,7 @@ async function loadFormValidator() {
         this.setError('email', 'Email é obrigatório');
         return false;
       }
-      
+
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         this.setError('email', 'Email inválido');
@@ -205,7 +211,7 @@ async function loadFormValidator() {
       }
 
       const cleaned = phone.replace(/\D/g, '');
-      
+
       if (cleaned.length < 10) {
         this.setError('whats', 'Número de WhatsApp inválido');
         return false;
@@ -247,12 +253,12 @@ async function loadFormValidator() {
 
     async handleSubmit(e) {
       if (this.isValidating) return;
-      
+
       this.isValidating = true;
       const form = e.target;
       const formData = new FormData(form);
       const statusEl = document.getElementById('lead-status');
-      
+
       this.errors = {};
       statusEl.textContent = '⏳ Validando dados...';
       statusEl.style.color = '#3b82f6';
@@ -279,10 +285,10 @@ async function loadFormValidator() {
         }
 
         await this.sendToWhatsApp(formData);
-        
       } catch (error) {
         window.Logger?.error('Erro ao processar formulário:', error);
-        statusEl.textContent = '✗ Erro ao processar. Tente novamente ou entre em contato diretamente.';
+        statusEl.textContent =
+          '✗ Erro ao processar. Tente novamente ou entre em contato diretamente.';
         statusEl.style.color = '#ef4444';
       } finally {
         this.isValidating = false;
@@ -294,11 +300,11 @@ async function loadFormValidator() {
       const isOnline = navigator.onLine;
 
       const projectTypes = {
-        'site': 'Site / WebApp',
-        'saas': 'SAAS / BAAS',
-        'cripto': 'Tokenização / Cripto',
-        'poston': 'POSTØN',
-        'proia': 'PRO.IA'
+        site: 'Site / WebApp',
+        saas: 'SAAS / BAAS',
+        cripto: 'Tokenização / Cripto',
+        poston: 'POSTØN',
+        proia: 'PRO.IA',
       };
 
       const name = formData.get('name');
@@ -321,20 +327,21 @@ async function loadFormValidator() {
       const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
 
       if (!isOnline) {
-        statusEl.textContent = '📦 Formulário salvo! Será enviado quando a conexão for restaurada.';
+        statusEl.textContent =
+          '📦 Formulário salvo! Será enviado quando a conexão for restaurada.';
         statusEl.style.color = '#f59e0b';
-        
+
         setTimeout(() => {
           window.open(whatsappUrl, '_blank');
           document.getElementById('lead-form').reset();
         }, 500);
-        
+
         return;
       }
 
       statusEl.textContent = '✓ Dados válidos! Redirecionando...';
       statusEl.style.color = '#4ade80';
-      
+
       setTimeout(() => {
         window.open(whatsappUrl, '_blank');
         document.getElementById('lead-form').reset();
@@ -347,154 +354,153 @@ async function loadFormValidator() {
   const validator = new FormValidator();
   await validator.init();
   window.FormValidator = validator;
-  
+
   return validator;
 }
 
 describe('Formulário Lead Form', () => {
   let form;
   let validator;
-  
+
   beforeEach(async () => {
     createFormDOM();
     form = document.getElementById('lead-form');
     validator = await loadFormValidator();
     // Aguardar inicialização completa
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
   });
-  
+
   describe('Estrutura do Formulário', () => {
     it('deve ter o formulário presente no DOM', () => {
       expect(form).toBeTruthy();
       expect(form.id).toBe('lead-form');
     });
-    
+
     it('deve ter todos os campos obrigatórios', () => {
       expect(form.querySelector('input[name="name"]')).toBeTruthy();
       expect(form.querySelector('input[name="email"]')).toBeTruthy();
       expect(form.querySelector('input[name="whats"]')).toBeTruthy();
       expect(form.querySelector('select[name="type"]')).toBeTruthy();
     });
-    
+
     it('deve ter o botão de submit', () => {
       const submitBtn = form.querySelector('button[type="submit"]');
       expect(submitBtn).toBeTruthy();
       expect(submitBtn.textContent.trim()).toBe('Enviar');
     });
-    
+
     it('deve ter elemento de status', () => {
       const statusEl = document.getElementById('lead-status');
       expect(statusEl).toBeTruthy();
     });
   });
-  
+
   describe('Validação de Campos', () => {
-    
     describe('Validação de Nome', () => {
       it('deve rejeitar nome vazio', () => {
         const nameInput = form.querySelector('input[name="name"]');
         nameInput.value = '';
         nameInput.dispatchEvent(new Event('blur'));
-        
+
         const statusEl = document.getElementById('lead-status');
         // O validador deve marcar como inválido
         expect(nameInput.value).toBe('');
       });
-      
+
       it('deve rejeitar nome muito curto', () => {
         const nameInput = form.querySelector('input[name="name"]');
         nameInput.value = 'A';
         nameInput.dispatchEvent(new Event('blur'));
-        
+
         expect(nameInput.value.length).toBeLessThan(2);
       });
-      
+
       it('deve aceitar nome válido', () => {
         const nameInput = form.querySelector('input[name="name"]');
         nameInput.value = 'João Silva';
         nameInput.dispatchEvent(new Event('blur'));
-        
+
         expect(nameInput.value.length).toBeGreaterThanOrEqual(2);
       });
     });
-    
+
     describe('Validação de Email', () => {
       it('deve rejeitar email vazio', () => {
         const emailInput = form.querySelector('input[name="email"]');
         emailInput.value = '';
         emailInput.dispatchEvent(new Event('blur'));
-        
+
         expect(emailInput.value).toBe('');
       });
-      
+
       it('deve rejeitar email inválido', () => {
         const emailInput = form.querySelector('input[name="email"]');
         emailInput.value = 'email-invalido';
         emailInput.dispatchEvent(new Event('blur'));
-        
+
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         expect(emailRegex.test(emailInput.value)).toBe(false);
       });
-      
+
       it('deve aceitar email válido', () => {
         const emailInput = form.querySelector('input[name="email"]');
         emailInput.value = 'teste@exemplo.com';
         emailInput.dispatchEvent(new Event('blur'));
-        
+
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         expect(emailRegex.test(emailInput.value)).toBe(true);
       });
     });
-    
+
     describe('Validação de WhatsApp', () => {
       it('deve rejeitar WhatsApp vazio', () => {
         const whatsInput = form.querySelector('input[name="whats"]');
         whatsInput.value = '';
         whatsInput.dispatchEvent(new Event('blur'));
-        
+
         expect(whatsInput.value).toBe('');
       });
-      
+
       it('deve formatar número de telefone durante digitação', () => {
         const whatsInput = form.querySelector('input[name="whats"]');
         whatsInput.value = '5562983231110';
         whatsInput.dispatchEvent(new Event('input'));
-        
+
         // O formato deve incluir +55
         expect(whatsInput.value).toContain('+55');
       });
-      
+
       it('deve aceitar número brasileiro válido', () => {
         const whatsInput = form.querySelector('input[name="whats"]');
         whatsInput.value = '+55 (62) 98323-1110';
         whatsInput.dispatchEvent(new Event('blur'));
-        
+
         const cleaned = whatsInput.value.replace(/\D/g, '');
         expect(cleaned.length).toBeGreaterThanOrEqual(10);
       });
     });
-    
+
     describe('Validação de Tipo de Serviço', () => {
       it('deve rejeitar quando nenhum serviço é selecionado', () => {
         const typeSelect = form.querySelector('select[name="type"]');
         typeSelect.value = '';
         typeSelect.dispatchEvent(new Event('change'));
-        
+
         expect(typeSelect.value).toBe('');
       });
-      
+
       it('deve aceitar quando um serviço é selecionado', () => {
         const typeSelect = form.querySelector('select[name="type"]');
         typeSelect.value = 'site';
         typeSelect.dispatchEvent(new Event('change'));
-        
+
         expect(typeSelect.value).toBe('site');
       });
-      
+
       it('deve ter todas as opções de serviço disponíveis', () => {
         const typeSelect = form.querySelector('select[name="type"]');
-        const options = Array.from(typeSelect.options).map(opt => opt.value);
-        
+        const options = Array.from(typeSelect.options).map((opt) => opt.value);
+
         expect(options).toContain('site');
         expect(options).toContain('saas');
         expect(options).toContain('cripto');
@@ -503,123 +509,136 @@ describe('Formulário Lead Form', () => {
       });
     });
   });
-  
+
   describe('Submissão do Formulário', () => {
-    
     it('deve prevenir submissão com campos vazios', async () => {
-      const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+      const submitEvent = new Event('submit', {
+        bubbles: true,
+        cancelable: true,
+      });
       form.dispatchEvent(submitEvent);
-      
+
       // O evento deve ser prevenido
       expect(submitEvent.defaultPrevented).toBe(true);
     });
-    
+
     it('deve validar todos os campos antes de submeter', async () => {
       // Preencher campos com valores válidos
       form.querySelector('input[name="name"]').value = 'João Silva';
       form.querySelector('input[name="email"]').value = 'joao@exemplo.com';
       form.querySelector('input[name="whats"]').value = '+55 (62) 98323-1110';
       form.querySelector('select[name="type"]').value = 'site';
-      
-      const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+
+      const submitEvent = new Event('submit', {
+        bubbles: true,
+        cancelable: true,
+      });
       form.dispatchEvent(submitEvent);
-      
+
       // O evento deve ser prevenido para validação
       expect(submitEvent.defaultPrevented).toBe(true);
     });
-    
+
     it('deve mostrar mensagem de status durante validação', async () => {
       const statusEl = document.getElementById('lead-status');
-      
+
       form.querySelector('input[name="name"]').value = 'João Silva';
       form.querySelector('input[name="email"]').value = 'joao@exemplo.com';
       form.querySelector('input[name="whats"]').value = '+55 (62) 98323-1110';
       form.querySelector('select[name="type"]').value = 'site';
-      
-      const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+
+      const submitEvent = new Event('submit', {
+        bubbles: true,
+        cancelable: true,
+      });
       form.dispatchEvent(submitEvent);
-      
+
       // Aguardar processamento
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       // Deve ter alguma mensagem de status
       expect(statusEl.textContent).toBeTruthy();
     });
   });
-  
+
   describe('Interação do Usuário', () => {
     it('deve limpar erros quando usuário começa a digitar', () => {
       const nameInput = form.querySelector('input[name="name"]');
       nameInput.value = '';
       nameInput.dispatchEvent(new Event('blur'));
-      
+
       // Simular início de digitação
       nameInput.value = 'J';
       nameInput.dispatchEvent(new Event('input'));
-      
+
       // O campo deve estar limpo de erros visuais
       expect(nameInput.style.borderColor).toBe('');
     });
-    
+
     it('deve formatar telefone em tempo real', () => {
       const whatsInput = form.querySelector('input[name="whats"]');
-      
+
       // Simular digitação
       whatsInput.value = '5562';
       whatsInput.dispatchEvent(new Event('input'));
-      
+
       // Deve ter formatação aplicada
       expect(whatsInput.value).toContain('+55');
     });
-    
+
     it('deve limpar erro ao selecionar serviço', () => {
       const typeSelect = form.querySelector('select[name="type"]');
-      
+
       // Simular seleção
       typeSelect.value = 'site';
       typeSelect.dispatchEvent(new Event('change'));
-      
+
       // Não deve ter erro
       expect(typeSelect.value).toBe('site');
     });
   });
-  
+
   describe('Integração com WhatsApp', () => {
-    
     it('deve gerar URL do WhatsApp com dados corretos', async () => {
       form.querySelector('input[name="name"]').value = 'João Silva';
       form.querySelector('input[name="email"]').value = 'joao@exemplo.com';
       form.querySelector('input[name="whats"]').value = '+55 (62) 98323-1110';
       form.querySelector('select[name="type"]').value = 'site';
-      
-      const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+
+      const submitEvent = new Event('submit', {
+        bubbles: true,
+        cancelable: true,
+      });
       form.dispatchEvent(submitEvent);
-      
-      await new Promise(resolve => setTimeout(resolve, 600));
-      
+
+      await new Promise((resolve) => setTimeout(resolve, 600));
+
       // Deve ter tentado abrir WhatsApp
       expect(window.open).toHaveBeenCalled();
-      const whatsappCall = window.open.mock.calls.find(call => 
-        call[0] && call[0].includes('wa.me')
+      const whatsappCall = window.open.mock.calls.find(
+        (call) => call[0] && call[0].includes('wa.me')
       );
       expect(whatsappCall).toBeTruthy();
     });
-    
+
     it('deve incluir todos os dados no link do WhatsApp', async () => {
       form.querySelector('input[name="name"]').value = 'João Silva';
       form.querySelector('input[name="email"]').value = 'joao@exemplo.com';
       form.querySelector('input[name="whats"]').value = '+55 (62) 98323-1110';
       form.querySelector('select[name="type"]').value = 'site';
-      
-      const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+
+      const submitEvent = new Event('submit', {
+        bubbles: true,
+        cancelable: true,
+      });
       form.dispatchEvent(submitEvent);
-      
-      await new Promise(resolve => setTimeout(resolve, 600));
-      
-      const whatsappCall = window.open.mock.calls.find(call => 
-        call[0] && call[0].includes('wa.me')
+
+      await new Promise((resolve) => setTimeout(resolve, 600));
+
+      const whatsappCall = window.open.mock.calls.find(
+        (call) => call[0] && call[0].includes('wa.me')
       );
-      
+
       if (whatsappCall) {
         const url = whatsappCall[0];
         const decodedUrl = decodeURIComponent(url);
@@ -629,28 +648,31 @@ describe('Formulário Lead Form', () => {
       }
     });
   });
-  
+
   describe('Comportamento Offline', () => {
     beforeEach(() => {
       // Simular offline
       Object.defineProperty(navigator, 'onLine', {
         writable: true,
         configurable: true,
-        value: false
+        value: false,
       });
     });
-    
+
     it('deve enfileirar formulário quando offline', async () => {
       form.querySelector('input[name="name"]').value = 'João Silva';
       form.querySelector('input[name="email"]').value = 'joao@exemplo.com';
       form.querySelector('input[name="whats"]').value = '+55 (62) 98323-1110';
       form.querySelector('select[name="type"]').value = 'site';
-      
-      const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+
+      const submitEvent = new Event('submit', {
+        bubbles: true,
+        cancelable: true,
+      });
       form.dispatchEvent(submitEvent);
-      
-      await new Promise(resolve => setTimeout(resolve, 200));
-      
+
+      await new Promise((resolve) => setTimeout(resolve, 200));
+
       const statusEl = document.getElementById('lead-status');
       // Deve mostrar mensagem de enfileiramento
       expect(statusEl.textContent).toContain('salvo');

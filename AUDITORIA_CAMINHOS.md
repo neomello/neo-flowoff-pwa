@@ -1,7 +1,7 @@
 # 🔍 Auditoria de Caminhos e Referências
 
-**Data:** 2024-12-30
-**Objetivo:** Verificar se comandos, scripts e Makefile precisam de ajustes após reorganização de arquivos
+**Data:** 2024-12-30 **Objetivo:** Verificar se comandos, scripts e Makefile precisam de ajustes
+após reorganização de arquivos
 
 ## 📋 Mudanças Realizadas
 
@@ -19,8 +19,8 @@
 
 ### Makefile
 
-**Status:** ✅ **OK**
-Não contém referências a caminhos antigos. Todos os comandos usam caminhos relativos ou não dependem dos arquivos movidos.
+**Status:** ✅ **OK** Não contém referências a caminhos antigos. Todos os comandos usam caminhos
+relativos ou não dependem dos arquivos movidos.
 
 ### package.json
 
@@ -37,19 +37,19 @@ Scripts já foram atualizados para usar `examples/`:
 **Status:** ✅ **AJUSTADO**
 
 - **Antes:** Referência a `WALLET-AUTH-FLOW.md` (arquivo inexistente)
-- **Depois:** Referência removida, comentário adicionado explicando que documentação agora está em `docs/`
+- **Depois:** Referência removida, comentário adicionado explicando que documentação agora está em
+  `docs/`
 
 ### scripts/create-storacha-pr.sh
 
-**Status:** ✅ **OK**
-Já usa caminhos corretos:
+**Status:** ✅ **OK** Já usa caminhos corretos:
+
 - `$PROJECT_ROOT/docs/BUG_REPORT_STORACHA_EN.md`
 - Cria `docs/bug-reports/` corretamente
 
 ### Outros Scripts
 
-**Status:** ✅ **OK**
-Nenhum outro script encontrado com referências problemáticas.
+**Status:** ✅ **OK** Nenhum outro script encontrado com referências problemáticas.
 
 ### Documentação (docs/)
 
@@ -59,7 +59,7 @@ Nenhum outro script encontrado com referências problemáticas.
 - **Nota:** É apenas documentação/exemplo, não afeta funcionamento
 - **Ação:** Opcional - pode ser atualizado para usar variáveis de ambiente se necessário
 
-### docs/integracao/*.md
+### docs/integracao/\*.md
 
 **Status:** ✅ **ATUALIZADO**
 
@@ -69,24 +69,25 @@ Nenhum outro script encontrado com referências problemáticas.
 ## 🔧 Ajustes Realizados
 
 1. ✅ **scripts/build.js**: Removida referência a arquivo inexistente
-2. ✅ **docs/integracao/GUIA_INTEGRACAO_TOKEN_SMART_ACCOUNTS.md**: Corrigido import para caminho relativo correto
+2. ✅ **docs/integracao/GUIA_INTEGRACAO_TOKEN_SMART_ACCOUNTS.md**: Corrigido import para caminho
+   relativo correto
 
 ## 📊 Resumo
 
-| Arquivo/Script | Status | Ação |
-|----------------|--------|------|
-| Makefile | ✅ OK | Nenhuma ação necessária |
-| package.json | ✅ OK | Já atualizado anteriormente |
-| scripts/build.js | ✅ AJUSTADO | Referência removida |
-| scripts/create-storacha-pr.sh | ✅ OK | Nenhuma ação necessária |
-| docs/PR_COMMANDS.md | ⚠️ DOC | Caminhos absolutos (apenas exemplo) |
-| docs/integracao/*.md | ✅ OK | Imports atualizados |
+| Arquivo/Script                | Status      | Ação                                |
+| ----------------------------- | ----------- | ----------------------------------- |
+| Makefile                      | ✅ OK       | Nenhuma ação necessária             |
+| package.json                  | ✅ OK       | Já atualizado anteriormente         |
+| scripts/build.js              | ✅ AJUSTADO | Referência removida                 |
+| scripts/create-storacha-pr.sh | ✅ OK       | Nenhuma ação necessária             |
+| docs/PR_COMMANDS.md           | ⚠️ DOC      | Caminhos absolutos (apenas exemplo) |
+| docs/integracao/\*.md         | ✅ OK       | Imports atualizados                 |
 
 ## ✅ Conclusão
 
-**Todos os comandos, scripts e Makefile estão funcionais e atualizados.**
-Nenhum ajuste adicional necessário para o funcionamento do projeto.
+**Todos os comandos, scripts e Makefile estão funcionais e atualizados.** Nenhum ajuste adicional
+necessário para o funcionamento do projeto.
 
 ---
 
-*Auditoria concluída com sucesso.*
+_Auditoria concluída com sucesso._

@@ -1,13 +1,13 @@
 /* variables.css - Variáveis CSS globais */
-:root{
-  --bg:#0a0a0f;
-  --panel:#0f0f16;
-  --text:#e6e6f0;
-  --muted:#9aa0aa;
-  --neon:#ff2fb3; /* rosa */
-  --vio:#7a2cff;  /* roxo */
-  --blue:#00d0ff; /* azul ciano */
-  --glass: rgba(255,255,255,0.06);
-  --radius:18px;
-  --shadow: 0 10px 30px rgba(0,0,0,.6);
+:root {
+  --bg: #0a0a0f;
+  --panel: #0f0f16;
+  --text: #e6e6f0;
+  --muted: #9aa0aa;
+  --neon: #ff2fb3; /* rosa */
+  --vio: #7a2cff; /* roxo */
+  --blue: #00d0ff; /* azul ciano */
+  --glass: rgba(255, 255, 255, 0.06);
+  --radius: 18px;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
 }

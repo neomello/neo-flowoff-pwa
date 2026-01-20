@@ -19,7 +19,7 @@ if (process.env.BUILD_BUMP_VERSION) {
   try {
     execSync(`npm run version:bump -- ${process.env.BUILD_BUMP_VERSION}`, {
       cwd: rootDir,
-      stdio: 'inherit'
+      stdio: 'inherit',
     });
     console.log('✅ Versão atualizada!\n');
   } catch (error) {
@@ -35,7 +35,7 @@ const requiredFiles = [
   'styles.css',
   'js/app.js',
   'manifest.webmanifest',
-  'sw.js'
+  'sw.js',
 ];
 
 for (const file of requiredFiles) {
@@ -75,7 +75,7 @@ const filesToCopy = [
   'bento-grid.css',
   // SEO e PWA
   'sitemap.xml',
-  'robots.txt'
+  'robots.txt',
   // Documentação removida - arquivos .md agora estão em docs/
 ];
 
@@ -97,7 +97,7 @@ if (fs.existsSync(jsSrcDir)) {
   const jsFiles = fs.readdirSync(jsSrcDir);
   for (const file of jsFiles) {
     const srcPath = path.join(jsSrcDir, file);
-        const destPath = path.join(jsDestDir, file);
+    const destPath = path.join(jsDestDir, file);
     if (fs.statSync(srcPath).isFile()) {
       fs.copyFileSync(srcPath, destPath);
     }

@@ -12,15 +12,18 @@ if ('serviceWorker' in navigator) {
 
       // Verificar atualizações a cada 60 minutos
       // Armazena interval ID para limpeza
-      let swUpdateInterval = setInterval(() => {
-        try {
-          registration.update().catch(err => {
-            window.Logger?.warn('Erro ao atualizar Service Worker:', err);
-          });
-        } catch (error) {
-          window.Logger?.warn('Erro ao atualizar Service Worker:', error);
-        }
-      }, 60 * 60 * 1000);
+      let swUpdateInterval = setInterval(
+        () => {
+          try {
+            registration.update().catch((err) => {
+              window.Logger?.warn('Erro ao atualizar Service Worker:', err);
+            });
+          } catch (error) {
+            window.Logger?.warn('Erro ao atualizar Service Worker:', error);
+          }
+        },
+        60 * 60 * 1000
+      );
 
       // Limpa interval quando página é descarregada ou escondida
       const cleanup = () => {
@@ -46,7 +49,10 @@ if ('serviceWorker' in navigator) {
       registration.addEventListener('updatefound', () => {
         const newWorker = registration.installing;
         newWorker.addEventListener('statechange', () => {
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+          if (
+            newWorker.state === 'installed' &&
+            navigator.serviceWorker.controller
+          ) {
             // Nova versão disponível - notificar usuário
             showUpdateNotification();
           }
@@ -153,7 +159,7 @@ function showUpdateNotification() {
 }
 
 // Aplicar atualização
-window.applyUpdate = async function() {
+window.applyUpdate = async function () {
   window._swUpdateReady = true;
   const registration = await navigator.serviceWorker.ready;
   if (registration.waiting) {
@@ -169,14 +175,14 @@ window.PWA_VERSION = PWA_VERSION;
 // Router super simples (hashless) - Compatível com Glass Morphism Bottom Bar
 const buttons = document.querySelectorAll('.glass-nav-item');
 const sections = [...document.querySelectorAll('.route')];
-const detectedRoutes = sections.map(section => section.id).filter(Boolean);
+const detectedRoutes = sections.map((section) => section.id).filter(Boolean);
 const routes = detectedRoutes.length
   ? detectedRoutes
-  : ['home','projects','start','ecosystem'];
+  : ['home', 'projects', 'start', 'ecosystem'];
 
-function go(route){
+function go(route) {
   let hasSection = false;
-  routes.forEach(r => {
+  routes.forEach((r) => {
     const element = document.getElementById(r);
     if (!element) return;
     const isActive = r === route;
@@ -186,29 +192,34 @@ function go(route){
     }
   });
   if (buttons.length) {
-    buttons.forEach(b => b.classList.toggle('active', b.dataset.route===route));
+    buttons.forEach((b) =>
+      b.classList.toggle('active', b.dataset.route === route)
+    );
   }
   if (hasSection) {
-    window.scrollTo({top:0, behavior:'smooth'});
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
 
 // Tornar função go() disponível globalmente para testes
 window.go = go;
 
-
 if (buttons.length) {
-  buttons.forEach(b => b.addEventListener('click', () => go(b.dataset.route)));
+  buttons.forEach((b) =>
+    b.addEventListener('click', () => go(b.dataset.route))
+  );
   go('home');
 }
 
 // Sheet modal
-document.querySelectorAll('[data-open]').forEach(el=>{
-  el.addEventListener('click', ()=> document.getElementById(el.dataset.open).showModal());
+document.querySelectorAll('[data-open]').forEach((el) => {
+  el.addEventListener('click', () =>
+    document.getElementById(el.dataset.open).showModal()
+  );
 });
 
 // Offline UI - Toast notification style
-function setOffline(flag){
+function setOffline(flag) {
   const el = document.getElementById('offline');
   if (el) {
     if (flag) {
@@ -227,23 +238,23 @@ function setOffline(flag){
     window.FormValidator.isOnline = !flag;
   }
 }
-window.addEventListener('online', ()=>{
+window.addEventListener('online', () => {
   setOffline(false);
   // Processar fila quando voltar online
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.ready.then(registration => {
+    navigator.serviceWorker.ready.then((registration) => {
       if ('sync' in registration) {
         registration.sync.register('form-submission').catch(() => {});
       }
     });
   }
 });
-window.addEventListener('offline', ()=>setOffline(true));
+window.addEventListener('offline', () => setOffline(true));
 setOffline(!navigator.onLine);
 
 // Escutar mensagens do Service Worker sobre sincronização
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.addEventListener('message', event => {
+  navigator.serviceWorker.addEventListener('message', (event) => {
     // Não retornar true - não precisamos manter o canal aberto
     // Apenas processar a mensagem se ela existir
     if (event && event.data && event.data.type === 'FORM_SYNC_SUCCESS') {

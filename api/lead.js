@@ -5,7 +5,7 @@ import {
   enforceRateLimit,
   sanitizeText,
   isEmail,
-  setSecurityHeaders
+  setSecurityHeaders,
 } from './utils.js';
 import { query } from './db.js';
 
@@ -39,7 +39,7 @@ export default async function handler(req, res) {
     if (!leadData || typeof leadData !== 'object') {
       res.status(400).json({
         success: false,
-        error: 'Dados inválidos'
+        error: 'Dados inválidos',
       });
       return;
     }
@@ -53,7 +53,7 @@ export default async function handler(req, res) {
     if (!name || !email || !whats || !type) {
       res.status(400).json({
         success: false,
-        error: 'Campos obrigatórios faltando'
+        error: 'Campos obrigatórios faltando',
       });
       return;
     }
@@ -61,7 +61,7 @@ export default async function handler(req, res) {
     if (!isEmail(email)) {
       res.status(400).json({
         success: false,
-        error: 'Email inválido'
+        error: 'Email inválido',
       });
       return;
     }
@@ -69,7 +69,7 @@ export default async function handler(req, res) {
     if (!/^\+?[0-9]{8,20}$/.test(whats)) {
       res.status(400).json({
         success: false,
-        error: 'Whats inválido'
+        error: 'Whats inválido',
       });
       return;
     }
@@ -77,7 +77,7 @@ export default async function handler(req, res) {
     if (!/^[a-zA-Z0-9 _.-]{1,50}$/.test(type)) {
       res.status(400).json({
         success: false,
-        error: 'Tipo inválido'
+        error: 'Tipo inválido',
       });
       return;
     }
@@ -103,15 +103,15 @@ export default async function handler(req, res) {
         name,
         email,
         whats,
-        type
-      }
+        type,
+      },
     });
   } catch (error) {
     console.error('Erro ao processar lead:', error);
     res.status(400).json({
       success: false,
       error: 'Erro ao processar lead',
-      message: 'Falha ao processar a requisição'
+      message: 'Falha ao processar a requisição',
     });
   }
 }

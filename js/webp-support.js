@@ -10,11 +10,12 @@ class WebPSupport {
     try {
       const webP = new Image();
       webP.onload = webP.onerror = () => {
-        this.supportsWebP = (webP.height === 2);
+        this.supportsWebP = webP.height === 2;
         window.Logger?.log('WebP support:', this.supportsWebP);
         this.updateImages();
       };
-      webP.src = 'data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA';
+      webP.src =
+        'data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA';
     } catch (error) {
       window.Logger?.error('Erro ao verificar suporte WebP:', error);
       this.supportsWebP = false;
@@ -26,12 +27,12 @@ class WebPSupport {
   updateImages() {
     try {
       const images = document.querySelectorAll('img[src*=".png"]');
-      
+
       if (images.length === 0) {
         window.Logger?.log('Nenhuma imagem PNG encontrada para conversão WebP');
         return;
       }
-      
+
       // Lista de arquivos que têm versão WebP disponível
       const webpAvailable = [
         'public/card.png',
@@ -58,20 +59,20 @@ class WebPSupport {
         'public/icons/icon-192x192.png',
         'public/icons/icon-256x256.png',
         'public/icons/icon-384x384.png',
-        'public/icons/icon-512x512.png'
+        'public/icons/icon-512x512.png',
       ];
-      
+
       let convertedCount = 0;
       let fallbackCount = 0;
-      
-      images.forEach(img => {
+
+      images.forEach((img) => {
         try {
           const pngSrc = img.src;
           const webpSrc = pngSrc.replace('.png', '.webp');
-          
+
           // Só tentar converter se o arquivo WebP existe
-          const hasWebP = webpAvailable.some(file => pngSrc.includes(file));
-          
+          const hasWebP = webpAvailable.some((file) => pngSrc.includes(file));
+
           if (this.supportsWebP && hasWebP) {
             // Criar nova imagem WebP
             const webpImg = new Image();
@@ -84,7 +85,10 @@ class WebPSupport {
               // Fallback para PNG se WebP falhar
               img.classList.add('webp-fallback');
               fallbackCount++;
-              window.Logger?.warn('Falha ao carregar WebP, usando PNG:', pngSrc);
+              window.Logger?.warn(
+                'Falha ao carregar WebP, usando PNG:',
+                pngSrc
+              );
             };
             webpImg.src = webpSrc;
           } else {
@@ -95,8 +99,10 @@ class WebPSupport {
           window.Logger?.error('Erro ao processar imagem:', img.src, error);
         }
       });
-      
-      window.Logger?.log(`WebP: ${convertedCount} convertidas, ${fallbackCount} fallbacks, ${images.length - convertedCount - fallbackCount} PNGs`);
+
+      window.Logger?.log(
+        `WebP: ${convertedCount} convertidas, ${fallbackCount} fallbacks, ${images.length - convertedCount - fallbackCount} PNGs`
+      );
     } catch (error) {
       window.Logger?.error('Erro ao atualizar imagens WebP:', error);
     }

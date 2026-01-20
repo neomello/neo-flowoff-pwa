@@ -17,15 +17,29 @@ function setup() {
   pg = createGraphics(width, height);
 
   // Inicializar los orbes del fondo con nuestras colores NEO.FLOWOFF
-  orb1 = { x: 150, y: 250, r: 250, vx: 0.6, vy: 0.8, color: color(255, 47, 179, 150) }; // --neon (rosa)
-  orb2 = { x: 600, y: 350, r: 300, vx: -0.8, vy: -0.6, color: color(0, 208, 255, 150) }; // --blue (azul ciano)
+  orb1 = {
+    x: 150,
+    y: 250,
+    r: 250,
+    vx: 0.6,
+    vy: 0.8,
+    color: color(255, 47, 179, 150),
+  }; // --neon (rosa)
+  orb2 = {
+    x: 600,
+    y: 350,
+    r: 300,
+    vx: -0.8,
+    vy: -0.6,
+    color: color(0, 208, 255, 150),
+  }; // --blue (azul ciano)
 
   // Definir los elementos de navegación - ADAPTADOS PARA NOSSO PROJETO
   navItems = [
-    { label: "Home", x: 180, y: 480, icon: "home" },
-    { label: "Projetos", x: 280, y: 480, icon: "projects" },
-    { label: "Iniciar", x: 400, y: 480, icon: "start" },
-    { label: "Ecossistema", x: 520, y: 480, icon: "ecosystem" }
+    { label: 'Home', x: 180, y: 480, icon: 'home' },
+    { label: 'Projetos', x: 280, y: 480, icon: 'projects' },
+    { label: 'Iniciar', x: 400, y: 480, icon: 'start' },
+    { label: 'Ecossistema', x: 520, y: 480, icon: 'ecosystem' },
   ];
 
   textAlign(CENTER, TOP);
@@ -89,14 +103,20 @@ function draw() {
   for (let i = 0; i < navItems.length; i++) {
     let item = navItems[i];
     // Usar nuestras cores NEO.FLOWOFF para ícones e texto
-    let iconColor = (i === selectedItemIndex && item.icon !== "start") ? color(255, 47, 179) : color(230); // --neon quando selecionado
-    let textColor = (i === selectedItemIndex && item.icon !== "start") ? color(255, 47, 179) : color(230); // --neon quando selecionado
+    let iconColor =
+      i === selectedItemIndex && item.icon !== 'start'
+        ? color(255, 47, 179)
+        : color(230); // --neon quando selecionado
+    let textColor =
+      i === selectedItemIndex && item.icon !== 'start'
+        ? color(255, 47, 179)
+        : color(230); // --neon quando selecionado
 
-    if (i === selectedItemIndex && item.icon !== "start") {
+    if (i === selectedItemIndex && item.icon !== 'start') {
       drawGreenIndicator(item.x, item.y + 45);
     }
 
-    if (item.icon === "start") {
+    if (item.icon === 'start') {
       drawStartButton(item.x, item.y - 15);
     } else {
       drawIcon(item.icon, item.x, item.y - 15, iconColor);
@@ -147,16 +167,16 @@ function drawIcon(type, x, y, c) {
   strokeWeight(2);
   noFill();
   switch (type) {
-    case "home":
+    case 'home':
       triangle(x, y - 20, x - 15, y - 5, x + 15, y - 5);
       rect(x - 15, y - 5, 30, 20, 3);
       break;
-    case "projects":
+    case 'projects':
       rect(x - 20, y - 10, 40, 25, 5);
       line(x, y - 10, x, y + 15);
       line(x - 20, y - 10, x + 20, y - 10);
       break;
-    case "ecosystem":
+    case 'ecosystem':
       rect(x - 15, y - 10, 30, 20, 3);
       line(x + 15, y - 10, x + 20, y - 15);
       arc(x + 20, y - 15, 10, 10, PI, TWO_PI);
@@ -211,10 +231,12 @@ function updateSelection() {
     let iconCenterY = item.y - 15;
     let hitAreaWidth = 80;
     let hitAreaHeight = 80;
-    if (mouseX > item.x - hitAreaWidth / 2 &&
-        mouseX < item.x + hitAreaWidth / 2 &&
-        mouseY > iconCenterY - hitAreaHeight / 2 &&
-        mouseY < iconCenterY + hitAreaHeight / 2) {
+    if (
+      mouseX > item.x - hitAreaWidth / 2 &&
+      mouseX < item.x + hitAreaWidth / 2 &&
+      mouseY > iconCenterY - hitAreaHeight / 2 &&
+      mouseY < iconCenterY + hitAreaHeight / 2
+    ) {
       selectedItemIndex = i;
       break;
     }
@@ -228,20 +250,21 @@ function mousePressed() {
     let iconCenterY = item.y - 15;
     let hitAreaWidth = 80;
     let hitAreaHeight = 80;
-    
-    if (mouseX > item.x - hitAreaWidth / 2 &&
-        mouseX < item.x + hitAreaWidth / 2 &&
-        mouseY > iconCenterY - hitAreaHeight / 2 &&
-        mouseY < iconCenterY + hitAreaHeight / 2) {
-      
+
+    if (
+      mouseX > item.x - hitAreaWidth / 2 &&
+      mouseX < item.x + hitAreaWidth / 2 &&
+      mouseY > iconCenterY - hitAreaHeight / 2 &&
+      mouseY < iconCenterY + hitAreaHeight / 2
+    ) {
       // Mapear para nossas rotas existentes
       const routeMap = {
-        'home': 'home',
-        'projects': 'projects', 
-        'start': 'start',
-        'ecosystem': 'ecosystem'
+        home: 'home',
+        projects: 'projects',
+        start: 'start',
+        ecosystem: 'ecosystem',
       };
-      
+
       const route = routeMap[item.icon];
       if (route && typeof go === 'function') {
         go(route);

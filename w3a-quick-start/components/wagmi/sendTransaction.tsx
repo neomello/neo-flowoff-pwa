@@ -1,22 +1,31 @@
-import { FormEvent } from "react";
-import { useWaitForTransactionReceipt, useSendTransaction, BaseError } from "wagmi";
-import { Hex, parseEther } from "viem";
+import { FormEvent } from 'react';
+import {
+  useWaitForTransactionReceipt,
+  useSendTransaction,
+  BaseError,
+} from 'wagmi';
+import { Hex, parseEther } from 'viem';
 
 export function SendTransaction() {
-  const { data: hash, error, isPending, sendTransaction } = useSendTransaction()
+  const {
+    data: hash,
+    error,
+    isPending,
+    sendTransaction,
+  } = useSendTransaction();
 
   async function submit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    const formData = new FormData(e.target as HTMLFormElement)
-    const to = formData.get('address') as Hex
-    const value = formData.get('value') as string
-    sendTransaction({ to, value: parseEther(value) })
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    const to = formData.get('address') as Hex;
+    const value = formData.get('value') as string;
+    sendTransaction({ to, value: parseEther(value) });
   }
 
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({
       hash,
-    })
+    });
 
   return (
     <div>
@@ -41,5 +50,5 @@ export function SendTransaction() {
         <div>Error: {(error as BaseError).shortMessage || error.message}</div>
       )}
     </div>
-  )
+  );
 }

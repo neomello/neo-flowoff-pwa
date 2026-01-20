@@ -32,7 +32,7 @@ async function ensureMigrationsTable() {
 
 async function getApplied() {
   const rows = await sql`SELECT name FROM schema_migrations`;
-  return new Set(rows.map(r => r.name));
+  return new Set(rows.map((r) => r.name));
 }
 
 async function applyMigration(name, content) {
@@ -48,7 +48,7 @@ async function main() {
   const applied = await getApplied();
 
   const files = (await readdir(MIGRATIONS_DIR))
-    .filter(f => f.endsWith('.sql'))
+    .filter((f) => f.endsWith('.sql'))
     .sort();
 
   for (const file of files) {
@@ -64,7 +64,7 @@ async function main() {
   console.log('🏁 Migrações concluídas');
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('❌ Erro nas migrações:', err);
   process.exit(1);
 });

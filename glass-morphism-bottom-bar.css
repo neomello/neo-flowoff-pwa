@@ -3,7 +3,7 @@
 
 :root {
   --neon: #ff2fb3; /* rosa */
-  --vio: #7a2cff;  /* roxo */
+  --vio: #7a2cff; /* roxo */
   --blue: #00d0ff; /* azul ciano */
   --glass-bg: rgba(10, 10, 16, 0.85);
   --glass-border: rgba(255, 255, 255, 0.12);
@@ -23,7 +23,7 @@
   gap: 5px;
   margin: 0 auto;
   width: min(100%, calc(100vw - 24px));
-  
+
   /* Glass morphism effect moderno */
   background: linear-gradient(
     180deg,
@@ -32,15 +32,15 @@
   );
   -webkit-backdrop-filter: saturate(1.8) blur(40px);
   backdrop-filter: saturate(1.8) blur(40px);
-  
+
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 28px;
-  box-shadow: 
+  box-shadow:
     0 12px 48px rgba(0, 0, 0, 0.4),
     0 0 0 1px rgba(255, 255, 255, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.15),
     inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-  
+
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
@@ -73,7 +73,7 @@
     rgba(122, 44, 255, 0.15) 100%
   );
   transform: translateY(-3px) scale(1.08);
-  box-shadow: 
+  box-shadow:
     0 8px 24px rgba(255, 47, 179, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
@@ -148,8 +148,7 @@
 /* Ícones ativos - gradiente neon */
 .glass-nav-item.active .glass-nav-icon svg {
   color: #ffffff;
-  filter: 
-    drop-shadow(0 0 8px rgba(255, 47, 179, 0.8))
+  filter: drop-shadow(0 0 8px rgba(255, 47, 179, 0.8))
     drop-shadow(0 0 16px rgba(122, 44, 255, 0.6));
   transform: scale(1.1);
 }
@@ -168,16 +167,14 @@
 /* Hover effect para ícones */
 .glass-nav-item:hover .glass-nav-icon svg {
   color: rgba(230, 230, 240, 0.95);
-  filter: 
-    drop-shadow(0 0 6px rgba(255, 47, 179, 0.5))
+  filter: drop-shadow(0 0 6px rgba(255, 47, 179, 0.5))
     drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
   transform: scale(1.05);
 }
 
 .glass-nav-item.start-button:hover .glass-nav-icon svg {
   color: rgba(230, 230, 240, 0.95);
-  filter: 
-    drop-shadow(0 0 6px rgba(255, 47, 179, 0.5))
+  filter: drop-shadow(0 0 6px rgba(255, 47, 179, 0.5))
     drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
   transform: scale(1.05);
 }
@@ -198,7 +195,7 @@
 
 .glass-nav-item.active .glass-nav-label {
   color: #ffffff;
-  text-shadow: 
+  text-shadow:
     0 0 8px rgba(255, 47, 179, 0.8),
     0 2px 4px rgba(0, 0, 0, 0.3);
   transform: scale(1.05);
@@ -227,7 +224,7 @@
   border-radius: 3px;
   opacity: 0;
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 
+  box-shadow:
     0 0 12px rgba(255, 47, 179, 0.6),
     0 0 24px rgba(122, 44, 255, 0.4);
 }
@@ -238,14 +235,15 @@
 }
 
 @keyframes indicatorGlow {
-  0%, 100% {
-    box-shadow: 
+  0%,
+  100% {
+    box-shadow:
       0 0 12px rgba(255, 47, 179, 0.6),
       0 0 24px rgba(122, 44, 255, 0.4);
     transform: translateX(-50%) scaleX(1);
   }
   50% {
-    box-shadow: 
+    box-shadow:
       0 0 16px rgba(255, 47, 179, 0.8),
       0 0 32px rgba(122, 44, 255, 0.6),
       0 0 48px rgba(0, 208, 255, 0.4);
@@ -262,9 +260,9 @@
   width: 100%;
   height: 100%;
   background: linear-gradient(
-    90deg, 
-    transparent 0%, 
-    rgba(255, 255, 255, 0.15) 50%, 
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 50%,
     transparent 100%
   );
   transition: left 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -329,21 +327,21 @@
     gap: 4px;
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
-  
+
   .glass-nav-item {
     padding: 8px 4px;
   }
-  
+
   .glass-nav-icon {
     width: 18px;
     height: 18px;
   }
-  
+
   .glass-nav-item.start-button .glass-nav-icon {
     width: 18px;
     height: 18px;
   }
-  
+
   .glass-nav-label {
     font-size: 9px;
   }
@@ -357,13 +355,14 @@
   .glass-nav-indicator {
     transition: none;
   }
-  
+
   .glass-nav-item::before {
     display: none;
   }
-  
+
   @keyframes indicatorGlow {
-    0%, 100% {
+    0%,
+    100% {
       box-shadow: 0 2px 8px rgba(255, 47, 179, 0.4);
     }
   }
@@ -402,7 +401,7 @@
 @media (prefers-color-scheme: dark) {
   .glass-morphism-tabbar {
     background: linear-gradient(
-      180deg, 
+      180deg,
       rgba(255, 255, 255, 0.1) 0%,
       rgba(255, 255, 255, 0.05) 100%
     );

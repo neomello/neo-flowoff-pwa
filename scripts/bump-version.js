@@ -2,7 +2,7 @@
 /**
  * Bump Version Script
  * Atualiza a versão em todos os arquivos relevantes da PWA
- * 
+ *
  * Uso:
  *   node scripts/bump-version.js patch   # 2.2.0 -> 2.2.1
  *   node scripts/bump-version.js minor   # 2.2.0 -> 2.3.0
@@ -22,20 +22,20 @@ const ROOT = join(__dirname, '..');
 const FILES = {
   'package.json': {
     pattern: /"version":\s*"([^"]+)"/,
-    replace: (v) => `"version": "${v}"`
+    replace: (v) => `"version": "${v}"`,
   },
   'manifest.webmanifest': {
     pattern: /"version":\s*"([^"]+)"/,
-    replace: (v) => `"version": "${v}"`
+    replace: (v) => `"version": "${v}"`,
   },
   'sw.js': {
     pattern: /const CACHE = 'neo-flowoff-v([^']+)'/,
-    replace: (v) => `const CACHE = 'neo-flowoff-v${v}'`
+    replace: (v) => `const CACHE = 'neo-flowoff-v${v}'`,
   },
   'js/app.js': {
     pattern: /const PWA_VERSION = '([^']+)'/,
-    replace: (v) => `const PWA_VERSION = '${v}'`
-  }
+    replace: (v) => `const PWA_VERSION = '${v}'`,
+  },
 };
 
 function getCurrentVersion() {
@@ -45,7 +45,7 @@ function getCurrentVersion() {
 
 function bumpVersion(current, type) {
   const [major, minor, patch] = current.split('.').map(Number);
-  
+
   switch (type) {
     case 'major':
       return `${major + 1}.0.0`;
@@ -58,26 +58,28 @@ function bumpVersion(current, type) {
       if (/^\d+\.\d+\.\d+$/.test(type)) {
         return type;
       }
-      throw new Error(`Tipo inválido: ${type}. Use: patch, minor, major ou X.Y.Z`);
+      throw new Error(
+        `Tipo inválido: ${type}. Use: patch, minor, major ou X.Y.Z`
+      );
   }
 }
 
 function updateFile(filename, newVersion, config) {
   const filepath = join(ROOT, filename);
-  
+
   try {
     let content = readFileSync(filepath, 'utf8');
     const match = content.match(config.pattern);
-    
+
     if (!match) {
       console.log(`   ⚠️  ${filename}: padrão não encontrado`);
       return false;
     }
-    
+
     const oldVersion = match[1];
     content = content.replace(config.pattern, config.replace(newVersion));
     writeFileSync(filepath, content, 'utf8');
-    
+
     console.log(`   ✅ ${filename}: ${oldVersion} → ${newVersion}`);
     return true;
   } catch (error) {
@@ -89,13 +91,13 @@ function updateFile(filename, newVersion, config) {
 function main() {
   const type = process.argv[2] || 'patch';
   const currentVersion = getCurrentVersion();
-  
+
   console.log('');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log('🔄 PWA Version Bump');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log('');
-  
+
   let newVersion;
   try {
     newVersion = bumpVersion(currentVersion, type);
@@ -103,33 +105,37 @@ function main() {
     console.error(`❌ ${error.message}`);
     process.exit(1);
   }
-  
+
   console.log(`📦 Versão atual: ${currentVersion}`);
   console.log(`📦 Nova versão:  ${newVersion}`);
   console.log('');
   console.log('📝 Atualizando arquivos:');
-  
+
   let success = 0;
   for (const [filename, config] of Object.entries(FILES)) {
     if (updateFile(filename, newVersion, config)) {
       success++;
     }
   }
-  
+
   console.log('');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  
+
   if (success === Object.keys(FILES).length) {
-    console.log(`✅ Versão atualizada para ${newVersion} em todos os arquivos!`);
+    console.log(
+      `✅ Versão atualizada para ${newVersion} em todos os arquivos!`
+    );
     console.log('');
     console.log('💡 Próximos passos:');
     console.log('   git add -A');
     console.log(`   git commit -m "chore: bump version to ${newVersion}"`);
     console.log('   git push');
   } else {
-    console.log(`⚠️  ${success}/${Object.keys(FILES).length} arquivos atualizados`);
+    console.log(
+      `⚠️  ${success}/${Object.keys(FILES).length} arquivos atualizados`
+    );
   }
-  
+
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log('');
 }

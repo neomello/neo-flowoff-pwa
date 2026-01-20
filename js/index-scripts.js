@@ -8,7 +8,7 @@ const walletBtnMobile = document.getElementById('wallet-btn-mobile');
 // Toggle do menu mobile
 function toggleMobileMenu() {
   const isOpen = mobileMenuDropdown.classList.contains('show');
-  
+
   if (isOpen) {
     closeMobileMenu();
   } else {
@@ -20,7 +20,7 @@ function openMobileMenu() {
   mobileMenuDropdown.classList.add('show');
   mobileMenuToggle.classList.add('active');
   mobileMenuDropdown.style.display = 'block';
-  
+
   // Sincronizar estado do botão mobile com a wallet
   syncMobileWalletButton();
 }
@@ -30,12 +30,12 @@ let closeMenuTimeout = null;
 function closeMobileMenu() {
   mobileMenuDropdown.classList.remove('show');
   mobileMenuToggle.classList.remove('active');
-  
+
   // Limpa timeout anterior se existir
   if (closeMenuTimeout) {
     clearTimeout(closeMenuTimeout);
   }
-  
+
   // Delay para animação
   closeMenuTimeout = setTimeout(() => {
     if (!mobileMenuDropdown.classList.contains('show')) {
@@ -48,13 +48,15 @@ function closeMobileMenu() {
 // Sincroniza estado do botão mobile com WalletManager
 function syncMobileWalletButton() {
   if (!walletBtnMobile) return;
-  
+
   const textEl = walletBtnMobile.querySelector('.wallet-btn-text-mobile');
   const arrowEl = walletBtnMobile.querySelector('.wallet-btn-arrow');
-  
+
   if (window.WalletManager && window.WalletManager.connected) {
     walletBtnMobile.classList.add('connected');
-    textEl.textContent = window.WalletManager.formatAddress(window.WalletManager.address);
+    textEl.textContent = window.WalletManager.formatAddress(
+      window.WalletManager.address
+    );
     arrowEl.textContent = '✓';
   } else {
     walletBtnMobile.classList.remove('connected');
@@ -71,7 +73,10 @@ if (mobileMenuToggle) {
 // Fechar menu ao clicar fora
 document.addEventListener('click', (e) => {
   if (mobileMenuDropdown && mobileMenuDropdown.classList.contains('show')) {
-    if (!mobileMenuToggle.contains(e.target) && !mobileMenuDropdown.contains(e.target)) {
+    if (
+      !mobileMenuToggle.contains(e.target) &&
+      !mobileMenuDropdown.contains(e.target)
+    ) {
       closeMobileMenu();
     }
   }
@@ -99,22 +104,25 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
       const registration = await navigator.serviceWorker.register('./sw.js', {
-        scope: './'
+        scope: './',
       });
-      
+
       // Verificar se há atualizações
       registration.addEventListener('updatefound', () => {
         const newWorker = registration.installing;
         if (newWorker) {
           newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            if (
+              newWorker.state === 'installed' &&
+              navigator.serviceWorker.controller
+            ) {
               // Nova versão disponível - será notificado pelo sistema de atualização
               window.Logger?.info('Nova versão do Service Worker disponível');
             }
           });
         }
       });
-      
+
       window.Logger?.info('Service Worker registrado com sucesso');
     } catch (error) {
       window.Logger?.error('Erro ao registrar Service Worker:', error);
@@ -123,12 +131,12 @@ if ('serviceWorker' in navigator) {
 }
 
 // === MENU HAMBÚRGUER ===
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   const menuToggle = document.getElementById('menu-toggle');
   const headerMenu = document.getElementById('header-menu');
-  
+
   if (!menuToggle || !headerMenu) return;
-  
+
   const menuOverlay = document.createElement('div');
   menuOverlay.className = 'menu-overlay';
   document.body.appendChild(menuOverlay);
@@ -139,10 +147,10 @@ document.addEventListener('DOMContentLoaded', function() {
     headerMenu.classList.remove('active');
     menuOverlay.classList.remove('active');
     document.body.style.overflow = '';
-    
+
     // Garantir que modal-open seja removido se estiver presente
     document.body.classList.remove('modal-open');
-    
+
     // Remover estilos inline para permitir transição CSS
     setTimeout(() => {
       headerMenu.style.right = '';
@@ -156,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
     e.stopPropagation();
     e.preventDefault();
     const isActive = headerMenu.classList.contains('active');
-    
+
     if (isActive) {
       // Fechar menu suavemente
       closeMenu();
@@ -165,17 +173,17 @@ document.addEventListener('DOMContentLoaded', function() {
       headerMenu.style.display = 'block';
       headerMenu.style.visibility = 'visible';
       headerMenu.style.zIndex = '1005';
-      
+
       // Garantir que modal-open seja removido ao abrir o menu
       document.body.classList.remove('modal-open');
-      
+
       // Pequeno delay para garantir que o display está aplicado antes da transição
       requestAnimationFrame(() => {
         menuToggle.classList.add('active');
         headerMenu.classList.add('active');
         menuOverlay.classList.add('active');
         document.body.style.overflow = 'hidden';
-        
+
         // Aplicar estilos para transição suave
         headerMenu.style.right = '0';
         headerMenu.style.opacity = '1';
@@ -191,31 +199,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Fechar ao clicar em um link
   const menuLinks = headerMenu.querySelectorAll('.menu-link');
-  menuLinks.forEach(link => {
+  menuLinks.forEach((link) => {
     link.addEventListener('click', (e) => {
       const href = link.getAttribute('href');
-      
+
       // Se for um link de âncora (#)
       if (href && href.startsWith('#')) {
         const targetId = href.substring(1);
         const targetElement = document.getElementById(targetId);
-        
+
         // Fechar menu imediatamente
         closeMenu();
-        
+
         // Se estiver na home, fazer scroll suave após fechar o menu
         const currentRoute = document.querySelector('.route.active');
         if (currentRoute && currentRoute.id === 'home' && targetElement) {
           e.preventDefault();
-          
+
           // Aguardar um pouco para o menu começar a fechar
           setTimeout(() => {
-            const headerHeight = document.querySelector('.topbar')?.offsetHeight || 0;
+            const headerHeight =
+              document.querySelector('.topbar')?.offsetHeight || 0;
             const targetPosition = targetElement.offsetTop - headerHeight - 20;
-            
+
             window.scrollTo({
               top: targetPosition,
-              behavior: 'smooth'
+              behavior: 'smooth',
             });
           }, 100);
         }
@@ -241,13 +250,13 @@ let ticking = false;
 
 function updateHeader() {
   const scrollY = window.scrollY;
-  
+
   if (scrollY > 50) {
     header.classList.add('scrolled');
   } else {
     header.classList.remove('scrolled');
   }
-  
+
   lastScrollY = scrollY;
   ticking = false;
 }
@@ -269,16 +278,17 @@ function updateGlassOverlay() {
   const scrollY = window.scrollY;
   const windowHeight = window.innerHeight;
   const documentHeight = document.documentElement.scrollHeight;
-  
+
   // Calcular se deve mostrar o overlay
-  const shouldShowOverlay = scrollY > 100 && (scrollY + windowHeight) < (documentHeight - 50);
-  
+  const shouldShowOverlay =
+    scrollY > 100 && scrollY + windowHeight < documentHeight - 50;
+
   if (shouldShowOverlay) {
     glassOverlay.classList.add('active');
   } else {
     glassOverlay.classList.remove('active');
   }
-  
+
   overlayTicking = false;
 }
 
@@ -310,12 +320,15 @@ if ('serviceWorker' in navigator) {
   });
 
   // Verificar se há uma nova versão disponível
-  navigator.serviceWorker.getRegistration().then(registration => {
+  navigator.serviceWorker.getRegistration().then((registration) => {
     if (registration) {
       registration.addEventListener('updatefound', () => {
         const newWorker = registration.installing;
         newWorker.addEventListener('statechange', () => {
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+          if (
+            newWorker.state === 'installed' &&
+            navigator.serviceWorker.controller
+          ) {
             showUpdateBanner();
           }
         });
@@ -329,12 +342,12 @@ function showUpdateBanner() {
   if (bannerShown || localStorage.getItem('update-dismissed') === 'true') {
     return;
   }
-  
+
   if (updateBanner) {
     updateBanner.classList.add('show');
     updateBanner.classList.remove('hiding');
     bannerShown = true;
-    
+
     // Vibração se disponível
     navigator.vibrate?.(100);
   }
@@ -383,7 +396,7 @@ function scheduleAutoHide() {
   if (autoHideTimeout) {
     clearTimeout(autoHideTimeout);
   }
-  
+
   autoHideTimeout = setTimeout(() => {
     if (bannerShown) {
       hideUpdateBanner();
@@ -394,7 +407,7 @@ function scheduleAutoHide() {
 
 // Agenda auto-hide quando banner é mostrado
 const originalShowUpdateBanner = showUpdateBanner;
-showUpdateBanner = function() {
+showUpdateBanner = function () {
   originalShowUpdateBanner();
   scheduleAutoHide();
 };
@@ -432,18 +445,24 @@ function startUpdateCheck() {
   if (updateCheckInterval) {
     clearInterval(updateCheckInterval);
   }
-  
-  updateCheckInterval = setInterval(() => {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistration().then(registration => {
-        if (registration) {
-          registration.update();
-        }
-      }).catch(error => {
-        window.Logger?.warn('Erro ao verificar atualizações do SW:', error);
-      });
-    }
-  }, 5 * 60 * 1000); // 5 minutos
+
+  updateCheckInterval = setInterval(
+    () => {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker
+          .getRegistration()
+          .then((registration) => {
+            if (registration) {
+              registration.update();
+            }
+          })
+          .catch((error) => {
+            window.Logger?.warn('Erro ao verificar atualizações do SW:', error);
+          });
+      }
+    },
+    5 * 60 * 1000
+  ); // 5 minutos
 }
 
 // Inicia verificação
@@ -458,10 +477,10 @@ window.addEventListener('beforeunload', () => {
 });
 
 // === MODAIS DOS PROJETOS ===
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   // Event listeners para abrir modais
-  document.querySelectorAll('[data-modal]').forEach(item => {
-    item.addEventListener('click', function() {
+  document.querySelectorAll('[data-modal]').forEach((item) => {
+    item.addEventListener('click', function () {
       const modalId = this.getAttribute('data-modal');
       const modal = document.getElementById(`modal-${modalId}`);
       if (modal) {
@@ -473,8 +492,8 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Event listeners para fechar modais
-  document.querySelectorAll('[data-close]').forEach(button => {
-    button.addEventListener('click', function() {
+  document.querySelectorAll('[data-close]').forEach((button) => {
+    button.addEventListener('click', function () {
       const modalId = this.getAttribute('data-close');
       const modal = document.getElementById(modalId);
       if (modal) {
@@ -486,8 +505,8 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Fechar modal clicando fora dele
-  document.querySelectorAll('.project-modal').forEach(modal => {
-    modal.addEventListener('click', function(e) {
+  document.querySelectorAll('.project-modal').forEach((modal) => {
+    modal.addEventListener('click', function (e) {
       if (e.target === this) {
         this.close();
         document.body.style.overflow = '';
@@ -497,9 +516,9 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Garantir que todos os modais estejam fechados ao carregar
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     const modals = document.querySelectorAll('.project-modal');
-    modals.forEach(modal => {
+    modals.forEach((modal) => {
       if (modal.open) {
         modal.close();
       }
@@ -508,7 +527,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Fechar modal com ESC
-  document.addEventListener('keydown', function(e) {
+  document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
       const openModal = document.querySelector('.project-modal[open]');
       if (openModal) {
@@ -521,7 +540,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // === NEOFLW CARD INTERATIVO ===
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   const neoflwCard = document.getElementById('neoflw-card');
   const neoflwToggle = neoflwCard?.querySelector('.neoflw-toggle');
   const neoflwHeader = neoflwCard?.querySelector('.neoflw-header');
@@ -531,7 +550,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Função para alternar estado expandido/colapsado
   function toggleNeoflwCard() {
     const isExpanded = neoflwCard.classList.contains('expanded');
-    
+
     if (isExpanded) {
       neoflwCard.classList.remove('expanded');
       // Salvar estado no localStorage
@@ -540,12 +559,12 @@ document.addEventListener('DOMContentLoaded', function() {
       neoflwCard.classList.add('expanded');
       // Salvar estado no localStorage
       localStorage.setItem('neoflw-expanded', 'true');
-      
+
       // Scroll suave para o card quando expandir
       setTimeout(() => {
-        neoflwCard.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'nearest' 
+        neoflwCard.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
         });
       }, 100);
     }
@@ -580,16 +599,21 @@ document.addEventListener('DOMContentLoaded', function() {
   // Animações de entrada para os elementos internos quando expandir
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
-      if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+      if (
+        mutation.type === 'attributes' &&
+        mutation.attributeName === 'class'
+      ) {
         const isExpanded = neoflwCard.classList.contains('expanded');
-        
+
         if (isExpanded) {
           // Animar elementos internos com delay escalonado
-          const sections = neoflwCard.querySelectorAll('.neoflw-section, .neoflw-journey, .neoflw-when, .neoflw-cta');
+          const sections = neoflwCard.querySelectorAll(
+            '.neoflw-section, .neoflw-journey, .neoflw-when, .neoflw-cta'
+          );
           sections.forEach((section, index) => {
             section.style.opacity = '0';
             section.style.transform = 'translateY(20px)';
-            
+
             setTimeout(() => {
               section.style.transition = 'all 0.4s ease';
               section.style.opacity = '1';
@@ -603,26 +627,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
   observer.observe(neoflwCard, {
     attributes: true,
-    attributeFilter: ['class']
+    attributeFilter: ['class'],
   });
 
   // === FAQ ACCORDION ===
   const faqQuestions = neoflwCard?.querySelectorAll('.faq-question');
-  
+
   if (faqQuestions) {
-    faqQuestions.forEach(question => {
+    faqQuestions.forEach((question) => {
       question.addEventListener('click', () => {
         const faqItem = question.closest('.faq-item');
         const isActive = faqItem.classList.contains('active');
-        
+
         // Fechar todos os outros itens (accordion behavior)
-        document.querySelectorAll('.faq-item').forEach(item => {
+        document.querySelectorAll('.faq-item').forEach((item) => {
           if (item !== faqItem) {
             item.classList.remove('active');
-            item.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+            item
+              .querySelector('.faq-question')
+              .setAttribute('aria-expanded', 'false');
           }
         });
-        
+
         // Toggle do item clicado
         if (isActive) {
           faqItem.classList.remove('active');
@@ -630,12 +656,12 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
           faqItem.classList.add('active');
           question.setAttribute('aria-expanded', 'true');
-          
+
           // Scroll suave para o item expandido
           setTimeout(() => {
-            faqItem.scrollIntoView({ 
-              behavior: 'smooth', 
-              block: 'nearest' 
+            faqItem.scrollIntoView({
+              behavior: 'smooth',
+              block: 'nearest',
             });
           }, 100);
         }

@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /**
  * ☁️ Configuração do Cloudinary
- * 
+ *
  * Módulo centralizado para configuração e uso do Cloudinary
  * Suporta fetch automático de imagens dos domínios autorizados
- * 
+ *
  * Uso:
  *   import { cloudinary, optimizeImage, fetchImage, uploadImage } from './scripts/cloudinary-config.js';
  */
@@ -27,14 +27,14 @@ const ALLOWED_DOMAINS = [
   'flowoff.xyz',
   'www.flowoff.com.br',
   'flowoff.com.br',
-  'neoflw.vercel.app'
+  'neoflw.vercel.app',
 ];
 
 // Configuração do Cloudinary
 const config = {
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME || process.env.CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY || process.env.CLOUD_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET || process.env.CLOUD_API_SECRET
+  api_secret: process.env.CLOUDINARY_API_SECRET || process.env.CLOUD_API_SECRET,
 };
 
 // Valida se todas as credenciais estão configuradas
@@ -42,10 +42,13 @@ function validateConfig() {
   const missing = [];
   if (!config.cloud_name) missing.push('CLOUDINARY_CLOUD_NAME ou CLOUD_NAME');
   if (!config.api_key) missing.push('CLOUDINARY_API_KEY ou CLOUD_API_KEY');
-  if (!config.api_secret) missing.push('CLOUDINARY_API_SECRET ou CLOUD_API_SECRET');
+  if (!config.api_secret)
+    missing.push('CLOUDINARY_API_SECRET ou CLOUD_API_SECRET');
 
   if (missing.length > 0) {
-    throw new Error(`❌ Cloudinary não configurado. Variáveis faltando: ${missing.join(', ')}`);
+    throw new Error(
+      `❌ Cloudinary não configurado. Variáveis faltando: ${missing.join(', ')}`
+    );
   }
 
   return true;
@@ -57,7 +60,7 @@ if (config.cloud_name && config.api_key && config.api_secret) {
     cloud_name: config.cloud_name,
     api_key: config.api_key,
     api_secret: config.api_secret,
-    secure: true
+    secure: true,
   });
 }
 
@@ -69,8 +72,9 @@ if (config.cloud_name && config.api_key && config.api_secret) {
 function isAllowedDomain(url) {
   try {
     const urlObj = new URL(url);
-    return ALLOWED_DOMAINS.some(domain => 
-      urlObj.hostname === domain || urlObj.hostname.endsWith('.' + domain)
+    return ALLOWED_DOMAINS.some(
+      (domain) =>
+        urlObj.hostname === domain || urlObj.hostname.endsWith('.' + domain)
     );
   } catch {
     return false;
@@ -89,7 +93,7 @@ export function optimizeImage(publicId, options = {}) {
   const defaultOptions = {
     fetch_format: 'auto',
     quality: 'auto',
-    ...options
+    ...options,
   };
 
   return cloudinary.url(publicId, defaultOptions);
@@ -98,7 +102,7 @@ export function optimizeImage(publicId, options = {}) {
 /**
  * Busca e otimiza uma imagem de URL externa (fetch automático)
  * O Cloudinary busca a imagem automaticamente quando a URL é acessada pela primeira vez
- * 
+ *
  * @param {string} imageUrl - URL completa da imagem externa
  * @param {object} options - Opções de transformação
  * @returns {string} URL do Cloudinary com a imagem otimizada
@@ -118,7 +122,7 @@ export function fetchImage(imageUrl, options = {}) {
   const defaultOptions = {
     fetch_format: 'auto',
     quality: 'auto',
-    ...options
+    ...options,
   };
 
   // Cloudinary fetch automático: use a URL completa como public_id com tipo 'fetch'
@@ -127,14 +131,14 @@ export function fetchImage(imageUrl, options = {}) {
   return cloudinary.url(imageUrl, {
     ...defaultOptions,
     type: 'fetch',
-    secure: true
+    secure: true,
   });
 }
 
 /**
  * Faz upload de uma imagem para o Cloudinary
  * Suporta upload de arquivo local, buffer, stream ou URL externa (com fetch automático)
- * 
+ *
  * @param {string|Buffer|ReadableStream} source - Caminho do arquivo, buffer, stream ou URL externa
  * @param {object} options - Opções de upload
  * @returns {Promise<object>} Resultado do upload
@@ -143,7 +147,10 @@ export async function uploadImage(source, options = {}) {
   validateConfig();
 
   // Se for URL externa, valida domínio
-  if (typeof source === 'string' && (source.startsWith('http://') || source.startsWith('https://'))) {
+  if (
+    typeof source === 'string' &&
+    (source.startsWith('http://') || source.startsWith('https://'))
+  ) {
     if (!isAllowedDomain(source)) {
       console.warn(`⚠️ Domínio não autorizado para upload: ${source}`);
       throw new Error(`Domínio não autorizado: ${source}`);
@@ -155,7 +162,7 @@ export async function uploadImage(source, options = {}) {
     use_filename: options.use_filename !== false,
     unique_filename: options.unique_filename !== false,
     overwrite: options.overwrite || false,
-    ...options
+    ...options,
   };
 
   try {
@@ -169,7 +176,7 @@ export async function uploadImage(source, options = {}) {
       height: result.height,
       format: result.format,
       bytes: result.bytes,
-      created_at: result.created_at
+      created_at: result.created_at,
     };
   } catch (error) {
     console.error('❌ Erro no upload:', error.message);
@@ -189,7 +196,7 @@ export function transformImage(publicId, transformations = {}) {
   const defaultTransformations = {
     crop: 'auto',
     gravity: 'auto',
-    ...transformations
+    ...transformations,
   };
 
   return cloudinary.url(publicId, defaultTransformations);
@@ -207,7 +214,7 @@ export async function deleteImage(publicId) {
     const result = await cloudinary.uploader.destroy(publicId);
     return {
       success: result.result === 'ok',
-      result: result.result
+      result: result.result,
     };
   } catch (error) {
     console.error('❌ Erro ao remover imagem:', error.message);

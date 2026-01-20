@@ -1,13 +1,19 @@
 /**
  * Exemplo de Integração do Token NEOFlowOFF para Website
- * 
+ *
  * Este exemplo mostra como integrar o token com Account Abstraction
  * em um website usando MetaMask Smart Accounts
- * 
+ *
  * Este código pode ser adaptado para React, Next.js, ou qualquer framework
  */
 
-import { createPublicClient, http, type Address, formatUnits, parseUnits } from 'viem';
+import {
+  createPublicClient,
+  http,
+  type Address,
+  formatUnits,
+  parseUnits,
+} from 'viem';
 import { polygon } from 'viem/chains';
 import {
   Implementation,
@@ -54,12 +60,17 @@ const ERC20_ABI = [
 export class NEOFlowOFFIntegration {
   private publicClient;
   private smartAccount: MetaMaskSmartAccount<Implementation> | null = null;
-  private bundlerClient: ReturnType<typeof createInfuraBundlerClient> | null = null;
+  private bundlerClient: ReturnType<typeof createInfuraBundlerClient> | null =
+    null;
 
   constructor() {
     this.publicClient = createPublicClient({
       chain: polygon,
-      transport: http(INFURA_API_KEY ? `https://polygon-mainnet.infura.io/v3/${INFURA_API_KEY}` : undefined),
+      transport: http(
+        INFURA_API_KEY
+          ? `https://polygon-mainnet.infura.io/v3/${INFURA_API_KEY}`
+          : undefined
+      ),
     });
 
     if (INFURA_API_KEY) {
@@ -147,7 +158,9 @@ export class NEOFlowOFFIntegration {
   /**
    * Batch transfer - transfere para múltiplos endereços
    */
-  async batchTransfer(recipients: { to: Address; amount: string }[]): Promise<string> {
+  async batchTransfer(
+    recipients: { to: Address; amount: string }[]
+  ): Promise<string> {
     if (!this.smartAccount) {
       throw new Error('Smart Account não inicializada');
     }
@@ -179,17 +192,17 @@ export class NEOFlowOFFIntegration {
 
 /**
  * Exemplo de uso em React/Next.js
- * 
+ *
  * ```tsx
  * import { useAccount, useWalletClient } from 'wagmi';
  * import { NEOFlowOFFIntegration } from './integrate-token-website-example';
- * 
+ *
  * function TokenTransfer() {
  *   const { address } = useAccount();
  *   const { data: walletClient } = useWalletClient();
  *   const [integration, setIntegration] = useState<NEOFlowOFFIntegration | null>(null);
  *   const [balance, setBalance] = useState<string>('0');
- * 
+ *
  *   useEffect(() => {
  *     if (walletClient && address) {
  *       const integ = new NEOFlowOFFIntegration();
@@ -199,18 +212,18 @@ export class NEOFlowOFFIntegration {
  *       });
  *     }
  *   }, [walletClient, address]);
- * 
+ *
  *   const handleTransfer = async () => {
  *     if (!integration) return;
- *     
+ *
  *     const hash = await integration.transfer(
  *       '0x...', // endereço destino
  *       '100'    // quantidade
  *     );
- *     
+ *
  *     console.log('Transferido:', hash);
  *   };
- * 
+ *
  *   return (
  *     <div>
  *       <p>Saldo: {balance} NEOFLW</p>
@@ -227,26 +240,26 @@ export class NEOFlowOFFIntegration {
 
 /**
  * Exemplo de uso com JavaScript puro
- * 
+ *
  * ```javascript
  * // No seu HTML/JS
  * import { NEOFlowOFFIntegration } from './integrate-token-website-example';
- * 
+ *
  * async function init() {
  *   // Conectar MetaMask
- *   const accounts = await window.ethereum.request({ 
- *     method: 'eth_requestAccounts' 
+ *   const accounts = await window.ethereum.request({
+ *     method: 'eth_requestAccounts'
  *   });
  *   const address = accounts[0];
- * 
+ *
  *   // Criar integração
  *   const integration = new NEOFlowOFFIntegration();
  *   await integration.initializeSmartAccount(window.ethereum, address);
- * 
+ *
  *   // Obter saldo
  *   const balance = await integration.getBalance(address);
  *   console.log('Saldo:', balance, 'NEOFLW');
- * 
+ *
  *   // Transferir
  *   const hash = await integration.transfer(
  *     '0x...', // destino
@@ -258,4 +271,3 @@ export class NEOFlowOFFIntegration {
  */
 
 export default NEOFlowOFFIntegration;
-

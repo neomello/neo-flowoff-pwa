@@ -4,7 +4,9 @@
 
 ## 1. Introdução
 
-A NEØ.FLOWOFF ("Nós", "Nosso", "Serviço") respeita sua privacidade e está comprometida em proteger seus dados pessoais. Esta Política de Privacidade explica como coletamos, usamos, divulgamos e protegemos suas informações quando você usa nossos serviços.
+A NEØ.FLOWOFF ("Nós", "Nosso", "Serviço") respeita sua privacidade e está comprometida em proteger
+seus dados pessoais. Esta Política de Privacidade explica como coletamos, usamos, divulgamos e
+protegemos suas informações quando você usa nossos serviços.
 
 ## 2. Informações que Coletamos
 
@@ -13,7 +15,8 @@ A NEØ.FLOWOFF ("Nós", "Nosso", "Serviço") respeita sua privacidade e está co
 Coletamos informações que você nos fornece diretamente, incluindo:
 
 - **Informações de Conta**: Email, nome (quando fornecido)
-- **Informações de Wallet**: Endereço de carteira blockchain (armazenado localmente no seu dispositivo)
+- **Informações de Wallet**: Endereço de carteira blockchain (armazenado localmente no seu
+  dispositivo)
 - **Informações de Contato**: Dados fornecidos através de formulários de contato
 - **Comunicações**: Mensagens enviadas através do chat ou formulários
 
@@ -22,7 +25,8 @@ Coletamos informações que você nos fornece diretamente, incluindo:
 Quando você usa nosso serviço, podemos coletar automaticamente:
 
 - **Dados de Uso**: Como você interage com o serviço, páginas visitadas, tempo de permanência
-- **Dados Técnicos**: Endereço IP, tipo de navegador, sistema operacional, identificadores de dispositivo
+- **Dados Técnicos**: Endereço IP, tipo de navegador, sistema operacional, identificadores de
+  dispositivo
 - **Dados de Localização**: Informações de localização aproximada (quando permitido)
 - **Cookies e Tecnologias Similares**: Para melhorar sua experiência e analisar o uso do serviço
 
@@ -77,6 +81,7 @@ Usamos as informações coletadas para:
 ### 4.3 Retenção de Dados
 
 Mantemos seus dados pessoais apenas pelo tempo necessário para:
+
 - Cumprir os propósitos descritos nesta política
 - Cumprir obrigações legais
 - Resolver disputas e fazer cumprir nossos acordos
@@ -89,7 +94,8 @@ Não vendemos, alugamos ou comercializamos suas informações pessoais para terc
 
 ### 5.2 Compartilhamento com Prestadores de Serviços
 
-Podemos compartilhar informações com prestadores de serviços que nos ajudam a operar nosso serviço, incluindo:
+Podemos compartilhar informações com prestadores de serviços que nos ajudam a operar nosso serviço,
+incluindo:
 
 - **Provedores de Hospedagem**: Para hospedar nosso serviço
 - **Provedores de Análise**: Para analisar o uso do serviço
@@ -100,6 +106,7 @@ Esses prestadores de serviços são obrigados a manter a confidencialidade de su
 ### 5.3 Compartilhamento Legal
 
 Podemos divulgar suas informações se:
+
 - For exigido por lei ou processo legal
 - Para proteger nossos direitos, propriedade ou segurança
 - Para proteger os direitos, propriedade ou segurança de nossos usuários
@@ -107,26 +114,30 @@ Podemos divulgar suas informações se:
 
 ### 5.4 Dados Públicos da Blockchain
 
-Informações relacionadas a transações blockchain são públicas por natureza e podem ser visualizadas por qualquer pessoa na blockchain.
+Informações relacionadas a transações blockchain são públicas por natureza e podem ser visualizadas
+por qualquer pessoa na blockchain.
 
 ## 6. Cookies e Tecnologias de Rastreamento
 
 ### 6.1 Uso de Cookies
 
 Usamos cookies e tecnologias similares para:
+
 - Lembrar suas preferências
 - Analisar o uso do serviço
 - Melhorar a funcionalidade do serviço
 
 ### 6.2 Controle de Cookies
 
-Você pode controlar cookies através das configurações do seu navegador. No entanto, desabilitar cookies pode afetar a funcionalidade do serviço.
+Você pode controlar cookies através das configurações do seu navegador. No entanto, desabilitar
+cookies pode afetar a funcionalidade do serviço.
 
 ## 7. Segurança
 
 ### 7.1 Medidas de Segurança
 
-Implementamos medidas de segurança técnicas e organizacionais apropriadas para proteger suas informações, incluindo:
+Implementamos medidas de segurança técnicas e organizacionais apropriadas para proteger suas
+informações, incluindo:
 
 - Criptografia de dados em trânsito
 - Armazenamento seguro de dados
@@ -135,48 +146,61 @@ Implementamos medidas de segurança técnicas e organizacionais apropriadas para
 
 ### 7.2 Limitações
 
-Nenhum método de transmissão pela Internet ou armazenamento eletrônico é 100% seguro. Embora nos esforcemos para proteger suas informações, não podemos garantir segurança absoluta.
+Nenhum método de transmissão pela Internet ou armazenamento eletrônico é 100% seguro. Embora nos
+esforcemos para proteger suas informações, não podemos garantir segurança absoluta.
 
 ## 8. Seus Direitos
 
 ### 8.1 Acesso e Correção
 
 Você tem o direito de:
+
 - Acessar suas informações pessoais
 - Corrigir informações imprecisas
 - Solicitar a exclusão de suas informações
 
 ### 8.2 Portabilidade
 
-Você pode solicitar uma cópia de suas informações pessoais em formato estruturado e legível por máquina.
+Você pode solicitar uma cópia de suas informações pessoais em formato estruturado e legível por
+máquina.
 
 ### 8.3 Oposição e Restrição
 
-Você pode se opor ao processamento de suas informações pessoais ou solicitar a restrição do processamento.
+Você pode se opor ao processamento de suas informações pessoais ou solicitar a restrição do
+processamento.
 
 ### 8.4 Retirada de Consentimento
 
-Você pode retirar seu consentimento a qualquer momento, o que não afetará a legalidade do processamento antes da retirada.
+Você pode retirar seu consentimento a qualquer momento, o que não afetará a legalidade do
+processamento antes da retirada.
 
 ## 9. Privacidade de Menores
 
-Nossos serviços não são direcionados a menores de 18 anos. Não coletamos intencionalmente informações pessoais de menores. Se tomarmos conhecimento de que coletamos informações de um menor, tomaremos medidas para excluir essas informações.
+Nossos serviços não são direcionados a menores de 18 anos. Não coletamos intencionalmente
+informações pessoais de menores. Se tomarmos conhecimento de que coletamos informações de um menor,
+tomaremos medidas para excluir essas informações.
 
 ## 10. Links para Sites de Terceiros
 
-Nosso serviço pode conter links para sites de terceiros. Não somos responsáveis pelas práticas de privacidade desses sites. Recomendamos que você leia as políticas de privacidade de cada site que visitar.
+Nosso serviço pode conter links para sites de terceiros. Não somos responsáveis pelas práticas de
+privacidade desses sites. Recomendamos que você leia as políticas de privacidade de cada site que
+visitar.
 
 ## 11. Alterações nesta Política
 
-Podemos atualizar esta Política de Privacidade periodicamente. Notificaremos você sobre alterações significativas publicando a nova política nesta página e atualizando a data de "Última atualização".
+Podemos atualizar esta Política de Privacidade periodicamente. Notificaremos você sobre alterações
+significativas publicando a nova política nesta página e atualizando a data de "Última atualização".
 
 ## 12. Transferências Internacionais
 
-Suas informações podem ser transferidas e mantidas em computadores localizados fora do seu estado, província, país ou outra jurisdição governamental, onde as leis de proteção de dados podem diferir.
+Suas informações podem ser transferidas e mantidas em computadores localizados fora do seu estado,
+província, país ou outra jurisdição governamental, onde as leis de proteção de dados podem diferir.
 
 ## 13. Conformidade com LGPD
 
-Esta política está em conformidade com a Lei Geral de Proteção de Dados (LGPD) do Brasil. Se você tiver preocupações sobre como tratamos seus dados pessoais, você tem o direito de apresentar uma reclamação à autoridade de proteção de dados.
+Esta política está em conformidade com a Lei Geral de Proteção de Dados (LGPD) do Brasil. Se você
+tiver preocupações sobre como tratamos seus dados pessoais, você tem o direito de apresentar uma
+reclamação à autoridade de proteção de dados.
 
 ## 14. Contato
 
@@ -187,9 +211,9 @@ Para questões sobre esta Política de Privacidade ou para exercer seus direitos
 
 ## 15. Consentimento
 
-Ao usar nossos serviços, você consente com a coleta e uso de informações conforme descrito nesta Política de Privacidade.
+Ao usar nossos serviços, você consente com a coleta e uso de informações conforme descrito nesta
+Política de Privacidade.
 
 ---
 
 **Última atualização: 23 de dezembro de 2025**
-

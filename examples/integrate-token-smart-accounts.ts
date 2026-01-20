@@ -1,14 +1,21 @@
 /**
  * Script de Integração: Token NEOFlowOFF com MetaMask Smart Accounts
- * 
+ *
  * Este script demonstra como integrar o token ERC-20 com Account Abstraction
  * usando o MetaMask Smart Accounts Kit
- * 
+ *
  * Uso:
  * npx tsx integrate-token-smart-accounts.ts
  */
 
-import { createPublicClient, createWalletClient, http, type Address, formatUnits, parseUnits } from 'viem';
+import {
+  createPublicClient,
+  createWalletClient,
+  http,
+  type Address,
+  formatUnits,
+  parseUnits,
+} from 'viem';
 import { polygon } from 'viem/chains';
 import { privateKeyToAccount } from 'viem/accounts';
 import {
@@ -90,13 +97,13 @@ let PRIVATE_KEY: `0x${string}` | undefined;
 
 if (PRIVATE_KEY_RAW) {
   // Remove 0x se existir para processar
-  const keyWithoutPrefix = PRIVATE_KEY_RAW.startsWith('0x') 
-    ? PRIVATE_KEY_RAW.slice(2) 
+  const keyWithoutPrefix = PRIVATE_KEY_RAW.startsWith('0x')
+    ? PRIVATE_KEY_RAW.slice(2)
     : PRIVATE_KEY_RAW;
-  
+
   // Adiciona zeros à esquerda se necessário (deve ter 64 chars hex = 32 bytes)
   const paddedKey = keyWithoutPrefix.padStart(64, '0');
-  
+
   // Adiciona prefixo 0x
   PRIVATE_KEY = `0x${paddedKey}` as `0x${string}`;
 }
@@ -121,7 +128,7 @@ const POLYGON_CHAIN_ID = 137;
 async function getTokenBalance(
   publicClient: ReturnType<typeof createPublicClient>,
   tokenAddress: Address,
-  accountAddress: Address,
+  accountAddress: Address
 ): Promise<string> {
   const balance = await publicClient.readContract({
     address: tokenAddress,
@@ -138,7 +145,7 @@ async function getTokenBalance(
  */
 async function getTotalSupply(
   publicClient: ReturnType<typeof createPublicClient>,
-  tokenAddress: Address,
+  tokenAddress: Address
 ): Promise<string> {
   const supply = await publicClient.readContract({
     address: tokenAddress,
@@ -157,7 +164,7 @@ async function transferTokens(
   smartAccount: MetaMaskSmartAccount<Implementation>,
   bundlerClient: ReturnType<typeof createInfuraBundlerClient> | undefined,
   to: Address,
-  amount: string,
+  amount: string
 ): Promise<string> {
   const amountWei = parseUnits(amount, TOKEN_DECIMALS);
 
@@ -209,7 +216,7 @@ async function approveTokens(
   smartAccount: MetaMaskSmartAccount<Implementation>,
   bundlerClient: ReturnType<typeof createInfuraBundlerClient> | undefined,
   spender: Address,
-  amount: string,
+  amount: string
 ): Promise<string> {
   const amountWei = parseUnits(amount, TOKEN_DECIMALS);
 
@@ -282,13 +289,13 @@ async function main() {
 
   // Configuração dos clientes
   // Prioridade: Web3Auth RPC > Alchemy > Infura > RPC público
-  const rpcUrl = WEB3AUTH_RPC_URL 
+  const rpcUrl = WEB3AUTH_RPC_URL
     ? WEB3AUTH_RPC_URL
-    : (ALCHEMY_API_URL 
+    : ALCHEMY_API_URL
       ? ALCHEMY_API_URL
-      : (INFURA_API_KEY 
+      : INFURA_API_KEY
         ? `https://polygon-mainnet.infura.io/v3/${INFURA_API_KEY}`
-        : 'https://polygon-rpc.com')); // RPC público como fallback
+        : 'https://polygon-rpc.com'; // RPC público como fallback
 
   const publicClient = createPublicClient({
     chain: polygon,
@@ -307,33 +314,43 @@ async function main() {
   });
 
   console.log(`   ✅ Smart Account criada: ${smartAccount.address}`);
-  console.log(`   ✅ Environment: ${smartAccount.environment?.name || 'N/A'}\n`);
+  console.log(
+    `   ✅ Environment: ${smartAccount.environment?.name || 'N/A'}\n`
+  );
 
   // PASSO 2: Configurar Bundler (opcional, mas recomendado para gasless)
   console.log('📋 PASSO 2: Configurando Bundler...');
   let bundlerClient;
-  
+
   // Prioridade: Web3Auth Bundler > Infura Bundler
   if (WEB3AUTH_BUNDLER_URL) {
     console.log('   ✅ Web3Auth Bundler URL configurada');
-    console.log('   ⚠️  Bundler customizado do Web3Auth ainda não implementado');
-    console.log('   💡 Por enquanto, usando Infura como fallback se disponível\n');
+    console.log(
+      '   ⚠️  Bundler customizado do Web3Auth ainda não implementado'
+    );
+    console.log(
+      '   💡 Por enquanto, usando Infura como fallback se disponível\n'
+    );
   }
-  
+
   if (INFURA_API_KEY) {
     try {
       bundlerClient = createInfuraBundlerClient({
         chainId: POLYGON_CHAIN_ID,
         apiKey: INFURA_API_KEY,
       });
-      console.log('   ✅ Bundler Infura configurado (gasless transactions disponível)\n');
+      console.log(
+        '   ✅ Bundler Infura configurado (gasless transactions disponível)\n'
+      );
     } catch (error: any) {
       console.warn(`   ⚠️  Erro ao configurar bundler: ${error.message}`);
       console.log('   ℹ️  Continuando sem bundler (transações normais)\n');
     }
   } else if (!WEB3AUTH_BUNDLER_URL) {
     console.log('   ⚠️  Bundler não configurado');
-    console.log('   💡 Configure WEB3AUTH_BUNDLER_URL ou INFURA_API_KEY para transações gasless');
+    console.log(
+      '   💡 Configure WEB3AUTH_BUNDLER_URL ou INFURA_API_KEY para transações gasless'
+    );
     console.log('   ℹ️  Usando transações normais (requer gas)\n');
   }
 
@@ -341,7 +358,11 @@ async function main() {
   console.log('📋 PASSO 3: Verificando informações do token...');
   try {
     const totalSupply = await getTotalSupply(publicClient, TOKEN_ADDRESS);
-    const balance = await getTokenBalance(publicClient, TOKEN_ADDRESS, smartAccount.address);
+    const balance = await getTokenBalance(
+      publicClient,
+      TOKEN_ADDRESS,
+      smartAccount.address
+    );
 
     console.log(`   ✅ Total Supply: ${totalSupply} ${TOKEN_SYMBOL}`);
     console.log(`   ✅ Seu saldo: ${balance} ${TOKEN_SYMBOL}\n`);
@@ -353,7 +374,9 @@ async function main() {
   console.log('📋 PASSO 4: Exemplos de integração disponíveis\n');
   console.log('   📝 Funções disponíveis:');
   console.log('      - getTokenBalance() - Obter saldo do token');
-  console.log('      - transferTokens() - Transferir tokens (via Smart Account)');
+  console.log(
+    '      - transferTokens() - Transferir tokens (via Smart Account)'
+  );
   console.log('      - approveTokens() - Aprovar tokens para spender');
   console.log('      - getTotalSupply() - Obter total supply\n');
 
@@ -368,7 +391,9 @@ async function main() {
   console.log('✅ Integração Configurada!');
   console.log('='.repeat(70));
   console.log('\n📦 Próximos passos:');
-  console.log('   1. Veja o exemplo em: examples/integrate-token-website-example.ts');
+  console.log(
+    '   1. Veja o exemplo em: examples/integrate-token-website-example.ts'
+  );
   console.log('   2. Use o Smart Account para todas as operações do token');
   console.log('   3. Configure bundler para melhor UX (gasless)');
   console.log('   4. Integre com frontend usando wagmi ou viem\n');

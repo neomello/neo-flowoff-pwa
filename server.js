@@ -33,9 +33,8 @@ const mimeTypes = {
   '.gif': 'image/gif',
   '.svg': 'image/svg+xml',
   '.webp': 'image/webp',
-  '.webmanifest': 'application/manifest+json'
+  '.webmanifest': 'application/manifest+json',
 };
-
 
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_DEFAULT = 120;
@@ -82,12 +81,12 @@ function isAllowedOrigin(origin, allowedOrigins) {
 function setCORSHeaders(req, res) {
   const allowedOrigins = isProduction
     ? [
-      'https://flowoff.xyz',
-      'https://www.flowoff.xyz',
-      'https://neoflowoff.eth.link',
-      'https://*.storacha.link',
-      'https://*.w3s.link'
-    ]
+        'https://flowoff.xyz',
+        'https://www.flowoff.xyz',
+        'https://neoflowoff.eth.link',
+        'https://*.storacha.link',
+        'https://*.w3s.link',
+      ]
     : ['http://localhost:3000', 'http://127.0.0.1:3000', '*'];
 
   const origin = req.headers.origin;
@@ -108,7 +107,10 @@ function setSecurityHeaders(res, options = {}) {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('Referrer-Policy', 'no-referrer');
-  res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+  res.setHeader(
+    'Permissions-Policy',
+    'geolocation=(), microphone=(), camera=()'
+  );
   if (options.isHtml) {
     res.setHeader(
       'Content-Security-Policy',
@@ -116,7 +118,10 @@ function setSecurityHeaders(res, options = {}) {
     );
   }
   if (isProduction) {
-    res.setHeader('Strict-Transport-Security', 'max-age=15552000; includeSubDomains');
+    res.setHeader(
+      'Strict-Transport-Security',
+      'max-age=15552000; includeSubDomains'
+    );
   }
 }
 
@@ -135,7 +140,9 @@ function isEmail(value) {
 }
 
 function enforceRateLimit(req, res, options = {}) {
-  const limit = Number.isFinite(options.limit) ? options.limit : RATE_LIMIT_DEFAULT;
+  const limit = Number.isFinite(options.limit)
+    ? options.limit
+    : RATE_LIMIT_DEFAULT;
   const windowMs = Number.isFinite(options.windowMs)
     ? options.windowMs
     : RATE_LIMIT_WINDOW_MS;
@@ -205,28 +212,29 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-
   // API endpoints
   if (cleanPath === '/api/health') {
     res.setHeader('Content-Type', 'application/json');
     setCORSHeaders(req, res);
     setSecurityHeaders(res);
     res.writeHead(200);
-    res.end(JSON.stringify({
-      status: 'ok',
-      timestamp: new Date().toISOString(),
-      version: '2.1.3',
-      apis: {
-        validator: "✅ Validação local descentralizada (sem APIs externas)",
-        lead: "✅ Disponível",
-        cep: "✅ Validação local (descentralizado)"
-      },
-      features: {
-        backgroundSync: "✅ Ativo",
-        offlineQueue: "✅ Ativo",
-        formValidation: "✅ Ativo"
-      }
-    }));
+    res.end(
+      JSON.stringify({
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        version: '2.1.3',
+        apis: {
+          validator: '✅ Validação local descentralizada (sem APIs externas)',
+          lead: '✅ Disponível',
+          cep: '✅ Validação local (descentralizado)',
+        },
+        features: {
+          backgroundSync: '✅ Ativo',
+          offlineQueue: '✅ Ativo',
+          formValidation: '✅ Ativo',
+        },
+      })
+    );
     return;
   }
 
@@ -234,7 +242,8 @@ const server = http.createServer((req, res) => {
   // Permite em localhost mesmo se NODE_ENV=production
   if (cleanPath === '/api/config') {
     const host = req.headers.host || '';
-    const isLocalhost = host.includes('localhost') || host.includes('127.0.0.1');
+    const isLocalhost =
+      host.includes('localhost') || host.includes('127.0.0.1');
 
     // Debug log (apenas em desenvolvimento)
     if (!isProduction) {
@@ -245,16 +254,22 @@ const server = http.createServer((req, res) => {
     if (!isLocalhost && isProduction) {
       setSecurityHeaders(res);
       res.writeHead(403, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: 'Forbidden: API config only available in development' }));
+      res.end(
+        JSON.stringify({
+          error: 'Forbidden: API config only available in development',
+        })
+      );
       return;
     }
     res.setHeader('Content-Type', 'application/json');
     setCORSHeaders(req, res);
     setSecurityHeaders(res);
     res.writeHead(200);
-    res.end(JSON.stringify({
-      message: 'API config endpoint - apenas para desenvolvimento'
-    }));
+    res.end(
+      JSON.stringify({
+        message: 'API config endpoint - apenas para desenvolvimento',
+      })
+    );
     return;
   }
 
@@ -265,15 +280,17 @@ const server = http.createServer((req, res) => {
     let bodySize = 0;
     const MAX_BODY_SIZE = 10000; // 10KB máximo
 
-    req.on('data', chunk => {
+    req.on('data', (chunk) => {
       bodySize += chunk.length;
       if (bodySize > MAX_BODY_SIZE) {
         setSecurityHeaders(res);
         res.writeHead(413, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({
-          success: false,
-          error: 'Payload muito grande'
-        }));
+        res.end(
+          JSON.stringify({
+            success: false,
+            error: 'Payload muito grande',
+          })
+        );
         req.destroy();
         return;
       }
@@ -286,10 +303,12 @@ const server = http.createServer((req, res) => {
         if (bodySize > MAX_BODY_SIZE) {
           setSecurityHeaders(res);
           res.writeHead(413, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({
-            success: false,
-            error: 'Payload muito grande'
-          }));
+          res.end(
+            JSON.stringify({
+              success: false,
+              error: 'Payload muito grande',
+            })
+          );
           return;
         }
 
@@ -299,10 +318,12 @@ const server = http.createServer((req, res) => {
         if (!leadData || typeof leadData !== 'object') {
           setSecurityHeaders(res);
           res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({
-            success: false,
-            error: 'Dados inválidos'
-          }));
+          res.end(
+            JSON.stringify({
+              success: false,
+              error: 'Dados inválidos',
+            })
+          );
           return;
         }
 
@@ -315,40 +336,48 @@ const server = http.createServer((req, res) => {
         if (!name || !email || !whats || !type) {
           setSecurityHeaders(res);
           res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({
-            success: false,
-            error: 'Campos obrigatórios faltando'
-          }));
+          res.end(
+            JSON.stringify({
+              success: false,
+              error: 'Campos obrigatórios faltando',
+            })
+          );
           return;
         }
 
         if (!isEmail(email)) {
           setSecurityHeaders(res);
           res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({
-            success: false,
-            error: 'Email inválido'
-          }));
+          res.end(
+            JSON.stringify({
+              success: false,
+              error: 'Email inválido',
+            })
+          );
           return;
         }
 
         if (!/^\+?[0-9]{8,20}$/.test(whats)) {
           setSecurityHeaders(res);
           res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({
-            success: false,
-            error: 'Whats inválido'
-          }));
+          res.end(
+            JSON.stringify({
+              success: false,
+              error: 'Whats inválido',
+            })
+          );
           return;
         }
 
         if (!/^[a-zA-Z0-9 _.-]{1,50}$/.test(type)) {
           setSecurityHeaders(res);
           res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({
-            success: false,
-            error: 'Tipo inválido'
-          }));
+          res.end(
+            JSON.stringify({
+              success: false,
+              error: 'Tipo inválido',
+            })
+          );
           return;
         }
 
@@ -359,27 +388,31 @@ const server = http.createServer((req, res) => {
         setCORSHeaders(req, res);
         setSecurityHeaders(res);
         res.writeHead(200);
-        res.end(JSON.stringify({
-          success: true,
-          message: 'Lead recebido com sucesso',
-          data: {
-            id: Date.now(),
-            name,
-            email,
-            whats,
-            type
-          }
-        }));
+        res.end(
+          JSON.stringify({
+            success: true,
+            message: 'Lead recebido com sucesso',
+            data: {
+              id: Date.now(),
+              name,
+              email,
+              whats,
+              type,
+            },
+          })
+        );
       } catch (error) {
         res.setHeader('Content-Type', 'application/json');
         setCORSHeaders(req, res);
         setSecurityHeaders(res);
         res.writeHead(400);
-        res.end(JSON.stringify({
-          success: false,
-          error: 'Erro ao processar lead',
-          message: 'Falha ao processar a requisição'
-        }));
+        res.end(
+          JSON.stringify({
+            success: false,
+            error: 'Erro ao processar lead',
+            message: 'Falha ao processar a requisição',
+          })
+        );
       }
     });
     return;
@@ -394,11 +427,13 @@ const server = http.createServer((req, res) => {
       setCORSHeaders(req, res);
       setSecurityHeaders(res);
       res.writeHead(400);
-      res.end(JSON.stringify({
-        success: false,
-        error: 'CEP inválido',
-        message: 'CEP deve ter 8 dígitos'
-      }));
+      res.end(
+        JSON.stringify({
+          success: false,
+          error: 'CEP inválido',
+          message: 'CEP deve ter 8 dígitos',
+        })
+      );
       return;
     }
 
@@ -408,14 +443,16 @@ const server = http.createServer((req, res) => {
     setCORSHeaders(req, res);
     setSecurityHeaders(res);
     res.writeHead(200);
-    res.end(JSON.stringify({
-      success: true,
-      data: {
-        cep: cep.replace(/(\d{5})(\d{3})/, '$1-$2'),
-        message: 'Validação local - sem dependência de APIs externas'
-      },
-      source: 'local'
-    }));
+    res.end(
+      JSON.stringify({
+        success: true,
+        data: {
+          cep: cep.replace(/(\d{5})(\d{3})/, '$1-$2'),
+          message: 'Validação local - sem dependência de APIs externas',
+        },
+        source: 'local',
+      })
+    );
     return;
   }
 
@@ -457,14 +494,16 @@ const server = http.createServer((req, res) => {
             log('❌ Erro ao ler index.html:', err2.message);
             setSecurityHeaders(res, { isHtml: true });
             res.writeHead(404, { 'Content-Type': 'text/html' });
-            res.end(`<h1>404 - File not found</h1><p>Erro: ${err2.message}</p>`);
+            res.end(
+              `<h1>404 - File not found</h1><p>Erro: ${err2.message}</p>`
+            );
           } else {
             setSecurityHeaders(res, { isHtml: true });
             res.writeHead(200, {
               'Content-Type': 'text/html',
               'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
-              'Pragma': 'no-cache',
-              'Expires': '0'
+              Pragma: 'no-cache',
+              Expires: '0',
             });
             res.end(data2);
           }
@@ -481,7 +520,10 @@ const server = http.createServer((req, res) => {
     } else {
       setSecurityHeaders(res, { isHtml: mimeType === 'text/html' });
       // Headers para evitar cache apenas para arquivos estáticos
-      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0');
+      res.setHeader(
+        'Cache-Control',
+        'no-cache, no-store, must-revalidate, max-age=0'
+      );
       res.setHeader('Pragma', 'no-cache');
       res.setHeader('Expires', '0');
       res.setHeader('Content-Type', mimeType);

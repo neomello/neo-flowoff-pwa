@@ -22,14 +22,14 @@ export default async function handler(req, res) {
     timestamp: new Date().toISOString(),
     version: '2.1.3',
     apis: {
-      validator: "✅ Validação local descentralizada (sem APIs externas)",
-      lead: "✅ Disponível",
-      cep: "✅ Validação local (descentralizado)"
+      validator: '✅ Validação local descentralizada (sem APIs externas)',
+      lead: '✅ Disponível',
+      cep: '✅ Validação local (descentralizado)',
     },
     features: {
-      backgroundSync: "✅ Ativo",
-      offlineQueue: "✅ Ativo",
-      formValidation: "✅ Ativo"
-    }
+      backgroundSync: '✅ Ativo',
+      offlineQueue: '✅ Ativo',
+      formValidation: '✅ Ativo',
+    },
   });
 }

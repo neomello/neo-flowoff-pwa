@@ -1,17 +1,23 @@
 /**
  * Integração Completa: Token NEOFlowOFF com Stack Completa
- * 
+ *
  * Stack:
  * - Web3Auth: Autenticação
  * - IPFS.io + Storacha: Armazenamento de dados
  * - Infura: RPC/Bundler
  * - MetaMask Smart Accounts: Account Abstraction
- * 
+ *
  * Uso:
  * npx tsx integrate-token-full-stack.ts
  */
 
-import { createPublicClient, http, type Address, formatUnits, parseUnits } from 'viem';
+import {
+  createPublicClient,
+  http,
+  type Address,
+  formatUnits,
+  parseUnits,
+} from 'viem';
 import { polygon } from 'viem/chains';
 import {
   Implementation,
@@ -43,7 +49,8 @@ const ALCHEMY_API_URL = process.env.ALCHEMY_API_URL || '';
 const WEB3AUTH_CLIENT_ID = process.env.WEB3AUTH_CLIENT_ID || '';
 const IPFS_GATEWAY = 'https://ipfs.io/ipfs/';
 const STORACHA_API_KEY = process.env.STORACHA_API_KEY || '';
-const STORACHA_ENDPOINT = process.env.STORACHA_ENDPOINT || 'https://api.storacha.com';
+const STORACHA_ENDPOINT =
+  process.env.STORACHA_ENDPOINT || 'https://api.storacha.com';
 
 const POLYGON_CHAIN_ID = 137;
 
@@ -91,18 +98,19 @@ interface UserData {
 export class NEOFlowOFFFullStackIntegration {
   private publicClient;
   private smartAccount: MetaMaskSmartAccount<Implementation> | null = null;
-  private bundlerClient: ReturnType<typeof createInfuraBundlerClient> | null = null;
+  private bundlerClient: ReturnType<typeof createInfuraBundlerClient> | null =
+    null;
   private userAddress: Address | null = null;
 
   constructor() {
     // Prioridade: Web3Auth RPC > Alchemy > Infura > RPC público
-    const rpcUrl = WEB3AUTH_RPC_URL 
+    const rpcUrl = WEB3AUTH_RPC_URL
       ? WEB3AUTH_RPC_URL
-      : (ALCHEMY_API_URL 
+      : ALCHEMY_API_URL
         ? ALCHEMY_API_URL
-        : (INFURA_API_KEY 
+        : INFURA_API_KEY
           ? `https://polygon-mainnet.infura.io/v3/${INFURA_API_KEY}`
-          : 'https://polygon-rpc.com')); // RPC público como fallback
+          : 'https://polygon-rpc.com'; // RPC público como fallback
 
     this.publicClient = createPublicClient({
       chain: polygon,
@@ -115,10 +123,12 @@ export class NEOFlowOFFFullStackIntegration {
       // TODO: Criar bundler client customizado com URL do Web3Auth
       // Por enquanto, ainda usa Infura se disponível
       console.log('✅ Web3Auth Bundler URL configurada');
-      console.warn('⚠️  Bundler customizado do Web3Auth ainda não implementado');
+      console.warn(
+        '⚠️  Bundler customizado do Web3Auth ainda não implementado'
+      );
       console.warn('   Usando Infura como fallback se disponível');
     }
-    
+
     if (INFURA_API_KEY) {
       try {
         this.bundlerClient = createInfuraBundlerClient({
@@ -131,7 +141,9 @@ export class NEOFlowOFFFullStackIntegration {
       }
     } else if (!WEB3AUTH_BUNDLER_URL) {
       console.warn('⚠️  Bundler não configurado');
-      console.warn('   Configure WEB3AUTH_BUNDLER_URL ou INFURA_API_KEY para transações gasless');
+      console.warn(
+        '   Configure WEB3AUTH_BUNDLER_URL ou INFURA_API_KEY para transações gasless'
+      );
     }
   }
 
@@ -141,15 +153,19 @@ export class NEOFlowOFFFullStackIntegration {
   async initializeWeb3Auth(): Promise<Address> {
     // Exemplo de integração com Web3Auth
     // No website real, você usaria o SDK do Web3Auth
-    
+
     console.log('🔐 Inicializando Web3Auth...');
     console.log('   💡 No website, use:');
     console.log('      import { Web3Auth } from "@web3auth/modal";');
-    console.log('      const web3auth = new Web3Auth({ clientId: WEB3AUTH_CLIENT_ID });');
+    console.log(
+      '      const web3auth = new Web3Auth({ clientId: WEB3AUTH_CLIENT_ID });'
+    );
     console.log('      await web3auth.init();');
     console.log('      await web3auth.connect();');
     console.log('      const provider = await web3auth.connect();');
-    console.log('      const accounts = await provider.request({ method: "eth_accounts" });\n');
+    console.log(
+      '      const accounts = await provider.request({ method: "eth_accounts" });\n'
+    );
 
     // Para este exemplo, retorna um endereço mock
     // No website real, você obteria do Web3Auth
@@ -161,7 +177,7 @@ export class NEOFlowOFFFullStackIntegration {
    */
   async initializeSmartAccount(signer: any, walletAddress: Address) {
     this.userAddress = walletAddress;
-    
+
     this.smartAccount = await toMetaMaskSmartAccount({
       client: this.publicClient,
       implementation: Implementation.Hybrid,
@@ -180,15 +196,15 @@ export class NEOFlowOFFFullStackIntegration {
 
     // Exemplo de como salvar via Storacha
     // No website real, você usaria o SDK do Storacha
-    
+
     const dataJson = JSON.stringify(userData);
-    
+
     try {
       // Upload para IPFS via Storacha
       const response = await fetch(`${STORACHA_ENDPOINT}/upload`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${STORACHA_API_KEY}`,
+          Authorization: `Bearer ${STORACHA_API_KEY}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -248,14 +264,17 @@ export class NEOFlowOFFFullStackIntegration {
   /**
    * Transfere tokens e salva transação no IPFS
    */
-  async transferAndSave(to: Address, amount: string): Promise<{ txHash: string; ipfsHash: string }> {
+  async transferAndSave(
+    to: Address,
+    amount: string
+  ): Promise<{ txHash: string; ipfsHash: string }> {
     if (!this.smartAccount || !this.userAddress) {
       throw new Error('Smart Account não inicializada');
     }
 
     // 1. Transferir tokens
     const amountWei = parseUnits(amount, TOKEN_DECIMALS);
-    
+
     // Encode function data usando viem
     const { encodeFunctionData } = await import('viem');
     const callData = encodeFunctionData({
@@ -280,7 +299,9 @@ export class NEOFlowOFFFullStackIntegration {
         calls,
       });
     } else {
-      throw new Error('Bundler client necessário para transferências. Configure INFURA_API_KEY.');
+      throw new Error(
+        'Bundler client necessário para transferências. Configure INFURA_API_KEY.'
+      );
     }
 
     // 2. Salvar transação no IPFS
@@ -398,7 +419,9 @@ async function main() {
   console.log('   1. Configure Web3Auth no seu website');
   console.log('   2. Configure Storacha para IPFS');
   console.log('   3. Use a classe NEOFlowOFFFullStackIntegration');
-  console.log('   4. Veja o exemplo em: examples/integrate-token-website-full-stack.tsx\n');
+  console.log(
+    '   4. Veja o exemplo em: examples/integrate-token-website-full-stack.tsx\n'
+  );
 }
 
 if (require.main === module) {

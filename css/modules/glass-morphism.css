@@ -4,8 +4,12 @@
   width: 90vw;
   max-height: 80vh;
   border-radius: 20px;
-  border: 1px solid rgba(255,255,255,.1);
-  background: linear-gradient(180deg, rgba(15,15,22,.95), rgba(10,10,16,.98));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    180deg,
+    rgba(15, 15, 22, 0.95),
+    rgba(10, 10, 16, 0.98)
+  );
   backdrop-filter: saturate(1.2) blur(20px);
   -webkit-backdrop-filter: saturate(1.2) blur(20px);
 }
@@ -15,7 +19,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px 20px 0;
-  border-bottom: 1px solid rgba(255,255,255,.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   margin-bottom: 20px;
 }
 
@@ -77,14 +81,14 @@
 }
 
 .agent-message.agent {
-  background: rgba(255,255,255,.08);
+  background: rgba(255, 255, 255, 0.08);
   color: var(--text);
   align-self: flex-start;
-  border: 1px solid rgba(255,255,255,.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .agent-message.system {
-  background: rgba(0,208,255,.1);
+  background: rgba(0, 208, 255, 0.1);
   color: var(--blue);
   align-self: center;
   text-align: center;
@@ -101,8 +105,8 @@
 
 #agent-input {
   flex: 1;
-  background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.1);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 25px;
   padding: 12px 16px;
   color: var(--text);
@@ -113,7 +117,7 @@
 
 #agent-input:focus {
   border-color: var(--neon);
-  box-shadow: 0 0 0 2px rgba(255,47,179,.2);
+  box-shadow: 0 0 0 2px rgba(255, 47, 179, 0.2);
 }
 
 #agent-input::placeholder {
@@ -137,7 +141,7 @@
 
 .agent-send-btn:hover {
   transform: scale(1.05);
-  box-shadow: 0 4px 15px rgba(255,47,179,.3);
+  box-shadow: 0 4px 15px rgba(255, 47, 179, 0.3);
 }
 
 .agent-send-btn:active {
@@ -173,7 +177,7 @@
 }
 
 .agent-messages::-webkit-scrollbar-track {
-  background: rgba(255,255,255,.05);
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 2px;
 }
 
@@ -192,7 +196,14 @@
   bottom: 100px;
   right: 20px;
   z-index: 1000;
-  font-family: -apple-system, BlinkMacSystemFont, Inter, system-ui, Segoe UI, Roboto, Ubuntu;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    Inter,
+    system-ui,
+    Segoe UI,
+    Roboto,
+    Ubuntu;
 }
 
 .agent-widget-toggle {
@@ -205,7 +216,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 8px 25px rgba(255,47,179,.4);
+  box-shadow: 0 8px 25px rgba(255, 47, 179, 0.4);
   transition: all 0.3s ease;
   font-weight: 600;
   font-size: 14px;
@@ -215,7 +226,7 @@
 
 .agent-widget-toggle:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 35px rgba(255,47,179,.5);
+  box-shadow: 0 12px 35px rgba(255, 47, 179, 0.5);
 }
 
 .agent-widget-toggle:active {
@@ -240,12 +251,16 @@
   right: 0;
   width: 380px;
   max-width: 90vw;
-  background: linear-gradient(180deg, rgba(15,15,22,.95), rgba(10,10,16,.98));
+  background: linear-gradient(
+    180deg,
+    rgba(15, 15, 22, 0.95),
+    rgba(10, 10, 16, 0.98)
+  );
   backdrop-filter: saturate(1.2) blur(20px);
   -webkit-backdrop-filter: saturate(1.2) blur(20px);
-  border: 1px solid rgba(255,255,255,.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0,0,0,.3);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   opacity: 0;
   visibility: hidden;
   transform: translateY(20px) scale(0.9);
@@ -264,8 +279,12 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px 20px;
-  border-bottom: 1px solid rgba(255,255,255,.1);
-  background: linear-gradient(135deg, rgba(255,47,179,.1), rgba(0,208,255,.1));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 47, 179, 0.1),
+    rgba(0, 208, 255, 0.1)
+  );
 }
 
 .agent-widget-header h4 {
@@ -297,7 +316,7 @@
 
 .agent-widget-close:hover {
   color: var(--text);
-  background: rgba(255,255,255,.1);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .agent-widget-iframe-container {
@@ -314,7 +333,8 @@
 
 /* Animação de pulse para o ícone */
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {
@@ -328,21 +348,21 @@
     bottom: 80px;
     right: 15px;
   }
-  
+
   .agent-widget-popup {
     width: 320px;
     bottom: 60px;
   }
-  
+
   .agent-widget-iframe-container {
     height: 400px;
   }
-  
+
   .agent-widget-toggle {
     padding: 10px 16px;
     font-size: 13px;
   }
-  
+
   .agent-widget-text {
     display: none;
   }
@@ -353,13 +373,13 @@
     bottom: 70px;
     right: 10px;
   }
-  
+
   .agent-widget-popup {
     width: calc(100vw - 20px);
     right: -10px;
     bottom: 50px;
   }
-  
+
   .agent-widget-iframe-container {
     height: 350px;
   }
@@ -367,17 +387,21 @@
 
 /* Efeito shimmer no botão */
 .agent-widget-toggle::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: left 0.5s ease;
 }
 
 .agent-widget-toggle:hover::before {
   left: 100%;
 }
-

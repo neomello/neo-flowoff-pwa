@@ -1,18 +1,31 @@
-import { useWeb3AuthConnect, useWeb3AuthDisconnect, useWeb3AuthUser } from "@web3auth/modal/react";
-import { WALLET_CONNECTORS, AUTH_CONNECTION } from "@web3auth/modal";
+import {
+  useWeb3AuthConnect,
+  useWeb3AuthDisconnect,
+  useWeb3AuthUser,
+} from '@web3auth/modal/react';
+import { WALLET_CONNECTORS, AUTH_CONNECTION } from '@web3auth/modal';
 // IMP START - Blockchain Calls
-import { useAccount } from "wagmi";
-import { SendTransaction } from "./wagmi/sendTransaction";
-import { Balance } from "./wagmi/getBalance";
-import { SwitchChain } from "./wagmi/switchNetwork";
+import { useAccount } from 'wagmi';
+import { SendTransaction } from './wagmi/sendTransaction';
+import { Balance } from './wagmi/getBalance';
+import { SwitchChain } from './wagmi/switchNetwork';
 // IMP END - Blockchain Calls
 
 function App() {
   // IMP START - Login
-  const { connect, isConnected, loading: connectLoading, error: connectError } = useWeb3AuthConnect();
+  const {
+    connect,
+    isConnected,
+    loading: connectLoading,
+    error: connectError,
+  } = useWeb3AuthConnect();
   // IMP END - Login
   // IMP START - Logout
-  const { disconnect, loading: disconnectLoading, error: disconnectError } = useWeb3AuthDisconnect();
+  const {
+    disconnect,
+    loading: disconnectLoading,
+    error: disconnectError,
+  } = useWeb3AuthDisconnect();
   // IMP END - Logout
   const { userInfo } = useWeb3AuthUser();
   // IMP START - Blockchain Calls
@@ -20,7 +33,7 @@ function App() {
   // IMP END - Blockchain Calls
 
   function uiConsole(...args: any[]): void {
-    const el = document.querySelector("#console>p");
+    const el = document.querySelector('#console>p');
     if (el) {
       el.innerHTML = JSON.stringify(args || {}, null, 2);
       console.log(...args);
@@ -53,7 +66,9 @@ function App() {
             Log Out
           </button>
           {disconnectLoading && <div className="loading">Disconnecting...</div>}
-          {disconnectError && <div className="error">{disconnectError.message}</div>}
+          {disconnectError && (
+            <div className="error">{disconnectError.message}</div>
+          )}
         </div>
         {/* IMP END - Logout */}
       </div>
@@ -71,7 +86,10 @@ function App() {
       <button onClick={() => connect()} className="card">
         Login
       </button>
-      <button onClick={() => connectToGoogleWithIdToken("sample-id-token")} className="card">
+      <button
+        onClick={() => connectToGoogleWithIdToken('sample-id-token')}
+        className="card"
+      >
         Login with Google
       </button>
       {connectLoading && <div className="loading">Connecting...</div>}
@@ -88,14 +106,14 @@ function App() {
           href="https://web3auth.io/docs/sdk/pnp/web/modal"
           rel="noopener noreferrer"
         >
-          Web3Auth{" "}
+          Web3Auth{' '}
         </a>
         & Next.js Modal Quick Start
       </h1>
 
       {isConnected ? loggedInView : unloggedInView}
-      <div id="console" style={{ whiteSpace: "pre-line" }}>
-        <p style={{ whiteSpace: "pre-line" }}></p>
+      <div id="console" style={{ whiteSpace: 'pre-line' }}>
+        <p style={{ whiteSpace: 'pre-line' }}></p>
       </div>
 
       <footer className="footer">

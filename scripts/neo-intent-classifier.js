@@ -1,7 +1,7 @@
 /**
  * 🧠 NEO Intent Classifier
  * Classifica intenções de mensagens para o agente NEO
- * 
+ *
  * Usado tanto no client-side (chat-ai.js) quanto no server-side (server.js, netlify/functions/chat.js)
  */
 
@@ -13,34 +13,107 @@
  */
 function classifyIntent(message, history = []) {
   const messageLower = message.toLowerCase();
-  const fullContext = history.map(m => typeof m === 'string' ? m : m.content || m.text || '').join(' ').toLowerCase() + ' ' + messageLower;
-  
+  const fullContext =
+    history
+      .map((m) => (typeof m === 'string' ? m : m.content || m.text || ''))
+      .join(' ')
+      .toLowerCase() +
+    ' ' +
+    messageLower;
+
   // Análise heurística rápida (pode ser melhorada com LLM)
-  const salesKeywords = ['preço', 'quanto', 'custo', 'orçamento', 'contratar', 'proposta', 'plano', 'pacote', 'valor', 'investimento', 'pagamento'];
-  const technicalKeywords = ['código', 'stack', 'bug', 'erro', 'implementar', 'arquitetura', 'api', 'deploy', 'tecnologia', 'desenvolvimento', 'programação', 'tech', 'sistema'];
-  const strategyKeywords = ['estratégia', 'crescimento', 'modelo', 'negócio', 'visão', 'posicionamento', 'sistema', 'ecossistema', 'automação', 'processo', 'metodologia'];
-  const onboardingKeywords = ['o que', 'como funciona', 'quem são', 'sobre', 'entender', 'conhecer', 'flowoff', 'agência', 'empresa', 'serviços'];
-  const personalKeywords = ['mello', 'mellø', 'você', 'sua', 'pessoal', 'filosofia', 'visão pessoal', 'trajetória', 'história', 'background'];
-  
+  const salesKeywords = [
+    'preço',
+    'quanto',
+    'custo',
+    'orçamento',
+    'contratar',
+    'proposta',
+    'plano',
+    'pacote',
+    'valor',
+    'investimento',
+    'pagamento',
+  ];
+  const technicalKeywords = [
+    'código',
+    'stack',
+    'bug',
+    'erro',
+    'implementar',
+    'arquitetura',
+    'api',
+    'deploy',
+    'tecnologia',
+    'desenvolvimento',
+    'programação',
+    'tech',
+    'sistema',
+  ];
+  const strategyKeywords = [
+    'estratégia',
+    'crescimento',
+    'modelo',
+    'negócio',
+    'visão',
+    'posicionamento',
+    'sistema',
+    'ecossistema',
+    'automação',
+    'processo',
+    'metodologia',
+  ];
+  const onboardingKeywords = [
+    'o que',
+    'como funciona',
+    'quem são',
+    'sobre',
+    'entender',
+    'conhecer',
+    'flowoff',
+    'agência',
+    'empresa',
+    'serviços',
+  ];
+  const personalKeywords = [
+    'mello',
+    'mellø',
+    'você',
+    'sua',
+    'pessoal',
+    'filosofia',
+    'visão pessoal',
+    'trajetória',
+    'história',
+    'background',
+  ];
+
   // Contagem de matches por categoria
   const scores = {
-    SALES: salesKeywords.filter(k => fullContext.includes(k)).length,
-    TECHNICAL: technicalKeywords.filter(k => fullContext.includes(k)).length,
-    STRATEGY: strategyKeywords.filter(k => fullContext.includes(k)).length,
-    ONBOARDING: onboardingKeywords.filter(k => fullContext.includes(k)).length,
-    PERSONAL_MELLO: personalKeywords.filter(k => fullContext.includes(k)).length
+    SALES: salesKeywords.filter((k) => fullContext.includes(k)).length,
+    TECHNICAL: technicalKeywords.filter((k) => fullContext.includes(k)).length,
+    STRATEGY: strategyKeywords.filter((k) => fullContext.includes(k)).length,
+    ONBOARDING: onboardingKeywords.filter((k) => fullContext.includes(k))
+      .length,
+    PERSONAL_MELLO: personalKeywords.filter((k) => fullContext.includes(k))
+      .length,
   };
-  
+
   // Encontrar categoria com maior score
   const maxScore = Math.max(...Object.values(scores));
   if (maxScore === 0) {
     // Se nenhuma categoria teve match, usar ONBOARDING como padrão
     return { category: 'ONBOARDING', confidence: 50 };
   }
-  
-  const category = Object.keys(scores).find(key => scores[key] === maxScore);
-  const confidence = Math.min(100, Math.round((maxScore / Math.max(1, fullContext.split(' ').length / 10)) * 100));
-  
+
+  const category = Object.keys(scores).find((key) => scores[key] === maxScore);
+  const confidence = Math.min(
+    100,
+    Math.round(
+      (maxScore / Math.max(1, fullContext.split(' ').length / 10)) * 100
+    )
+  );
+
   return { category, confidence };
 }
 
@@ -94,7 +167,7 @@ Cada resposta deve fazer o usuário pensar: "ok, isso resolve ou me coloca no ca
  */
 function getIntentPrompt(intentCategory) {
   const base = getBasePrompt();
-  
+
   switch (intentCategory) {
     case 'SALES':
       return `${base}
@@ -227,7 +300,7 @@ if (typeof module !== 'undefined' && module.exports) {
     classifyIntent,
     getBasePrompt,
     getIntentPrompt,
-    buildSystemPrompt
+    buildSystemPrompt,
   };
 }
 
@@ -237,6 +310,6 @@ if (typeof window !== 'undefined') {
     classifyIntent,
     getBasePrompt,
     getIntentPrompt,
-    buildSystemPrompt
+    buildSystemPrompt,
   };
 }

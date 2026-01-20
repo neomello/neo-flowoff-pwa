@@ -1,11 +1,11 @@
 /**
  * Testes Básicos de Integração Wallet
- * 
+ *
  * Cobertura:
  * - Cadastro/Inicialização do SDK
  * - Conexão de wallet (MetaMask/Embedded)
  * - Execução de transação simples
- * 
+ *
  * @vitest-environment jsdom
  */
 
@@ -18,7 +18,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 beforeEach(() => {
   // Limpar localStorage
   localStorage.clear();
-  
+
   // Mock do window.ethereum (MetaMask)
   global.window = {
     ...global.window,
@@ -31,7 +31,7 @@ beforeEach(() => {
       chainId: '0x89', // Polygon
     },
   };
-  
+
   // Mock de fetch
   global.fetch = vi.fn(() =>
     Promise.resolve({
@@ -86,7 +86,7 @@ describe('Conexão de Wallet', () => {
   it('deve simular conexão via MetaMask', async () => {
     // Mock da resposta do MetaMask
     const mockAccounts = ['0x460F9D0cf3e6E84faC1A7Abc524ddfa66fb64f60'];
-    
+
     window.ethereum.request = vi.fn(({ method }) => {
       if (method === 'eth_requestAccounts') {
         return Promise.resolve(mockAccounts);
@@ -121,7 +121,9 @@ describe('Conexão de Wallet', () => {
         name: 'Test User',
       }),
       provider: {
-        request: vi.fn().mockResolvedValue(['0x460F9D0cf3e6E84faC1A7Abc524ddfa66fb64f60']),
+        request: vi
+          .fn()
+          .mockResolvedValue(['0x460F9D0cf3e6E84faC1A7Abc524ddfa66fb64f60']),
       },
       connected: false,
     };
@@ -178,7 +180,9 @@ describe('Execução de Transação Simples', () => {
     // Mock de envio de transação
     window.ethereum.request = vi.fn(({ method, params }) => {
       if (method === 'eth_sendTransaction') {
-        return Promise.resolve('0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef');
+        return Promise.resolve(
+          '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'
+        );
       }
       return Promise.resolve(null);
     });
@@ -196,8 +200,9 @@ describe('Execução de Transação Simples', () => {
   });
 
   it('deve verificar estado após transação mockada', async () => {
-    const mockTxHash = '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
-    
+    const mockTxHash =
+      '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
+
     // Simular estado após transação
     const transactionState = {
       hash: mockTxHash,

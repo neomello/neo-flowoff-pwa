@@ -49,12 +49,12 @@ export function setCORSHeaders(req, res) {
   const isProduction = process.env.NODE_ENV === 'production';
   const allowedOrigins = isProduction
     ? [
-      'https://flowoff.xyz',
-      'https://www.flowoff.xyz',
-      'https://neoflowoff.eth.link',
-      'https://*.storacha.link',
-      'https://*.w3s.link'
-    ]
+        'https://flowoff.xyz',
+        'https://www.flowoff.xyz',
+        'https://neoflowoff.eth.link',
+        'https://*.storacha.link',
+        'https://*.w3s.link',
+      ]
     : ['http://localhost:3000', 'http://127.0.0.1:3000', '*'];
 
   const origin = req.headers.origin;
@@ -100,7 +100,10 @@ export function handleOptions(req, res) {
 }
 
 export function getClientIp(req) {
-  const forwarded = req.headers['x-forwarded-for']?.toString().split(',')[0]?.trim();
+  const forwarded = req.headers['x-forwarded-for']
+    ?.toString()
+    .split(',')[0]
+    ?.trim();
   return (
     forwarded ||
     req.headers['x-real-ip']?.toString() ||
@@ -110,7 +113,9 @@ export function getClientIp(req) {
 }
 
 export function enforceRateLimit(req, res, options = {}) {
-  const limit = Number.isFinite(options.limit) ? options.limit : RATE_LIMIT_DEFAULT;
+  const limit = Number.isFinite(options.limit)
+    ? options.limit
+    : RATE_LIMIT_DEFAULT;
   const windowMs = Number.isFinite(options.windowMs)
     ? options.windowMs
     : RATE_LIMIT_WINDOW_MS;
@@ -210,8 +215,13 @@ export function requireApiToken(req, res) {
   const requiredToken = process.env.API_ACCESS_TOKEN;
   if (!requiredToken) return true;
   const header =
-    req.headers.authorization || req.headers['x-api-key'] || req.headers['x-api-token'];
-  const token = header?.toString().replace(/^Bearer\s+/i, '').trim();
+    req.headers.authorization ||
+    req.headers['x-api-key'] ||
+    req.headers['x-api-token'];
+  const token = header
+    ?.toString()
+    .replace(/^Bearer\s+/i, '')
+    .trim();
   if (token && token === requiredToken) return true;
 
   res.status(401).json({ error: 'Não autorizado' });
