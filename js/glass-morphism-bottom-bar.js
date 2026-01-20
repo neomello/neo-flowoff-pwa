@@ -38,8 +38,9 @@ function setup() {
   navItems = [
     { label: 'Home', x: 180, y: 480, icon: 'home' },
     { label: 'Projetos', x: 280, y: 480, icon: 'projects' },
-    { label: 'Iniciar', x: 400, y: 480, icon: 'start' },
-    { label: 'Ecossistema', x: 520, y: 480, icon: 'ecosystem' },
+    { label: 'Start', x: 380, y: 480, icon: 'start' },
+    { label: 'MiniApp', x: 480, y: 480, icon: 'miniapp' },
+    { label: 'Eco', x: 580, y: 480, icon: 'ecosystem' },
   ];
 
   textAlign(CENTER, TOP);
@@ -176,6 +177,12 @@ function drawIcon(type, x, y, c) {
       line(x, y - 10, x, y + 15);
       line(x - 20, y - 10, x + 20, y - 10);
       break;
+      break;
+    case 'miniapp': // Ícone de Smartphone/Bot
+      rect(x - 10, y - 18, 20, 36, 4); // Corpo do celular
+      line(x - 5, y + 12, x + 5, y + 12); // Botão home
+      ellipse(x, y - 10, 8, 8); // Câmera/Logo
+      break;
     case 'ecosystem':
       rect(x - 15, y - 10, 30, 20, 3);
       line(x + 15, y - 10, x + 20, y - 15);
@@ -262,6 +269,7 @@ function mousePressed() {
         home: 'home',
         projects: 'projects',
         start: 'start',
+        miniapp: 'miniapp', // Nova rota
         ecosystem: 'ecosystem',
       };
 

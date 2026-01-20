@@ -148,12 +148,13 @@ async function initWeb3Auth() {
   if (web3authInstance) return web3authInstance;
 
   try {
-    // Import dinâmico
+    // Import dinâmico via esm.sh (resolve dependências e exports corretamente)
     const web3authModule = await importWithFallback(
       '@web3auth/modal',
-      `https://cdn.jsdelivr.net/npm/@web3auth/modal@${WEB3AUTH_MODAL_VERSION}/dist/lib.esm/packages/modal/src/index.js`
+      `https://esm.sh/@web3auth/modal@${WEB3AUTH_MODAL_VERSION}`
     );
-    const { Web3AuthModal: Web3AuthModalClass } = web3authModule;
+    // ESM.sh geralmente exporta como default ou named exports corretamente
+    const Web3AuthModalClass = web3authModule.Web3AuthModal || web3authModule.default?.Web3AuthModal || web3authModule.default;
     Web3AuthModal = Web3AuthModalClass;
 
     // Obtém configuração dinamicamente (para pegar valores atualizados de window)
@@ -184,12 +185,12 @@ async function initWalletConnect() {
   if (walletKitInstance) return walletKitInstance;
 
   try {
-    // Import dinâmico
+    // Import dinâmico via esm.sh
     const walletKitModule = await importWithFallback(
       '@reown/walletkit',
-      `https://cdn.jsdelivr.net/npm/@reown/walletkit@${WALLETKIT_VERSION}/dist/index.js`
+      `https://esm.sh/@reown/walletkit@${WALLETKIT_VERSION}`
     );
-    const { WalletKit: WalletKitClass } = walletKitModule;
+    const WalletKitClass = walletKitModule.WalletKit || walletKitModule.default?.WalletKit || walletKitModule.default;
     WalletKit = WalletKitClass;
 
     walletKitInstance = WalletKitClass.init({

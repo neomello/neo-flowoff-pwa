@@ -73,6 +73,11 @@ const filesToCopy = [
   'favicon.ico',
   'glass-morphism-bottom-bar.css',
   'bento-grid.css',
+  'miniapp-landing.css', // CSS da landing do miniapp
+  // Páginas adicionais
+  'miniapp.html',
+  'privacy.html',
+  'terms.html',
   // SEO e PWA
   'sitemap.xml',
   'robots.txt',

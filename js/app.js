@@ -178,7 +178,7 @@ const sections = [...document.querySelectorAll('.route')];
 const detectedRoutes = sections.map((section) => section.id).filter(Boolean);
 const routes = detectedRoutes.length
   ? detectedRoutes
-  : ['home', 'projects', 'start', 'ecosystem'];
+  : ['home', 'projects', 'start', 'miniapp', 'ecosystem'];
 
 function go(route) {
   let hasSection = false;
@@ -244,7 +244,7 @@ window.addEventListener('online', () => {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.ready.then((registration) => {
       if ('sync' in registration) {
-        registration.sync.register('form-submission').catch(() => {});
+        registration.sync.register('form-submission').catch(() => { });
       }
     });
   }
