@@ -178,15 +178,29 @@ export default async function handler(req, res) {
           to: ['neoprotocol.eth@ethermail.io'],
           subject: `🚀 Novo Lead: ${name} (${type})`,
           html: fill(internalTpl, vars),
+          tags: [
+            { name: 'lead_type', value: type },
+            { name: 'category', value: 'notification' }
+          ]
         });
 
-        // Email de Confirmação para o Lead
-        await resend.emails.send({
-          from: 'NEØ FlowOFF <contato@neo.flowoff.xyz>',
-          to: [email],
-          subject: `Recebemos sua solicitação: ${type}`,
-          html: fill(confirmationTpl, vars),
-        });
+        // Email de Confirmação para o Lead (configurável via ENV)
+        const sendConfirmation = process.env.CONFIRMATION_EMAIL_ENABLED !== 'false';
+
+        if (sendConfirmation) {
+          await resend.emails.send({
+            from: 'NEØ FlowOFF <contato@neo.flowoff.xyz>',
+            to: [email],
+            subject: `Recebemos sua solicitação: ${type}`,
+            html: fill(confirmationTpl, vars),
+            tags: [
+              { name: 'lead_type', value: type },
+              { name: 'category', value: 'confirmation' }
+            ]
+          });
+        } else {
+          console.log(`ℹ️ Auto-confirmação desativada via ENV para: ${email}`);
+        }
 
       } catch (emailError) {
         console.error('❌ Erro ao enviar email via Resend:', emailError);

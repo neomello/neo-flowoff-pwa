@@ -7,8 +7,8 @@ Este arquivo rastreia as tarefas pendentes e sugestões de melhoria técnica par
 ### Melhorias Técnicas
 - [x] **Validar Entregabilidade**: Envio de email testado e aprovado.
 - [x] **Integração Hunter.io**: Verificação de emails (anti-spam/disposable) implementada.
-- [ ] **Feature Flag para Auto-resposta**: Confirmar se queremos manter auto-resposta ativa por padrão ou torná-la configurável via ENV.
-- [ ] **Metadata nos Envios**: Adicionar tags ou metadata (ex: `lead_type`, `source`, `campaign`) no payload do Resend para análise futura.
+- [x] **Feature Flag para Auto-resposta**: Adicionado `CONFIRMATION_EMAIL_ENABLED` (padrão true).
+- [x] **Metadata nos Envios**: Tags `lead_type` e `category` adicionadas aos emails do Resend.
 - [ ] **Log Estruturado**: Implementar logs estruturados (nível warn/error) para melhor observabilidade em caso de falhas no envio.
 
 ## 🏗️ Infraestrutura & Backend
