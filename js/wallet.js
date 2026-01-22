@@ -13,13 +13,14 @@
 
 
 // Configuração do Token
+// Configuração do Token
 const TOKEN_CONFIG = {
-  address: '0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2',
+  address: '0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B',
   symbol: 'NEOFLW',
   name: 'NEOFlowOFF',
   decimals: 18,
-  chainId: 137, // Polygon
-  chain: 'polygon',
+  chainId: 8453, // Base Mainnet
+  chain: 'base',
 };
 
 class WalletManager {
@@ -259,7 +260,7 @@ class WalletManager {
     const networkDot = document.createElement('span');
     networkDot.className = 'network-dot';
     network.appendChild(networkDot);
-    network.appendChild(document.createTextNode(' Polygon Network'));
+    network.appendChild(document.createTextNode(' Base Mainnet'));
 
     disconnected.appendChild(logoDiv);
     disconnected.appendChild(desc);
