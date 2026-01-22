@@ -112,36 +112,53 @@ export default async function handler(req, res) {
     if (process.env.RESEND_API_KEY) {
       try {
         const resend = new Resend(process.env.RESEND_API_KEY);
+        const cwd = process.cwd();
+        const fs = await import('fs');
+        const path = await import('path');
+
+        // Helper para preencher templates
+        const fill = (tpl, vars) => {
+          return tpl.replace(/{{\s*([\w]+)\s*}}/g, (_, k) => vars[k] ?? "");
+        };
+
+        // Carregar templates
+        const internalTpl = fs.readFileSync(path.join(cwd, 'emails', 'lead-internal.html'), 'utf8');
+        const confirmationTpl = fs.readFileSync(path.join(cwd, 'emails', 'lead-confirmation.html'), 'utf8');
+
+        // Gerar link do WhatsApp para o email
+        const whatsappNumber = "55" + String(whats || "").replace(/\D/g, "");
+        const whatsapp_link =
+          `https://wa.me/${whatsappNumber}?text=` + encodeURIComponent(message || "");
+
+        const vars = {
+          type: String(type || "Lead"),
+          name: String(name || ""),
+          email: String(email || ""),
+          whats: String(whats || ""),
+          cep: String(cep || ""),
+          message: String(message || ""),
+          timestamp: createdAt,
+          whatsapp_link,
+          source: "web", // Pode ser enriquecido se o front enviar
+          page: "/",
+          utm: ""
+        };
 
         // Email Interno (Notificação)
         await resend.emails.send({
-          from: 'NEØ Leads <leads@flowoff.xyz>', // Ajustar conforme domínio verificado
-          to: ['neoprotocol.eth@ethermail.io'], // Email do admin
+          from: 'NEØ Leads <leads@flowoff.xyz>',
+          to: ['neoprotocol.eth@ethermail.io'],
           subject: `🚀 Novo Lead: ${name} (${type})`,
-          html: `
-            <div style="font-family: sans-serif; padding: 20px; color: #333;">
-              <h2 style="color: #FF2FB3;">Novo Lead Capturado</h2>
-              <p><strong>Nome:</strong> ${name}</p>
-              <p><strong>Email:</strong> ${email}</p>
-              <p><strong>WhatsApp:</strong> ${whats}</p>
-              <p><strong>Tipo:</strong> ${type}</p>
-              <p><strong>CEP:</strong> ${cep}</p>
-              <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-              <p><strong>Mensagem Original:</strong><br/>${message.replace(/\n/g, '<br/>')}</p>
-              <p style="font-size: 12px; color: #888; margin-top: 30px;">ID do Lead: ${leadId || 'N/A'}</p>
-            </div>
-          `,
+          html: fill(internalTpl, vars),
         });
 
-        // Email de Confirmação para o Lead (Opcional - Hardcoded template por enquanto)
-        /*
+        // Email de Confirmação para o Lead
         await resend.emails.send({
-           from: 'NEØ FlowOFF <contato@flowoff.xyz>',
-           to: [email],
-           subject: 'Recebemos seu contato - NEØ FlowOFF',
-           html: '<p>Olá ${name}, recebemos seu interesse em <strong>${type}</strong>. Em breve nossa equipe entrará em contato via WhatsApp.</p>'
+          from: 'NEØ FlowOFF <contato@flowoff.xyz>',
+          to: [email],
+          subject: `Recebemos sua solicitação: ${type}`,
+          html: fill(confirmationTpl, vars),
         });
-        */
 
       } catch (emailError) {
         console.error('❌ Erro ao enviar email via Resend:', emailError);

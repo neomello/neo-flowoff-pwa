@@ -108,6 +108,14 @@ if (fs.existsSync(cssSrcDir)) {
   fs.cpSync(cssSrcDir, cssDestDir, { recursive: true });
 }
 
+// Copia pasta emails/ recursivamente (para templates de email)
+const emailsSrcDir = path.join(rootDir, 'emails');
+const emailsDestDir = path.join(distDir, 'emails');
+if (fs.existsSync(emailsSrcDir)) {
+  console.log('📦 Copiando templates de email (emails/)...');
+  fs.cpSync(emailsSrcDir, emailsDestDir, { recursive: true });
+}
+
 // Copia diretório public (se existir)
 const publicSrcDir = path.join(rootDir, 'public');
 const publicDestDir = path.join(distDir, 'public');

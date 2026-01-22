@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <title>Novo Lead</title>
+</head>
+
+<body style="margin:0;padding:0;background:#0b0f14;">
+    <!-- Preheader (oculto) -->
+    <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">
+        Novo lead: {{type}} · {{name}} · {{email}}
+    </div>
+
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+        style="background:#0b0f14;padding:24px 12px;">
+        <tr>
+            <td align="center">
+                <table role="presentation" width="600" cellpadding="0" cellspacing="0"
+                    style="width:600px;max-width:600px;">
+                    <tr>
+                        <td style="padding:0 0 12px 0;">
+                            <div
+                                style="font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial; color:#c9d4e5; font-size:12px; letter-spacing:.08em; text-transform:uppercase;">
+                                NeoFlowOFF · Lead inbound
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="background:#0f1622;border:1px solid #1b2a3f;border-radius:16px;padding:18px;">
+                            <div
+                                style="font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial; color:#ffffff; font-size:20px; font-weight:700; line-height:1.2;">
+                                Novo lead capturado
+                            </div>
+
+                            <div style="height:10px;"></div>
+
+                            <div
+                                style="font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial; color:#c9d4e5; font-size:14px; line-height:1.5;">
+                                <strong style="color:#ffffff;">Tipo:</strong> {{type}}<br />
+                                <strong style="color:#ffffff;">Nome:</strong> {{name}}<br />
+                                <strong style="color:#ffffff;">Email:</strong> {{email}}<br />
+                                <strong style="color:#ffffff;">Whats:</strong> {{whats}}<br />
+                                <strong style="color:#ffffff;">CEP:</strong> {{cep}}<br />
+                                <strong style="color:#ffffff;">Timestamp:</strong> {{timestamp}}
+                            </div>
+
+                            <div style="height:14px;"></div>
+
+                            <div
+                                style="font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial; color:#ffffff; font-size:14px; font-weight:700;">
+                                Mensagem
+                            </div>
+                            <div style="height:6px;"></div>
+
+                            <div
+                                style="font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial; color:#c9d4e5; font-size:14px; line-height:1.6; background:#0b0f14;border:1px solid #1b2a3f;border-radius:12px;padding:12px; white-space:pre-wrap;">
+                                {{message}}
+                            </div>
+
+                            <div style="height:16px;"></div>
+
+                            <table role="presentation" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td style="background:#ff2bd6;border-radius:12px;">
+                                        <a href="{{whatsapp_link}}"
+                                            style="display:inline-block;padding:12px 14px;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#0b0f14;text-decoration:none;font-weight:700;font-size:14px;">
+                                            Abrir WhatsApp
+                                        </a>
+                                    </td>
+                                    <td style="width:10px;"></td>
+                                    <td style="background:#111a27;border:1px solid #1b2a3f;border-radius:12px;">
+                                        <a href="mailto:{{email}}"
+                                            style="display:inline-block;padding:12px 14px;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#c9d4e5;text-decoration:none;font-weight:700;font-size:14px;">
+                                            Responder por email
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding:14px 2px 0 2px;">
+                            <div
+                                style="font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial; color:#7d8aa3; font-size:12px; line-height:1.4;">
+                                Fonte: {{source}} · Página: {{page}} · UTM: {{utm}}
+                            </div>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>
