@@ -143,7 +143,11 @@
       "destination": "/desktop.html"
     },
     {
-      "source": "/((?!api|_next|public|desktop|.*\\..*).*)",
+      "source": "/miniapp",
+      "destination": "/miniapp.html"
+    },
+    {
+      "source": "/((?!api|_next|public|desktop|miniapp|.*\\..*).*)",
       "destination": "/index.html"
     }
   ],

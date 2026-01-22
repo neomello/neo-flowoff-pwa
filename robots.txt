@@ -12,12 +12,20 @@ Allow: /js/
 Allow: /images/
 Allow: /icons/
 
+# Permitir acesso a páginas HTML
+Allow: /index.html
+Allow: /desktop.html
+Allow: /miniapp.html
+Allow: /terms.html
+Allow: /privacy.html
+
 # Permitir acesso a arquivos PWA e recursos essenciais
 Allow: /manifest.webmanifest
 Allow: /sw.js
 Allow: /favicon.ico
 Allow: /apple-touch-icon.png
 Allow: /robots.txt
+Allow: /sitemap.xml
 
 # Bloquear arquivos e diretórios desnecessários para SEO
 Disallow: /node_modules/
