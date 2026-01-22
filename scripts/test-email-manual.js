@@ -23,7 +23,7 @@ const fill = (tpl, vars) => {
 };
 
 async function sendTestEmail() {
-    const targetEmail = 'juliatattoo62@gmail.com';
+    const targetEmail = 'nettoaeb1@gmail.com';
     console.log(`📧 Sending test email to ${targetEmail}...`);
 
     try {

@@ -5,7 +5,8 @@ Este arquivo rastreia as tarefas pendentes e sugestões de melhoria técnica par
 ## 📧 Integração de Email (Resend)
 
 ### Melhorias Técnicas
-- [ ] **Validar entregabilidade**: Verificar SPF/DKIM/DMARC do domínio usado no `from`.
+- [x] **Configurar Domínio/DNS**: Registros SPF/DKIM configurados para `neo.flowoff.xyz` (Aguardando Propagação).
+- [ ] **Validar Entregabilidade**: Testar envio final após propagação.
 - [ ] **Feature Flag para Auto-resposta**: Confirmar se queremos manter auto-resposta ativa por padrão ou torná-la configurável via ENV.
 - [ ] **Metadata nos Envios**: Adicionar tags ou metadata (ex: `lead_type`, `source`, `campaign`) no payload do Resend para análise futura.
 - [ ] **Log Estruturado**: Implementar logs estruturados (nível warn/error) para melhor observabilidade em caso de falhas no envio.

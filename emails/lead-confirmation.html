@@ -1,76 +1,167 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="x-apple-disable-message-reformatting" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <meta name="supported-color-schemes" content="dark">
     <title>Recebemos sua solicitação</title>
+    <!--[if mso]>
+    <style type="text/css">
+      body, table, td {font-family: Helvetica, Arial, sans-serif !important;}
+    </style>
+    <![endif]-->
+    <style>
+        :root {
+            color-scheme: dark;
+            supported-color-schemes: dark;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #FFFFFF 0%, #A0A0A0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: #ffffff;
+        }
+
+        .neon-button:hover {
+            box-shadow: 0 0 20px rgba(255, 43, 214, 0.4) !important;
+            transform: translateY(-1px) !important;
+        }
+    </style>
 </head>
 
-<body style="margin:0;padding:0;background:#0b0f14;">
-    <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">
-        Recebemos sua solicitação de {{type}}. Próximos passos dentro de algumas horas.
+<body
+    style="margin:0;padding:0;background-color:#050505;color:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+
+    <!-- Hidden Preheader -->
+    <div style="display:none;max-height:0;overflow:hidden;opacity:0;">
+        Recebemos sua solicitação de {{type}}. Próximos passos dentro de algumas horas. ⠀ ⠀ ⠀ ⠀ ⠀ ⠀ ⠀ ⠀ ⠀ ⠀ ⠀ ⠀ ⠀ ⠀ ⠀
     </div>
 
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
-        style="background:#0b0f14;padding:24px 12px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+        style="background-color:#050505;width:100%;margin:0;padding:40px 0;">
         <tr>
             <td align="center">
-                <table role="presentation" width="600" cellpadding="0" cellspacing="0"
-                    style="width:600px;max-width:600px;">
+
+                <!-- Main Container -->
+                <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0"
+                    style="width:100%;max-width:480px;margin:0 auto;">
+
+                    <!-- Logo / Brand -->
                     <tr>
-                        <td style="background:#0f1622;border:1px solid #1b2a3f;border-radius:16px;padding:18px;">
-                            <div
-                                style="font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial; color:#ffffff; font-size:20px; font-weight:800; line-height:1.2;">
-                                Recebido, {{name}}.
-                            </div>
+                        <td align="center" style="padding-bottom: 30px;">
+                            <img src="https://res.cloudinary.com/dgyocpguk/image/upload/v1769091292/flowoff/public/icon-192.png"
+                                alt="NEØ" width="64" height="64"
+                                style="border-radius:12px;border:1px solid #333333;display:block;">
+                        </td>
+                    </tr>
 
-                            <div style="height:10px;"></div>
-
-                            <div
-                                style="font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial; color:#c9d4e5; font-size:14px; line-height:1.6;">
-                                Sua solicitação de <strong style="color:#ffffff;">{{type}}</strong> entrou na fila.
-                                Vamos revisar e retornar com os próximos passos.
-                            </div>
-
-                            <div style="height:14px;"></div>
-
-                            <div
-                                style="font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial; color:#c9d4e5; font-size:14px; line-height:1.6;">
-                                Se quiser acelerar, responda este email com:
-                                <ul style="margin:8px 0 0 18px; padding:0; color:#c9d4e5;">
-                                    <li>objetivo do projeto</li>
-                                    <li>prazo</li>
-                                    <li>referências (links)</li>
-                                </ul>
-                            </div>
-
-                            <div style="height:16px;"></div>
-
-                            <table role="presentation" cellpadding="0" cellspacing="0">
+                    <!-- Card Style -->
+                    <tr>
+                        <td style="padding:0;">
+                            <!-- Gradient Border Effect -->
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+                                style="border-radius:24px;background:linear-gradient(145deg, #1A1A1A, #0A0A0A);border:1px solid #1F1F1F;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.4);">
                                 <tr>
-                                    <td style="background:#ff2bd6;border-radius:12px;">
-                                        <a href="{{whatsapp_link}}"
-                                            style="display:inline-block;padding:12px 14px;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#0b0f14;text-decoration:none;font-weight:800;font-size:14px;">
-                                            Continuar no WhatsApp
-                                        </a>
+                                    <td style="padding:40px 32px;background-color:#0A0A0A;">
+
+                                        <!-- Greeting -->
+                                        <h1
+                                            style="margin:0 0 16px 0;font-size:24px;font-weight:700;color:#FFFFFF;line-height:1.3;letter-spacing:-0.4px;">
+                                            Olá, {{name}}
+                                        </h1>
+
+                                        <!-- Main Status -->
+                                        <p style="margin:0 0 24px 0;font-size:16px;line-height:1.6;color:#A0A0A0;">
+                                            Confirmamos o recebimento da sua solicitação de <strong
+                                                style="color:#FFFFFF;">{{type}}</strong>.
+                                            <br><br>
+                                            Nossa equipe já foi notificada e vamos analisar os detalhes do seu projeto.
+                                        </p>
+
+                                        <!-- Action Block -->
+                                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                                            border="0"
+                                            style="background-color:#111111;border-radius:16px;border:1px solid #222222;margin-bottom:24px;">
+                                            <tr>
+                                                <td style="padding:20px;">
+                                                    <p
+                                                        style="margin:0 0 12px 0;font-size:14px;color:#888888;font-weight:600;text-transform:uppercase;letter-spacing:1px;">
+                                                        Acelere seu atendimento
+                                                    </p>
+                                                    <p
+                                                        style="margin:0 0 16px 0;font-size:15px;line-height:1.5;color:#CCCCCC;">
+                                                        Para receber uma proposta mais assertiva, envie:
+                                                    </p>
+                                                    <ul
+                                                        style="margin:0;padding:0 0 0 20px;color:#CCCCCC;font-size:15px;line-height:1.6;">
+                                                        <li style="margin-bottom:4px;">Objetivo principal</li>
+                                                        <li style="margin-bottom:4px;">Prazo estimado</li>
+                                                        <li>Referências visuais</li>
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                        <!-- CTA Button -->
+                                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                                            border="0">
+                                            <tr>
+                                                <td align="center">
+                                                    <a href="{{whatsapp_link}}" target="_blank"
+                                                        style="display:block;width:100%;box-sizing:border-box;background-color:#FF2BD6;color:#ffffff;text-decoration:none;padding:16px 24px;border-radius:12px;font-size:16px;font-weight:700;text-align:center;transition:all 0.2s ease;">
+                                                        Continuar no WhatsApp &rarr;
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+
                                     </td>
                                 </tr>
                             </table>
+                        </td>
+                    </tr>
 
-                            <div style="height:14px;"></div>
+                    <!-- Footer -->
+                    <tr>
+                        <td style="padding-top:30px;padding-bottom:20px;text-align:center;">
+                            <p style="margin:0;font-size:12px;color:#444444;line-height:1.5;">
+                                Enviado via <strong>NEØ FlowOFF PWA</strong><br>
+                                <span style="font-size:11px;color:#333333;">São Paulo, Brasil</span>
+                            </p>
 
-                            <div
-                                style="font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial; color:#7d8aa3; font-size:12px; line-height:1.4;">
-                                NeoFlowOFF · Este é um email automático. Se não foi você, ignore.
-                            </div>
+                            <!-- Social Icons (Optional) -->
+                            <table role="presentation" align="center" style="margin-top:16px;">
+                                <tr>
+                                    <td style="padding:0 8px;">
+                                        <a href="https://flowoff.xyz"
+                                            style="font-size:12px;color:#666666;text-decoration:none;">Website</a>
+                                    </td>
+                                    <td style="padding:0 8px;color:#333333;">•</td>
+                                    <td style="padding:0 8px;">
+                                        <a href="https://instagram.com/neo.flowoff"
+                                            style="font-size:12px;color:#666666;text-decoration:none;">Instagram</a>
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
                 </table>
+
             </td>
         </tr>
     </table>
+
 </body>
 
 </html>
