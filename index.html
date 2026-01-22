@@ -103,6 +103,7 @@
   <link rel="stylesheet" href="styles.css?v=2.3.0" />
   <link rel="stylesheet" href="bento-grid.css?v=1.1.0" />
   <link rel="stylesheet" href="glass-morphism-bottom-bar.css" />
+  <link rel="stylesheet" href="css/wallet.css" />
 </head>
 
 <body>
@@ -1520,7 +1521,7 @@
   <script src="js/offline-queue.js?v=1.0.0"></script>
 
   <!-- p5.js para efeitos visuais -->
-  <script src="https://cdn.jsdelivr.net/npm/p5@1.7.0/lib/p5.min.js" crossorigin="anonymous"></script>
+  <script src="js/lib/p5.min.js"></script>
   <script src="js/p5-background.js?v=1.4.6"></script>
 
   <!-- Validação de Formulário Robusta -->
@@ -1561,7 +1562,8 @@
 
     // ⚠️ WALLET: Desabilitada até backend Neon SQL estar implementado
     // Para habilitar: defina window.WALLET_ENABLED = true antes de carregar wallet.js
-    window.WALLET_ENABLED = window.WALLET_ENABLED ?? false;
+    // ⚠️ WALLET: Habilitada explicitamente para produção
+    window.WALLET_ENABLED = true;
   </script>
 
   <!-- Wallet Manager -->

@@ -92,21 +92,20 @@ for (const file of filesToCopy) {
   }
 }
 
-// Copia pasta js/
+// Copia pasta js/ recursivamente
 const jsSrcDir = path.join(rootDir, 'js');
 const jsDestDir = path.join(distDir, 'js');
 if (fs.existsSync(jsSrcDir)) {
-  if (!fs.existsSync(jsDestDir)) {
-    fs.mkdirSync(jsDestDir, { recursive: true });
-  }
-  const jsFiles = fs.readdirSync(jsSrcDir);
-  for (const file of jsFiles) {
-    const srcPath = path.join(jsSrcDir, file);
-    const destPath = path.join(jsDestDir, file);
-    if (fs.statSync(srcPath).isFile()) {
-      fs.copyFileSync(srcPath, destPath);
-    }
-  }
+  console.log('📦 Copiando scripts (js/)...');
+  fs.cpSync(jsSrcDir, jsDestDir, { recursive: true });
+}
+
+// Copia pasta css/ recursivamente (para novos arquivos modulares)
+const cssSrcDir = path.join(rootDir, 'css');
+const cssDestDir = path.join(distDir, 'css');
+if (fs.existsSync(cssSrcDir)) {
+  console.log('📦 Copiando estilos (css/)...');
+  fs.cpSync(cssSrcDir, cssDestDir, { recursive: true });
 }
 
 // Copia diretório public (se existir)
