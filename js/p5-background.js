@@ -20,7 +20,16 @@ let particleCount = isMobile ? 8 : 15; // Menos partículas para efeito de estre
 function setup() {
   // Criar canvas de fundo
   let canvas = createCanvas(windowWidth, windowHeight);
-  canvas.parent('app');
+
+  // Tentar encontrar o container correto ('app' para mobile, 'desktop-app' para desktop)
+  let parentId = document.getElementById('app') ? 'app' : 'desktop-app';
+
+  // Se nenhum dos dois existir, anexar ao body diretamente
+  if (!document.getElementById(parentId)) {
+    canvas.parent(document.body);
+  } else {
+    canvas.parent(parentId);
+  }
   canvas.style('position', 'fixed');
   canvas.style('top', '0');
   canvas.style('left', '0');
