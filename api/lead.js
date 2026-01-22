@@ -1,3 +1,4 @@
+import { Resend } from 'resend';
 import {
   setCORSHeaders,
   handleOptions,
@@ -13,7 +14,7 @@ const MAX_BODY_SIZE = 10000; // 10KB máximo
 
 /**
  * POST /api/lead
- * Endpoint para receber leads
+ * Endpoint para receber leads e notificar via Resend
  */
 export default async function handler(req, res) {
   // Handle preflight
@@ -49,6 +50,8 @@ export default async function handler(req, res) {
     const email = sanitizeText(leadData.email, 255);
     const whats = sanitizeText(leadData.whats, 20);
     const type = sanitizeText(leadData.type, 50);
+    const cep = sanitizeText(leadData.cep || '', 20) || 'N/A';
+    const message = sanitizeText(leadData.message || '', 1000) || 'Sem mensagem';
 
     if (!name || !email || !whats || !type) {
       res.status(400).json({
@@ -82,24 +85,78 @@ export default async function handler(req, res) {
       return;
     }
 
-    // Persiste lead no Neon
-    const result = await query(
-      `
-        INSERT INTO leads (name, email, whats, type)
-        VALUES ($1, $2, $3, $4)
-        RETURNING id, created_at
-      `,
-      [name, email, whats, type]
-    );
+    // Persiste lead no Neon (se DB estiver configurado)
+    let leadId = null;
+    let createdAt = new Date().toISOString();
 
-    const row = result?.[0];
+    try {
+      const result = await query(
+        `
+          INSERT INTO leads (name, email, whats, type)
+          VALUES ($1, $2, $3, $4)
+          RETURNING id, created_at
+        `,
+        [name, email, whats, type]
+      );
+      const row = result?.[0];
+      if (row) {
+        leadId = row.id;
+        createdAt = row.created_at;
+      }
+    } catch (dbError) {
+      console.warn('⚠️ Falha ao salvar no banco de dados (ignorando):', dbError);
+      // Não falhar requisição se DB cair, prioridade é notificação
+    }
+
+    // 🔥 Integração Resend (Envio de Email)
+    if (process.env.RESEND_API_KEY) {
+      try {
+        const resend = new Resend(process.env.RESEND_API_KEY);
+
+        // Email Interno (Notificação)
+        await resend.emails.send({
+          from: 'NEØ Leads <leads@flowoff.xyz>', // Ajustar conforme domínio verificado
+          to: ['neoprotocol.eth@ethermail.io'], // Email do admin
+          subject: `🚀 Novo Lead: ${name} (${type})`,
+          html: `
+            <div style="font-family: sans-serif; padding: 20px; color: #333;">
+              <h2 style="color: #FF2FB3;">Novo Lead Capturado</h2>
+              <p><strong>Nome:</strong> ${name}</p>
+              <p><strong>Email:</strong> ${email}</p>
+              <p><strong>WhatsApp:</strong> ${whats}</p>
+              <p><strong>Tipo:</strong> ${type}</p>
+              <p><strong>CEP:</strong> ${cep}</p>
+              <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+              <p><strong>Mensagem Original:</strong><br/>${message.replace(/\n/g, '<br/>')}</p>
+              <p style="font-size: 12px; color: #888; margin-top: 30px;">ID do Lead: ${leadId || 'N/A'}</p>
+            </div>
+          `,
+        });
+
+        // Email de Confirmação para o Lead (Opcional - Hardcoded template por enquanto)
+        /*
+        await resend.emails.send({
+           from: 'NEØ FlowOFF <contato@flowoff.xyz>',
+           to: [email],
+           subject: 'Recebemos seu contato - NEØ FlowOFF',
+           html: '<p>Olá ${name}, recebemos seu interesse em <strong>${type}</strong>. Em breve nossa equipe entrará em contato via WhatsApp.</p>'
+        });
+        */
+
+      } catch (emailError) {
+        console.error('❌ Erro ao enviar email via Resend:', emailError);
+        // Não falhar a request, apenas logar
+      }
+    } else {
+      console.warn('⚠️ RESEND_API_KEY não configurada. Email não enviado.');
+    }
 
     res.status(200).json({
       success: true,
       message: 'Lead recebido com sucesso',
       data: {
-        id: row?.id,
-        created_at: row?.created_at,
+        id: leadId,
+        created_at: createdAt,
         name,
         email,
         whats,
