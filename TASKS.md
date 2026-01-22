@@ -5,8 +5,8 @@ Este arquivo rastreia as tarefas pendentes e sugestões de melhoria técnica par
 ## 📧 Integração de Email (Resend)
 
 ### Melhorias Técnicas
-- [x] **Configurar Domínio/DNS**: Registros SPF/DKIM configurados para `neo.flowoff.xyz` (Aguardando Propagação).
-- [ ] **Validar Entregabilidade**: Testar envio final após propagação.
+- [x] **Validar Entregabilidade**: Envio de email testado e aprovado.
+- [x] **Integração Hunter.io**: Verificação de emails (anti-spam/disposable) implementada.
 - [ ] **Feature Flag para Auto-resposta**: Confirmar se queremos manter auto-resposta ativa por padrão ou torná-la configurável via ENV.
 - [ ] **Metadata nos Envios**: Adicionar tags ou metadata (ex: `lead_type`, `source`, `campaign`) no payload do Resend para análise futura.
 - [ ] **Log Estruturado**: Implementar logs estruturados (nível warn/error) para melhor observabilidade em caso de falhas no envio.

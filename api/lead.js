@@ -85,6 +85,34 @@ export default async function handler(req, res) {
       return;
     }
 
+    // 🕵️‍♀️ Hunter.io Email Verification
+    // Só verifica se houver chave configurada
+    if (process.env.HUNTER_API_KEY) {
+      try {
+        const verifyUrl = `https://api.hunter.io/v2/email-verifier?email=${encodeURIComponent(email)}&api_key=${process.env.HUNTER_API_KEY}`;
+        const verifyRes = await fetch(verifyUrl);
+
+        if (verifyRes.ok) {
+          const verifyData = await verifyRes.json();
+          const { result, status } = verifyData.data || {};
+
+          // Block INVALID or DISPOSABLE emails
+          if (result === 'undeliverable' || status === 'disposable') {
+            console.warn(`🛑 Email bloqueado pelo Hunter.io: ${email} (Status: ${status})`);
+            res.status(400).json({
+              success: false,
+              error: 'Email inválido ou temporário não permitido.',
+            });
+            return;
+          }
+          console.log(`✅ Hunter.io Check: ${email} is ${status} (${result})`);
+        }
+      } catch (hunterError) {
+        console.error('⚠️ Erro ao verificar email no Hunter.io (prosseguindo):', hunterError);
+        // Fail open: Se a API cair, deixamos passar para não perder o lead
+      }
+    }
+
     // Persiste lead no Neon (se DB estiver configurado)
     let leadId = null;
     let createdAt = new Date().toISOString();
