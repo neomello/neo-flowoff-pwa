@@ -169,8 +169,24 @@ class WalletManager {
     metamaskBtn.addEventListener('click', () => this.connectMetaMask());
     const metamaskIcon = document.createElement('span');
     metamaskIcon.className = 'wallet-option-icon';
-    metamaskIcon.innerHTML =
-      '<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M22.56 2.5L12.5 9.5L2.44 2.5L12.5 0L22.56 2.5Z" fill="#E2761B"/><path d="M2.44 2.5L12.5 9.5L22.56 2.5L12.5 0L2.44 2.5Z" fill="#E4761B"/><path d="M22.56 2.5L12.5 9.5L2.44 2.5L12.5 0L22.56 2.5Z" fill="#CD6116"/></svg>';
+    const metamaskSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    metamaskSvg.setAttribute('width', '24');
+    metamaskSvg.setAttribute('height', '24');
+    metamaskSvg.setAttribute('viewBox', '0 0 24 24');
+    metamaskSvg.setAttribute('fill', 'none');
+    const path1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path1.setAttribute('d', 'M22.56 2.5L12.5 9.5L2.44 2.5L12.5 0L22.56 2.5Z');
+    path1.setAttribute('fill', '#E2761B');
+    const path2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path2.setAttribute('d', 'M2.44 2.5L12.5 9.5L22.56 2.5L12.5 0L2.44 2.5Z');
+    path2.setAttribute('fill', '#E4761B');
+    const path3 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path3.setAttribute('d', 'M22.56 2.5L12.5 9.5L2.44 2.5L12.5 0L22.56 2.5Z');
+    path3.setAttribute('fill', '#CD6116');
+    metamaskSvg.appendChild(path1);
+    metamaskSvg.appendChild(path2);
+    metamaskSvg.appendChild(path3);
+    metamaskIcon.appendChild(metamaskSvg);
     const metamaskText = document.createElement('span');
     metamaskText.textContent = 'MetaMask';
     metamaskBtn.appendChild(metamaskIcon);
@@ -182,8 +198,16 @@ class WalletManager {
     web3authBtn.addEventListener('click', () => this.connectWeb3Auth());
     const web3authIcon = document.createElement('span');
     web3authIcon.className = 'wallet-option-icon';
-    web3authIcon.innerHTML =
-      '<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="#8B5CF6"/></svg>';
+    const web3authSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    web3authSvg.setAttribute('width', '24');
+    web3authSvg.setAttribute('height', '24');
+    web3authSvg.setAttribute('viewBox', '0 0 24 24');
+    web3authSvg.setAttribute('fill', 'none');
+    const web3authPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    web3authPath.setAttribute('d', 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z');
+    web3authPath.setAttribute('fill', '#8B5CF6');
+    web3authSvg.appendChild(web3authPath);
+    web3authIcon.appendChild(web3authSvg);
     const web3authText = document.createElement('span');
     web3authText.textContent = 'Web3Auth';
     web3authBtn.appendChild(web3authIcon);
@@ -197,8 +221,18 @@ class WalletManager {
     );
     const walletConnectIcon = document.createElement('span');
     walletConnectIcon.className = 'wallet-option-icon';
-    walletConnectIcon.innerHTML =
-      '<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#3B99FC"/></svg>';
+    const walletConnectSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    walletConnectSvg.setAttribute('width', '24');
+    walletConnectSvg.setAttribute('height', '24');
+    walletConnectSvg.setAttribute('viewBox', '0 0 24 24');
+    walletConnectSvg.setAttribute('fill', 'none');
+    const walletConnectCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    walletConnectCircle.setAttribute('cx', '12');
+    walletConnectCircle.setAttribute('cy', '12');
+    walletConnectCircle.setAttribute('r', '10');
+    walletConnectCircle.setAttribute('fill', '#3B99FC');
+    walletConnectSvg.appendChild(walletConnectCircle);
+    walletConnectIcon.appendChild(walletConnectSvg);
     const walletConnectText = document.createElement('span');
     walletConnectText.textContent = 'WalletConnect';
     walletConnectBtn.appendChild(walletConnectIcon);
@@ -1140,12 +1174,21 @@ class WalletManager {
 
     const loading = document.createElement('div');
     loading.className = 'wallet-loading';
-    loading.innerHTML = `
-      <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 24px;">
-        <div style="width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #ff2fb3; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
-        <span style="color: rgba(255,255,255,0.8); font-size: 14px;">${message}</span>
-      </div>
-    `;
+    
+    // Criar estrutura de forma segura (sem innerHTML com dados dinâmicos)
+    const container = document.createElement('div');
+    container.style.cssText = 'display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 24px;';
+    
+    const spinner = document.createElement('div');
+    spinner.style.cssText = 'width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #ff2fb3; border-radius: 50%; animation: spin 0.8s linear infinite;';
+    
+    const messageSpan = document.createElement('span');
+    messageSpan.style.cssText = 'color: rgba(255,255,255,0.8); font-size: 14px;';
+    messageSpan.textContent = message; // Usar textContent ao invés de innerHTML
+    
+    container.appendChild(spinner);
+    container.appendChild(messageSpan);
+    loading.appendChild(container);
     loading.style.cssText = `
       position: absolute;
       top: 0;

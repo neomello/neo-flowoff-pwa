@@ -93,6 +93,48 @@ window.addEventListener('resize', () => {
 window.closeMobileMenu = closeMobileMenu;
 window.syncMobileWalletButton = syncMobileWalletButton;
 
+// === WALLET BUTTON EVENT LISTENERS ===
+// Remover handlers inline do HTML - usar event listeners seguros
+document.addEventListener('DOMContentLoaded', () => {
+  // Botão wallet desktop
+  const walletBtn = document.getElementById('wallet-btn');
+  if (walletBtn) {
+    walletBtn.addEventListener('click', () => {
+      window.WalletManager?.toggle();
+    });
+  }
+
+  // Botão wallet mobile
+  const walletBtnMobile = document.getElementById('wallet-btn-mobile');
+  if (walletBtnMobile) {
+    walletBtnMobile.addEventListener('click', () => {
+      window.WalletManager?.toggle();
+      closeMobileMenu();
+    });
+  }
+
+  // Link Telegram com hover effects (remover handlers inline)
+  const telegramLink = document.getElementById('telegram-link');
+  if (telegramLink) {
+    telegramLink.addEventListener('mouseenter', () => {
+      telegramLink.style.opacity = '1';
+      telegramLink.style.borderColor = '#ff2fb3';
+    });
+    telegramLink.addEventListener('mouseleave', () => {
+      telegramLink.style.opacity = '0.6';
+      telegramLink.style.borderColor = 'rgba(255,255,255,0.2)';
+    });
+  }
+
+  // Bento contact card (remover onclick inline)
+  const bentoContact = document.getElementById('bento-contact');
+  if (bentoContact && window.go) {
+    bentoContact.addEventListener('click', () => {
+      window.go('start');
+    });
+  }
+});
+
 // Force CSS reload
 const link = document.querySelector('link[href*="styles.css"]');
 if (link) {

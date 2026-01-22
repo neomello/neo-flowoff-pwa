@@ -119,7 +119,7 @@
   filter: blur(65px);
   pointer-events: none;
   z-index: -1;
-  transform: rotate(8deg);
+  transform: rotate(0deg);
 }
 
 .bento-hero:hover {
@@ -238,7 +238,7 @@
   filter: blur(68px);
   pointer-events: none;
   z-index: -1;
-  transform: rotate(-22deg);
+  transform: rotate(0deg);
 }
 
 .bento-flowoff:hover {
@@ -365,7 +365,7 @@
   filter: blur(70px);
   pointer-events: none;
   z-index: -1;
-  transform: rotate(-15deg);
+  transform: rotate(0deg);
 }
 
 .bento-webapp::after {
@@ -438,7 +438,7 @@
   filter: blur(75px);
   pointer-events: none;
   z-index: -1;
-  transform: rotate(25deg);
+  transform: rotate(0deg);
 }
 
 .bento-dashboard::after {
@@ -511,7 +511,7 @@
   filter: blur(72px);
   pointer-events: none;
   z-index: -1;
-  transform: rotate(18deg);
+  transform: rotate(0deg);
 }
 
 .bento-projects:hover {
@@ -601,7 +601,7 @@
   filter: blur(66px);
   pointer-events: none;
   z-index: -1;
-  transform: rotate(12deg);
+  transform: rotate(0deg);
 }
 
 .bento-neo::after {
@@ -674,7 +674,7 @@
   filter: blur(69px);
   pointer-events: none;
   z-index: -1;
-  transform: rotate(-28deg);
+  transform: rotate(0deg);
 }
 
 .bento-contact::after {
@@ -748,7 +748,7 @@
   filter: blur(71px);
   pointer-events: none;
   z-index: -1;
-  transform: rotate(-5deg);
+  transform: rotate(0deg);
 }
 
 .bento-neoflw:hover {
@@ -788,7 +788,7 @@
 }
 
 .bento-neoflw:hover .neoflw-icon {
-  transform: rotate(360deg);
+  transform: rotate(0deg);
   background: linear-gradient(
     135deg,
     rgba(0, 208, 255, 0.3),

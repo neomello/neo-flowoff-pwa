@@ -91,8 +91,9 @@
     </script>
 
   <!-- Content Security Policy -->
+  <!-- CSP já implementado - verificar se precisa ajustes após remoção de handlers inline -->
   <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self' blob: data: https://*.storacha.link https://*.w3s.link https://*.nftstorage.link https://*.dweb.link https://ipfs.io https://*.githubusercontent.com https://*.storacha.network https://cdn.jsdelivr.net https://unpkg.com https://*.unpkg.com https://vercel.live https://auto.esm.sh https://esm.sh https://*.esm.sh; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://*.unpkg.com https://vercel.live https://*.vercel.live https://auto.esm.sh https://esm.sh https://*.esm.sh; style-src 'self' 'unsafe-inline' https://esm.sh https://*.esm.sh; img-src 'self' data: https: blob:; connect-src 'self' https: wss:; font-src 'self' data: https:; frame-src 'self' https://vercel.live; base-uri 'self'; form-action 'self' https://wa.me; upgrade-insecure-requests;" />
+    content="default-src 'self' blob: data: https://*.storacha.link https://*.w3s.link https://*.nftstorage.link https://*.dweb.link https://ipfs.io https://*.githubusercontent.com https://*.storacha.network https://cdn.jsdelivr.net https://unpkg.com https://*.unpkg.com https://vercel.live https://auto.esm.sh https://esm.sh https://*.esm.sh; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://*.unpkg.com https://vercel.live https://*.vercel.live https://auto.esm.sh https://esm.sh https://*.esm.sh; style-src 'self' 'unsafe-inline' https://esm.sh https://*.esm.sh; img-src 'self' data: https: blob:; connect-src 'self' https: wss:; font-src 'self' data: https:; frame-src 'self' https://vercel.live https://*.telegram.org; base-uri 'self'; form-action 'self' https://wa.me; upgrade-insecure-requests;" />
   <!-- iOS PWA -->
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -123,8 +124,7 @@
         <!-- Container do menu à direita -->
         <div class="header-menu-container">
           <!-- Desktop: Botão direto -->
-          <button type="button" id="wallet-btn" class="wallet-connect-btn desktop-only"
-            onclick="window.WalletManager?.toggle()">
+          <button type="button" id="wallet-btn" class="wallet-connect-btn desktop-only">
             <span class="wallet-btn-text">ACESSAR</span>
             <span class="wallet-btn-icon">→</span>
           </button>
@@ -140,8 +140,7 @@
 
       <!-- Mobile Dropdown Menu -->
       <div class="mobile-menu-dropdown" id="mobile-menu-dropdown">
-        <button type="button" id="wallet-btn-mobile" class="wallet-connect-btn-mobile"
-          onclick="window.WalletManager?.toggle(); closeMobileMenu();">
+        <button type="button" id="wallet-btn-mobile" class="wallet-connect-btn-mobile">
           <span class="wallet-btn-icon-mobile">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4" />
@@ -193,10 +192,8 @@
 
                 <!-- Secondary CTA -->
                 <div style="margin-top: 10px;">
-                  <a href="https://t.me/AgenteFlow_Bot?start=flowoff" target="_blank" rel="noopener"
-                    style="text-decoration: none; color: #fff; font-size: 12px; opacity: 0.6; border: 1px solid rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 20px; transition: all 0.3s ease;"
-                    onmouseover="this.style.opacity='1'; this.style.borderColor='#ff2fb3'"
-                    onmouseout="this.style.opacity='0.6'; this.style.borderColor='rgba(255,255,255,0.2)'">
+                  <a href="https://t.me/AgenteFlow_Bot?start=flowoff" target="_blank" rel="noopener" id="telegram-link"
+                    style="text-decoration: none; color: #fff; font-size: 12px; opacity: 0.6; border: 1px solid rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 20px; transition: all 0.3s ease;">
                     TESTE O AGENTE FLOW NO TELEGRAM
                   </a>
                 </div>
@@ -292,7 +289,7 @@
           </div>
 
           <!-- Contato Card -->
-          <div class="bento-item bento-contact" onclick="go('start')">
+          <div class="bento-item bento-contact" id="bento-contact">
             <div class="thumb thumb-6"></div>
             <h3>Entre em contato</h3>
             <p>

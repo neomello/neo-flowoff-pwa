@@ -580,15 +580,29 @@ class DesktopExperience {
     const existingToasts = document.querySelectorAll('.desktop-toast');
     existingToasts.forEach((toast) => toast.remove());
 
-    // Cria novo toast
+    // Cria novo toast de forma segura (sem innerHTML com dados dinâmicos)
     const toast = document.createElement('div');
     toast.className = `desktop-toast toast-${type}`;
-    toast.innerHTML = `
-      <div class="toast-content">
-        <span class="toast-message">${message}</span>
-      </div>
-      <button class="toast-close" onclick="this.parentElement.remove()">×</button>
-    `;
+    
+    const toastContent = document.createElement('div');
+    toastContent.className = 'toast-content';
+    
+    const toastMessage = document.createElement('span');
+    toastMessage.className = 'toast-message';
+    toastMessage.textContent = message; // Usar textContent ao invés de innerHTML
+    
+    const toastClose = document.createElement('button');
+    toastClose.className = 'toast-close';
+    toastClose.textContent = '×';
+    toastClose.setAttribute('aria-label', 'Fechar notificação');
+    // Remover handler inline - usar addEventListener
+    toastClose.addEventListener('click', () => {
+      toast.remove();
+    });
+    
+    toastContent.appendChild(toastMessage);
+    toast.appendChild(toastContent);
+    toast.appendChild(toastClose);
 
     // Adiciona ao DOM
     document.body.appendChild(toast);
