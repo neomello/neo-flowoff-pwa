@@ -210,6 +210,15 @@ export default async function handler(req, res) {
       console.warn('⚠️ RESEND_API_KEY não configurada. Email não enviado.');
     }
 
+    console.log(JSON.stringify({
+      event: 'lead_success',
+      leadId,
+      name,
+      email,
+      type,
+      timestamp: createdAt
+    }));
+
     res.status(200).json({
       success: true,
       message: 'Lead recebido com sucesso',
