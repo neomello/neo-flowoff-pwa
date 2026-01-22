@@ -20,6 +20,10 @@ class DesktopExperience {
     this.scrollPosition = 0;
     this.lastActivity = Date.now();
 
+    // Armazenar referências de event listeners para cleanup
+    this.eventListeners = [];
+    this.boundHandlers = new Map();
+
     this.init();
   }
 
@@ -56,23 +60,35 @@ class DesktopExperience {
    * Verifica se deve redirecionar para versão mobile
    */
   shouldRedirectToMobile() {
+    // Verifica se usuário forçou desktop
+    const forceDesktop = localStorage.getItem('force-desktop') === 'true';
+    if (forceDesktop) {
+      return false;
+    }
+
+    // Verifica parâmetros de URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('force-desktop') === 'true') {
+      localStorage.setItem('force-desktop', 'true');
+      return false;
+    }
+
     const isMobileDevice = this.detectMobileDevice();
     const isSmallScreen = window.innerWidth < 1024 || window.innerHeight < 768;
-    const forceDesktop = localStorage.getItem('force-desktop') === 'true';
 
-    // Não redireciona se forçado desktop ou se não for mobile
-    if (forceDesktop || (!isMobileDevice && !isSmallScreen)) {
+    // Não redireciona se não for mobile
+    if (!isMobileDevice && !isSmallScreen) {
       return false;
     }
 
     // Redireciona para mobile se for dispositivo móvel ou tela pequena
     if (isMobileDevice || isSmallScreen) {
-      // Verifica se já tentou redirecionar recentemente
+      // Verifica se já tentou redirecionar recentemente (evita loops)
       const lastMobileRedirect = localStorage.getItem('last-mobile-redirect');
       const now = Date.now();
 
       if (!lastMobileRedirect || now - parseInt(lastMobileRedirect) > 30000) {
-        // 30 segundos
+        // 30 segundos - tempo suficiente para evitar loops
         return true;
       }
     }
@@ -131,44 +147,111 @@ class DesktopExperience {
    * Vincula eventos
    */
   bindEvents() {
+    // Helper para registrar listeners com cleanup
+    const addEventListenerWithCleanup = (element, event, handler, options) => {
+      const boundHandler = handler.bind(this);
+      this.boundHandlers.set(`${element === window ? 'window' : element.id || 'doc'}_${event}`, {
+        element,
+        event,
+        handler: boundHandler,
+        original: handler
+      });
+      element.addEventListener(event, boundHandler, options);
+    };
+
     // Toggle sidebar
     if (this.sidebarToggle) {
-      this.sidebarToggle.addEventListener('click', () => this.toggleSidebar());
+      const handler = () => this.toggleSidebar();
+      this.sidebarToggle.addEventListener('click', handler);
+      this.eventListeners.push({
+        element: this.sidebarToggle,
+        event: 'click',
+        handler
+      });
     }
 
     // Toggle tema
     if (this.themeToggle) {
-      this.themeToggle.addEventListener('click', () => this.toggleTheme());
+      const handler = () => this.toggleTheme();
+      this.themeToggle.addEventListener('click', handler);
+      this.eventListeners.push({
+        element: this.themeToggle,
+        event: 'click',
+        handler
+      });
     }
 
     // Navegação
     this.navItems.forEach((item) => {
-      item.addEventListener('click', (e) => {
+      const handler = (e) => {
         e.preventDefault();
         const section = item.dataset.section;
         if (section) {
           this.navigateToSection(section);
         }
+      };
+      item.addEventListener('click', handler);
+      this.eventListeners.push({
+        element: item,
+        event: 'click',
+        handler
       });
     });
 
     // Formulário de contato
     if (this.contactForm) {
-      this.contactForm.addEventListener('submit', (e) =>
-        this.handleContactSubmit(e)
-      );
+      const handler = (e) => this.handleContactSubmit(e);
+      this.contactForm.addEventListener('submit', handler);
+      this.eventListeners.push({
+        element: this.contactForm,
+        event: 'submit',
+        handler
+      });
     }
 
-    // Resize da janela
-    window.addEventListener('resize', () => this.handleResize());
+    // Resize da janela (com throttle)
+    const resizeHandler = () => this.handleResize();
+    window.addEventListener('resize', resizeHandler);
+    this.eventListeners.push({
+      element: window,
+      event: 'resize',
+      handler: resizeHandler
+    });
 
     // Atividade do usuário
-    document.addEventListener('mousemove', () => this.updateActivity());
-    document.addEventListener('keydown', () => this.updateActivity());
-    document.addEventListener('click', () => this.updateActivity());
+    const activityHandler = () => this.updateActivity();
+    document.addEventListener('mousemove', activityHandler);
+    document.addEventListener('keydown', activityHandler);
+    document.addEventListener('click', activityHandler);
+    this.eventListeners.push(
+      { element: document, event: 'mousemove', handler: activityHandler },
+      { element: document, event: 'keydown', handler: activityHandler },
+      { element: document, event: 'click', handler: activityHandler }
+    );
 
     // Scroll
-    window.addEventListener('scroll', () => this.handleScroll());
+    const scrollHandler = () => this.handleScroll();
+    window.addEventListener('scroll', scrollHandler, { passive: true });
+    this.eventListeners.push({
+      element: window,
+      event: 'scroll',
+      handler: scrollHandler
+    });
+  }
+
+  /**
+   * Limpa todos os event listeners para prevenir memory leaks
+   */
+  cleanup() {
+    this.eventListeners.forEach(({ element, event, handler }) => {
+      try {
+        element.removeEventListener(event, handler);
+      } catch (e) {
+        window.Logger?.warn('Erro ao remover event listener:', e);
+      }
+    });
+    this.eventListeners = [];
+    this.boundHandlers.clear();
   }
 
   /**
@@ -714,6 +797,13 @@ document.head.appendChild(styleSheet);
 // Inicializa quando DOM estiver pronto
 document.addEventListener('DOMContentLoaded', () => {
   window.DesktopExperience = new DesktopExperience();
+
+  // Cleanup ao descarregar página
+  window.addEventListener('beforeunload', () => {
+    if (window.DesktopExperience && typeof window.DesktopExperience.cleanup === 'function') {
+      window.DesktopExperience.cleanup();
+    }
+  });
 });
 
 // Cleanup quando página for descarregada

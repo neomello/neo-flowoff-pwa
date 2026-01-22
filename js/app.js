@@ -6,18 +6,25 @@ const PWA_VERSION = '1.0.7';
 
 // Registro do Service Worker com detecção de atualizações
 if ('serviceWorker' in navigator) {
+  // Armazenar referências para cleanup adequado
+  let swUpdateInterval = null;
+  let registrationInstance = null;
+  const cleanupFunctions = [];
+
   window.addEventListener('load', async () => {
     try {
-      const registration = await navigator.serviceWorker.register('./sw.js');
+      registrationInstance = await navigator.serviceWorker.register('./sw.js');
 
       // Verificar atualizações a cada 60 minutos
       // Armazena interval ID para limpeza
-      let swUpdateInterval = setInterval(
+      swUpdateInterval = setInterval(
         () => {
           try {
-            registration.update().catch((err) => {
-              window.Logger?.warn('Erro ao atualizar Service Worker:', err);
-            });
+            if (registrationInstance) {
+              registrationInstance.update().catch((err) => {
+                window.Logger?.warn('Erro ao atualizar Service Worker:', err);
+              });
+            }
           } catch (error) {
             window.Logger?.warn('Erro ao atualizar Service Worker:', error);
           }
@@ -25,7 +32,7 @@ if ('serviceWorker' in navigator) {
         60 * 60 * 1000
       );
 
-      // Limpa interval quando página é descarregada ou escondida
+      // Limpa interval quando página é descarregada
       const cleanup = () => {
         if (swUpdateInterval) {
           clearInterval(swUpdateInterval);
@@ -33,22 +40,22 @@ if ('serviceWorker' in navigator) {
         }
       };
 
-      window.addEventListener('beforeunload', cleanup);
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-          // Não limpar aqui, apenas quando realmente descarregar
-        }
-      });
+      // Armazenar função de cleanup
+      cleanupFunctions.push(cleanup);
 
-      // Cleanup adicional em caso de erro não tratado
-      window.addEventListener('error', () => {
-        // Não limpar automaticamente em erro, apenas logar
+      // Registrar cleanup no beforeunload
+      const beforeUnloadHandler = () => cleanup();
+      window.addEventListener('beforeunload', beforeUnloadHandler);
+      cleanupFunctions.push(() => {
+        window.removeEventListener('beforeunload', beforeUnloadHandler);
       });
 
       // Verificar se há atualizações
-      registration.addEventListener('updatefound', () => {
-        const newWorker = registration.installing;
-        newWorker.addEventListener('statechange', () => {
+      const updateFoundHandler = () => {
+        const newWorker = registrationInstance?.installing;
+        if (!newWorker) return;
+
+        const stateChangeHandler = () => {
           if (
             newWorker.state === 'installed' &&
             navigator.serviceWorker.controller
@@ -56,7 +63,19 @@ if ('serviceWorker' in navigator) {
             // Nova versão disponível - notificar usuário
             showUpdateNotification();
           }
+        };
+
+        newWorker.addEventListener('statechange', stateChangeHandler);
+        cleanupFunctions.push(() => {
+          newWorker.removeEventListener('statechange', stateChangeHandler);
         });
+      };
+
+      registrationInstance.addEventListener('updatefound', updateFoundHandler);
+      cleanupFunctions.push(() => {
+        if (registrationInstance) {
+          registrationInstance.removeEventListener('updatefound', updateFoundHandler);
+        }
       });
     } catch (error) {
       window.Logger?.error('Erro ao registrar Service Worker:', error);
@@ -64,11 +83,32 @@ if ('serviceWorker' in navigator) {
   });
 
   // Listener para controllerchange (quando SW assume controle)
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
+  const controllerChangeHandler = () => {
     // Recarregar após atualização do SW
     if (window._swUpdateReady) {
       window.location.reload();
     }
+  };
+
+  navigator.serviceWorker.addEventListener('controllerchange', controllerChangeHandler);
+
+  // Cleanup global ao descarregar página
+  window.addEventListener('beforeunload', () => {
+    cleanupFunctions.forEach(fn => {
+      try {
+        fn();
+      } catch (e) {
+        window.Logger?.warn('Erro durante cleanup:', e);
+      }
+    });
+    cleanupFunctions.length = 0;
+    
+    if (swUpdateInterval) {
+      clearInterval(swUpdateInterval);
+      swUpdateInterval = null;
+    }
+
+    navigator.serviceWorker.removeEventListener('controllerchange', controllerChangeHandler);
   });
 }
 

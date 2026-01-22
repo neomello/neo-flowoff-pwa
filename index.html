@@ -1232,12 +1232,28 @@
           return false;
         }
 
+        // Verifica parâmetros de URL primeiro (prioridade máxima)
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        // Se veio do desktop (from=desktop), não redireciona de volta
+        // Isso significa que o desktop detectou mobile e redirecionou corretamente
+        if (urlParams.get('from') === 'desktop') {
+          console.log('📱 Veio do desktop, mantendo mobile (redirecionamento correto)');
+          return false;
+        }
+
+        // Verifica se usuário forçou mobile via URL
+        if (urlParams.get('force-mobile') === 'true') {
+          localStorage.setItem('force-mobile', 'true');
+          return false;
+        }
+
         // Verifica se é desktop
         if (!isDesktopDevice()) {
           return false;
         }
 
-        // Verifica se usuário forçou mobile
+        // Verifica se usuário forçou mobile no localStorage
         const forceMobile = localStorage.getItem('force-mobile') === 'true';
         if (forceMobile) {
           console.log('📱 Usuário forçou versão mobile');
@@ -1251,13 +1267,6 @@
 
         if (lastDesktopVisit && now - parseInt(lastDesktopVisit) < ONE_HOUR) {
           console.log('🖥️ Visitou desktop recentemente, mantendo mobile');
-          return false;
-        }
-
-        // Verifica parâmetro de URL
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('force-mobile') === 'true') {
-          localStorage.setItem('force-mobile', 'true');
           return false;
         }
 
@@ -1494,10 +1503,24 @@
       function init() {
         console.log('🔄 Inicializando detecção de dispositivo...');
 
+        // Verifica parâmetros de URL primeiro
+        const urlParams = new URLSearchParams(window.location.search);
+        const fromDesktop = urlParams.get('from') === 'desktop';
+        
+        if (fromDesktop) {
+          console.log('📱 Página carregada com ?from=desktop - mantendo mobile');
+          // Limpa o parâmetro da URL para evitar confusão
+          if (window.history && window.history.replaceState) {
+            urlParams.delete('from');
+            const newUrl = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '');
+            window.history.replaceState({}, '', newUrl);
+          }
+        }
+
         // Salva estado atual
         localStorage.setItem('was-desktop', isDesktopDevice().toString());
 
-        // Verifica redirecionamentos
+        // Verifica redirecionamentos (após processar parâmetros)
         if (shouldRedirectToDesktop()) {
           redirectToDesktop();
           return;

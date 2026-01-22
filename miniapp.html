@@ -27,48 +27,186 @@
             color: var(--accent-miniapp);
         }
 
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
-            margin-top: 40px;
+        /* Carrossel Moderno - Simplificado para imagens com mockup transparente */
+        .gallery-carousel {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 40px auto 0;
+            overflow: hidden;
         }
 
-        .gallery-item {
-            background: rgba(15, 15, 24, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 9 / 16;
             overflow: hidden;
+            border-radius: 0;
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            position: relative;
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+        }
+
+        .carousel-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .carousel-slide.active .carousel-img {
+            transform: scale(1);
+        }
+
+        .carousel-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(15, 15, 24, 0.95) 0%, rgba(15, 15, 24, 0.8) 70%, transparent 100%);
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .carousel-info h4 {
+            margin: 0 0 6px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .carousel-info p {
+            margin: 0;
+            font-size: 13px;
+            color: #9aa0aa;
+        }
+
+        /* Navegação */
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(15, 15, 24, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--accent-miniapp);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+            font-size: 20px;
+            user-select: none;
+        }
+
+        .carousel-nav:hover {
+            background: rgba(0, 208, 255, 0.2);
+            border-color: var(--accent-miniapp);
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 0 20px var(--accent-miniapp-glow);
+        }
+
+        .carousel-nav.prev {
+            left: 20px;
+        }
+
+        .carousel-nav.next {
+            right: 20px;
+        }
+
+        .carousel-nav:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+
+        /* Dots Navigation */
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            padding: 20px;
+            background: rgba(15, 15, 24, 0.8);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .carousel-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
             transition: all 0.3s ease;
         }
 
-        .gallery-item:hover {
-            transform: translateY(-5px);
+        .carousel-dot.active {
+            background: var(--accent-miniapp);
             border-color: var(--accent-miniapp);
-            box-shadow: 0 10px 30px var(--accent-miniapp-glow);
+            box-shadow: 0 0 10px var(--accent-miniapp-glow);
+            transform: scale(1.3);
         }
 
-        .gallery-img {
-            width: 100%;
-            height: auto;
-            display: block;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        .carousel-dot:hover {
+            background: rgba(0, 208, 255, 0.5);
+            transform: scale(1.2);
         }
 
-        .gallery-info {
-            padding: 16px;
-        }
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .gallery-carousel {
+                max-width: 100%;
+            }
 
-        .gallery-info h4 {
-            margin: 0 0 8px;
-            color: #fff;
-            font-size: 16px;
-        }
+            .carousel-container {
+                aspect-ratio: 9 / 16;
+            }
 
-        .gallery-info p {
-            margin: 0;
-            font-size: 14px;
-            color: #9aa0aa;
+            .carousel-nav {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+
+            .carousel-nav.prev {
+                left: 10px;
+            }
+
+            .carousel-nav.next {
+                right: 10px;
+            }
+
+            .carousel-info {
+                padding: 16px;
+            }
+
+            .carousel-info h4 {
+                font-size: 14px;
+            }
+
+            .carousel-info p {
+                font-size: 12px;
+            }
         }
 
         .tech-pill {
@@ -112,6 +250,147 @@
             text-shadow: 0 0 10px var(--accent-miniapp-glow);
         }
     </style>
+    <script>
+        // Carrossel de Imagens - Provas Vivas
+        (function() {
+            const carousel = document.getElementById('proofCarousel');
+            if (!carousel) return;
+
+            const track = document.getElementById('carouselTrack');
+            const slides = track.querySelectorAll('.carousel-slide');
+            const dotsContainer = document.getElementById('carouselDots');
+            const prevBtn = carousel.querySelector('.carousel-nav.prev');
+            const nextBtn = carousel.querySelector('.carousel-nav.next');
+
+            let currentIndex = 0;
+            let autoPlayInterval = null;
+            const AUTO_PLAY_DELAY = 5000; // 5 segundos
+
+            // Criar dots de navegação
+            slides.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'carousel-dot' + (index === 0 ? ' active' : '');
+                dot.setAttribute('aria-label', `Ir para imagem ${index + 1}`);
+                dot.addEventListener('click', () => goToSlide(index));
+                dotsContainer.appendChild(dot);
+            });
+
+            const dots = dotsContainer.querySelectorAll('.carousel-dot');
+
+            function updateCarousel() {
+                // Atualizar slides
+                slides.forEach((slide, index) => {
+                    slide.classList.toggle('active', index === currentIndex);
+                });
+
+                // Atualizar dots
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === currentIndex);
+                });
+
+                // Atualizar posição do track
+                track.style.transform = `translateX(-${currentIndex * 100}%)`;
+            }
+
+            function goToSlide(index) {
+                if (index < 0) index = slides.length - 1;
+                if (index >= slides.length) index = 0;
+                
+                currentIndex = index;
+                updateCarousel();
+                resetAutoPlay();
+            }
+
+            function nextSlide() {
+                goToSlide(currentIndex + 1);
+            }
+
+            function prevSlide() {
+                goToSlide(currentIndex - 1);
+            }
+
+            function startAutoPlay() {
+                autoPlayInterval = setInterval(nextSlide, AUTO_PLAY_DELAY);
+            }
+
+            function stopAutoPlay() {
+                if (autoPlayInterval) {
+                    clearInterval(autoPlayInterval);
+                    autoPlayInterval = null;
+                }
+            }
+
+            function resetAutoPlay() {
+                stopAutoPlay();
+                startAutoPlay();
+            }
+
+            // Event listeners
+            prevBtn.addEventListener('click', () => {
+                prevSlide();
+                stopAutoPlay();
+            });
+
+            nextBtn.addEventListener('click', () => {
+                nextSlide();
+                stopAutoPlay();
+            });
+
+            // Pausar autoplay ao passar mouse
+            carousel.addEventListener('mouseenter', stopAutoPlay);
+            carousel.addEventListener('mouseleave', startAutoPlay);
+
+            // Navegação por teclado
+            document.addEventListener('keydown', (e) => {
+                if (document.activeElement.tagName === 'INPUT' || 
+                    document.activeElement.tagName === 'TEXTAREA') {
+                    return;
+                }
+
+                if (e.key === 'ArrowLeft') {
+                    prevSlide();
+                    stopAutoPlay();
+                } else if (e.key === 'ArrowRight') {
+                    nextSlide();
+                    stopAutoPlay();
+                }
+            });
+
+            // Touch/swipe support
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            carousel.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+
+            carousel.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+
+            function handleSwipe() {
+                const swipeThreshold = 50;
+                const diff = touchStartX - touchEndX;
+
+                if (Math.abs(diff) > swipeThreshold) {
+                    if (diff > 0) {
+                        nextSlide();
+                    } else {
+                        prevSlide();
+                    }
+                    stopAutoPlay();
+                }
+            }
+
+            // Inicializar
+            updateCarousel();
+            startAutoPlay();
+
+            // Limpar intervalo ao sair da página
+            window.addEventListener('beforeunload', stopAutoPlay);
+        })();
+    </script>
 </head>
 
 <body>
@@ -244,55 +523,87 @@
                             <p class="block-subtitle">Capturas reais do Console em operação no Telegram</p>
                         </div>
 
-                        <div class="gallery-grid">
-                            <div class="gallery-item">
-                                <img src="images/prints-miniapp/miniapp-console-main.png" alt="Console Main View"
-                                    class="gallery-img">
-                                <div class="gallery-info">
-                                    <h4>Dashboard Operacional</h4>
-                                    <p>Interface central de comando do Miniapp.</p>
+                        <div class="gallery-carousel" id="proofCarousel">
+                            <div class="carousel-container">
+                                <button class="carousel-nav prev" aria-label="Imagem anterior">‹</button>
+                                <button class="carousel-nav next" aria-label="Próxima imagem">›</button>
+                                
+                                <div class="carousel-track" id="carouselTrack">
+                                    <div class="carousel-slide active">
+                                        <div class="carousel-image-wrapper">
+                                            <img src="images/prints-miniapp/miniapp-console-main.png" 
+                                                 alt="Console Main View" 
+                                                 class="carousel-img">
+                                        </div>
+                                        <div class="carousel-info">
+                                            <h4>Dashboard Operacional</h4>
+                                            <p>Interface central de comando do Miniapp.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="carousel-slide">
+                                        <div class="carousel-image-wrapper">
+                                            <img src="images/prints-miniapp/miniapp-full-experience.png" 
+                                                 alt="Full App View" 
+                                                 class="carousel-img">
+                                        </div>
+                                        <div class="carousel-info">
+                                            <h4>Experiência Completa</h4>
+                                            <p>Visão mobile-first otimizada para Telegram.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="carousel-slide">
+                                        <div class="carousel-image-wrapper">
+                                            <img src="images/prints-miniapp/miniapp-gamification-stats.png" 
+                                                 alt="Gamification Stats" 
+                                                 class="carousel-img">
+                                        </div>
+                                        <div class="carousel-info">
+                                            <h4>Metrics & Rewards</h4>
+                                            <p>Acompanhamento de performance e recompensas $NEOFLW.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="carousel-slide">
+                                        <div class="carousel-image-wrapper">
+                                            <img src="images/prints-miniapp/miniapp-smart-contracts.png" 
+                                                 alt="Smart Contracts UI" 
+                                                 class="carousel-img">
+                                        </div>
+                                        <div class="carousel-info">
+                                            <h4>Operações On-chain</h4>
+                                            <p>Interação direta com contratos inteligentes na Base.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="carousel-slide">
+                                        <div class="carousel-image-wrapper">
+                                            <img src="images/prints-miniapp/miniapp-inventory.png" 
+                                                 alt="Inventory View" 
+                                                 class="carousel-img">
+                                        </div>
+                                        <div class="carousel-info">
+                                            <h4>Inventário de Ativos</h4>
+                                            <p>Gerenciamento de módulos e multiplicadores.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="carousel-slide">
+                                        <div class="carousel-image-wrapper">
+                                            <img src="images/prints-miniapp/miniapp-governance.png" 
+                                                 alt="Governance/Settings" 
+                                                 class="carousel-img">
+                                        </div>
+                                        <div class="carousel-info">
+                                            <h4>Governança Operacional</h4>
+                                            <p>Configurações avançadas do motor de automação.</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="gallery-item">
-                                <img src="images/prints-miniapp/miniapp-full-experience.png" alt="Full App View"
-                                    class="gallery-img">
-                                <div class="gallery-info">
-                                    <h4>Experiência Completa</h4>
-                                    <p>Visão mobile-first otimizada para Telegram.</p>
-                                </div>
-                            </div>
-                            <div class="gallery-item">
-                                <img src="images/prints-miniapp/miniapp-gamification-stats.png" alt="Gamification Stats"
-                                    class="gallery-img">
-                                <div class="gallery-info">
-                                    <h4>Metrics & Rewards</h4>
-                                    <p>Acompanhamento de performance e recompensas $NEOFLW.</p>
-                                </div>
-                            </div>
-                            <div class="gallery-item">
-                                <img src="images/prints-miniapp/miniapp-smart-contracts.png" alt="Smart Contracts UI"
-                                    class="gallery-img">
-                                <div class="gallery-info">
-                                    <h4>Operações On-chain</h4>
-                                    <p>Interação direta com contratos inteligentes na Base.</p>
-                                </div>
-                            </div>
-                            <div class="gallery-item">
-                                <img src="images/prints-miniapp/miniapp-inventory.png" alt="Inventory View"
-                                    class="gallery-img">
-                                <div class="gallery-info">
-                                    <h4>Inventário de Ativos</h4>
-                                    <p>Gerenciamento de módulos e multiplicadores.</p>
-                                </div>
-                            </div>
-                            <div class="gallery-item">
-                                <img src="images/prints-miniapp/miniapp-governance.png" alt="Governance/Settings"
-                                    class="gallery-img">
-                                <div class="gallery-info">
-                                    <h4>Governança Operacional</h4>
-                                    <p>Configurações avançadas do motor de automação.</p>
-                                </div>
-                            </div>
+                            
+                            <div class="carousel-dots" id="carouselDots"></div>
                         </div>
                     </div>
 

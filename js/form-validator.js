@@ -4,6 +4,7 @@ class FormValidator {
     this.validator = null;
     this.errors = {};
     this.isValidating = false;
+    this.submitPromise = null; // Promise em andamento para prevenir race conditions
     this.lastSubmissionTime = 0;
     this.submissionCount = 0;
     this.submissionResetTime = 60000; // 1 minuto
@@ -334,7 +335,13 @@ class FormValidator {
   }
 
   async handleSubmit(e) {
-    if (this.isValidating) return;
+    e.preventDefault();
+
+    // Prevenir múltiplas submissões simultâneas (race condition)
+    if (this.isValidating) {
+      // Se já está validando, retornar a promise em andamento se existir
+      return this.submitPromise || Promise.resolve();
+    }
 
     // Rate limiting: prevenir spam
     const now = Date.now();
@@ -342,8 +349,10 @@ class FormValidator {
       this.submissionCount++;
       if (this.submissionCount > this.maxSubmissionsPerMinute) {
         const statusEl = document.getElementById('lead-status');
-        statusEl.textContent = '✗ Muitas tentativas. Aguarde um momento.';
-        statusEl.style.color = '#ef4444';
+        if (statusEl) {
+          statusEl.textContent = '✗ Muitas tentativas. Aguarde um momento.';
+          statusEl.style.color = '#ef4444';
+        }
         return;
       }
     } else {
@@ -352,6 +361,17 @@ class FormValidator {
     }
 
     this.isValidating = true;
+
+    // Criar promise para prevenir race conditions
+    this.submitPromise = this._performSubmit(e).finally(() => {
+      this.isValidating = false;
+      this.submitPromise = null;
+    });
+
+    return this.submitPromise;
+  }
+
+  async _performSubmit(e) {
     const form = e.target;
     const formData = new FormData(form);
     const statusEl = document.getElementById('lead-status');
@@ -359,16 +379,19 @@ class FormValidator {
     // Validar tamanho dos dados antes de processar
     const formDataSize = JSON.stringify(Object.fromEntries(formData)).length;
     if (formDataSize > this.maxDataSize) {
-      statusEl.textContent = '✗ Dados muito grandes. Verifique os campos.';
-      statusEl.style.color = '#ef4444';
-      this.isValidating = false;
+      if (statusEl) {
+        statusEl.textContent = '✗ Dados muito grandes. Verifique os campos.';
+        statusEl.style.color = '#ef4444';
+      }
       return;
     }
 
     // Limpar erros anteriores
     this.errors = {};
-    statusEl.textContent = '⏳ Validando dados...';
-    statusEl.style.color = '#3b82f6';
+    if (statusEl) {
+      statusEl.textContent = '⏳ Validando dados...';
+      statusEl.style.color = '#3b82f6';
+    }
 
     try {
       // Validações básicas com sanitização
@@ -400,9 +423,10 @@ class FormValidator {
         whats.length > 20 ||
         type.length > 50
       ) {
-        statusEl.textContent = '✗ Campos muito longos. Verifique os dados.';
-        statusEl.style.color = '#ef4444';
-        this.isValidating = false;
+        if (statusEl) {
+          statusEl.textContent = '✗ Campos muito longos. Verifique os dados.';
+          statusEl.style.color = '#ef4444';
+        }
         return;
       }
 
@@ -415,22 +439,26 @@ class FormValidator {
 
       if (!isValid) {
         const firstError = Object.values(this.errors)[0];
-        statusEl.textContent = `✗ ${firstError}`;
-        statusEl.style.color = '#ef4444';
-        this.isValidating = false;
+        if (statusEl) {
+          statusEl.textContent = `✗ ${firstError}`;
+          statusEl.style.color = '#ef4444';
+        }
         return;
       }
 
       // Validações adicionais se validador disponível
       if (this.validator && this.validator.isAvailable) {
-        statusEl.textContent = '• Validando com API...';
+        if (statusEl) {
+          statusEl.textContent = '• Validando com API...';
+        }
 
         // Validar email com API se disponível
         const emailValid = this.validator.validarEmail(email);
         if (!emailValid) {
-          statusEl.textContent = '✗ Email inválido';
-          statusEl.style.color = '#ef4444';
-          this.isValidating = false;
+          if (statusEl) {
+            statusEl.textContent = '✗ Email inválido';
+            statusEl.style.color = '#ef4444';
+          }
           return;
         }
 
@@ -445,11 +473,11 @@ class FormValidator {
       await this.sendToWhatsApp(formData);
     } catch (error) {
       window.Logger?.error('Erro ao processar formulário:', error);
-      statusEl.textContent =
-        '✗ Erro ao processar. Tente novamente ou entre em contato diretamente.';
-      statusEl.style.color = '#ef4444';
-    } finally {
-      this.isValidating = false;
+      if (statusEl) {
+        statusEl.textContent =
+          '✗ Erro ao processar. Tente novamente ou entre em contato diretamente.';
+        statusEl.style.color = '#ef4444';
+      }
     }
   }
 

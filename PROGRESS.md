@@ -34,24 +34,24 @@ Dashboard de acompanhamento do progresso das fases de auditoria e implementaçã
 
 ---
 
-## Fase 2: Bugs Críticos ⏳
+## Fase 2: Bugs Críticos ✅
 
-**Status**: Não iniciado | **Prazo**: --/--/----
+**Status**: Concluído | **Prazo**: --/--/----
 
 ### Checklist
 
--  [ ] 0/2 - Corrigir memory leaks
--  [ ] app.js linhas 15-26
--  [ ] desktop.js linhas 163-168
+-  [x] 2/2 - Corrigir memory leaks
+-  [x] app.js linhas 15-26 (setInterval e event listeners com cleanup adequado)
+-  [x] desktop.js linhas 163-168 (event listeners armazenados e método cleanup() adicionado)
 
--  [ ] 0/1 - Prevenir race conditions
--  [ ] form-validator.js linha 337
+-  [x] 1/1 - Prevenir race conditions
+-  [x] form-validator.js linha 337 (proteção com submitPromise e _performSubmit)
 
 ### Métricas
 
--  **Memory leaks corrigidos**: -- / 2
--  **Race conditions corrigidos**: -- / 1
--  **Memory Profiler**: Sem crescimento / Crescimento detectado
+-  **Memory leaks corrigidos**: 2 / 2 ✅
+-  **Race conditions corrigidos**: 1 / 1 ✅
+-  **Memory Profiler**: Sem crescimento esperado / Crescimento detectado anteriormente
 
 ---
 
@@ -59,7 +59,7 @@ Dashboard de acompanhamento do progresso das fases de auditoria e implementaçã
 
 **Status**: Não iniciado | **Prazo**: --/--/----
 
-### Checklist
+### Checklist:
 
 -  [ ] 0/3 - Otimizar carregamento
 -  [ ] Adicionar defer/async em scripts
@@ -71,7 +71,7 @@ Dashboard de acompanhamento do progresso das fases de auditoria e implementaçã
 -  [ ] 0/1 - Throttle listeners
 -  [ ] desktop.js resize/scroll handlers
 
-### Métricas
+### Métricas:
 
 -  **Lighthouse Performance**: -- / 80+
 -  **First Contentful Paint**: -- / < 1.8s

@@ -164,6 +164,7 @@ Esta análise identifica problemas, melhorias e oportunidades de refatoração n
 -  **Problema**: `sw.js` usa Network First para tudo
 -  **Impacto**: Latência desnecessária
 -  **Solução**: Implementar estratégias diferentes por tipo de recurso:
+
   -  Cache First para assets estáticos
   -  Network First para HTML/API
   -  Stale While Revalidate para imagens
@@ -179,6 +180,7 @@ Esta análise identifica problemas, melhorias e oportunidades de refatoração n
 -  **Localização**: Botões sem `aria-label` (`index.html` linha 133)
 -  **Problema**: Screen readers não conseguem identificar função
 -  **Solução**:
+
   ```html
   <button aria-label="Menu de navegação">
   ```
@@ -312,6 +314,7 @@ js/
 ### 5.2 Padrões de Código
 
 #### **Usar Classes ES6 Consistentemente**
+
 ```javascript
 // ✅ Bom
 class FormValidator {
@@ -326,6 +329,7 @@ class FormValidator {
 ```
 
 #### **Implementar Error Boundaries**
+
 ```javascript
 // ✅ Bom
 try {
