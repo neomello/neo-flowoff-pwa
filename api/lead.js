@@ -146,7 +146,7 @@ export default async function handler(req, res) {
 
         // Email Interno (Notificação)
         await resend.emails.send({
-          from: 'NEØ Leads <leads@flowoff.xyz>',
+          from: 'NEØ Leads <leads@neo.flowoff.xyz>',
           to: ['neoprotocol.eth@ethermail.io'],
           subject: `🚀 Novo Lead: ${name} (${type})`,
           html: fill(internalTpl, vars),
@@ -154,7 +154,7 @@ export default async function handler(req, res) {
 
         // Email de Confirmação para o Lead
         await resend.emails.send({
-          from: 'NEØ FlowOFF <contato@flowoff.xyz>',
+          from: 'NEØ FlowOFF <contato@neo.flowoff.xyz>',
           to: [email],
           subject: `Recebemos sua solicitação: ${type}`,
           html: fill(confirmationTpl, vars),
