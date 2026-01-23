@@ -7,6 +7,7 @@ import {
   sanitizeText,
   isEmail,
   setSecurityHeaders,
+  detectClientType,
 } from './utils.js';
 import { query } from './db.js';
 
@@ -31,7 +32,13 @@ export default async function handler(req, res) {
   try {
     setCORSHeaders(req, res);
     setSecurityHeaders(res);
-    if (!enforceRateLimit(req, res, { limit: 30 })) return;
+    
+    // Detectar tipo de cliente
+    const clientType = detectClientType(req);
+    
+    // Rate limit adaptado por cliente (desktop pode ter limite maior)
+    const rateLimit = clientType === 'desktop' ? 60 : 30;
+    if (!enforceRateLimit(req, res, { limit: rateLimit })) return;
 
     const leadData = await parseJsonBody(req, res, MAX_BODY_SIZE);
     if (!leadData) return;

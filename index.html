@@ -101,10 +101,407 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="manifest" href="manifest.webmanifest" />
   <title>NEØ.FLOWOFF</title>
-  <link rel="stylesheet" href="styles.css?v=2.3.0" />
-  <link rel="stylesheet" href="bento-grid.css?v=1.1.0" />
-  <link rel="stylesheet" href="glass-morphism-bottom-bar.css" />
-  <link rel="stylesheet" href="css/wallet.css" />
+  
+  <!-- Preload recursos críticos (Above the Fold) -->
+  <link rel="preload" href="public/logos/pink_metalic.png" as="image" />
+  <link rel="preload" href="public/images/capa_neo_flowoff_webapp.png" as="image" />
+  
+  <!-- Critical CSS inline (Above the Fold) -->
+  <style>
+    /* CSS Variables */
+    :root {
+      --bg: #0a0a0f;
+      --panel: #0f0f16;
+      --text: #e6e6f0;
+      --muted: #9aa0aa;
+      --neon: #ff2fb3;
+      --vio: #7a2cff;
+      --blue: #00d0ff;
+      --glass: rgba(255, 255, 255, 0.06);
+      --radius: 18px;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    }
+    
+    /* Reset & Base */
+    * {
+      box-sizing: border-box;
+    }
+    
+    html {
+      height: 100%;
+      background: #000;
+      background-color: #000;
+    }
+    
+    html, body, #app {
+      height: 100%;
+    }
+    
+    body {
+      margin: 0;
+      background: #000;
+      background-color: #000;
+      background-image: radial-gradient(1200px 800px at 70% -10%, #1a1030 0%, #0a0a0f 50%, #07070b 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+      color: var(--text);
+      font: 16px/1.4 -apple-system, BlinkMacSystemFont, Inter, system-ui, Segoe UI, Roboto, Ubuntu;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    
+    /* Header Critical Styles */
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1002;
+      display: flex;
+      flex-direction: column;
+      padding: env(safe-area-inset-top) 16px 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      -webkit-backdrop-filter: saturate(1.2) blur(12px);
+      backdrop-filter: saturate(1.2) blur(12px);
+      background: linear-gradient(180deg, rgba(16, 16, 24, 0.65), rgba(8, 8, 12, 0.35));
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      isolation: isolate;
+      will-change: backdrop-filter, background;
+    }
+    
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 12px 1rem;
+      background: transparent !important;
+      background-color: transparent !important;
+      isolation: isolate;
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important;
+      gap: 0;
+    }
+    
+    .header-logo-container {
+      flex-shrink: 0;
+      background: transparent !important;
+      background-color: transparent !important;
+      padding: 0;
+      margin: 0;
+      border: none;
+      box-shadow: none;
+      isolation: isolate;
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .header-logo {
+      flex-shrink: 0;
+      background: transparent !important;
+      background-color: transparent !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      border: none !important;
+      box-shadow: none !important;
+      isolation: isolate;
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important;
+      line-height: 0;
+      font-size: 0;
+      overflow: visible;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .header-logo-wrapper {
+      width: 40px;
+      height: 40px;
+      background: transparent !important;
+      background-color: transparent !important;
+      position: relative;
+      overflow: hidden;
+      border-radius: 0;
+      padding: 0;
+      margin: 0;
+      border: none;
+      box-shadow: none;
+    }
+    
+    .header-logo-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 0;
+      background: transparent !important;
+      background-color: transparent !important;
+      filter: drop-shadow(0 4px 12px rgba(255, 47, 179, 0.4));
+      transition: all 0.3s ease;
+      object-fit: contain;
+      display: block;
+      padding: 0;
+      margin: 0;
+      border: none;
+      box-shadow: none;
+      mix-blend-mode: normal;
+      image-rendering: auto;
+      -webkit-font-smoothing: antialiased;
+      -webkit-appearance: none;
+      appearance: none;
+      opacity: 1;
+      line-height: 0;
+      image-rendering: -webkit-optimize-contrast;
+      position: relative;
+      top: 0;
+      left: 0;
+    }
+    
+    .header-menu-container {
+      flex-shrink: 0;
+      background: transparent !important;
+      background-color: transparent !important;
+      padding: 0;
+      margin: 0;
+      border: none;
+      box-shadow: none;
+      isolation: isolate;
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important;
+      position: relative;
+      z-index: 1003;
+      margin-left: auto;
+    }
+    
+    .wallet-connect-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.9), rgba(59, 130, 246, 0.9));
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      color: white;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+      text-transform: uppercase;
+    }
+    
+    .mobile-menu-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      width: 44px;
+      height: 44px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+    }
+    
+    .hamburger-line {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background: white;
+      border-radius: 2px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-origin: center;
+    }
+    
+    .mobile-menu-dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      padding: 12px 16px;
+      background: linear-gradient(180deg, rgba(20, 20, 30, 0.95), rgba(12, 12, 18, 0.98));
+      -webkit-backdrop-filter: saturate(180%) blur(30px);
+      backdrop-filter: saturate(180%) blur(30px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+      transform: translateY(-10px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    
+    .desktop-only {
+      display: flex;
+    }
+    
+    /* Main Content Critical Styles */
+    main {
+      padding-top: 120px;
+      padding-bottom: calc(120px + env(safe-area-inset-bottom));
+      background: #000;
+      background-color: #000;
+      min-height: 100vh;
+    }
+    
+    .route {
+      display: none;
+      padding: 12px 12px 20px;
+    }
+    
+    .route.active {
+      display: block;
+      animation: fade 0.25s ease;
+    }
+    
+    @keyframes fade {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+    
+    /* Bento Grid Critical Styles */
+    .bento-container {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      grid-auto-rows: minmax(min-content, auto);
+      gap: 16px;
+      padding: calc(env(safe-area-inset-top) + 80px) 20px calc(env(safe-area-inset-bottom) + 90px);
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+      align-items: stretch;
+    }
+    
+    .bento-item {
+      background: var(--glass);
+      -webkit-backdrop-filter: saturate(1.2) blur(20px);
+      backdrop-filter: saturate(1.2) blur(20px);
+      border-radius: var(--radius);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.4s ease, box-shadow 0.4s ease;
+      cursor: pointer;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      z-index: 1;
+      will-change: transform;
+    }
+    
+    .bento-hero {
+      grid-column: span 6;
+      grid-row: span 2;
+      min-height: 400px;
+      height: auto;
+      padding: 0;
+      background: linear-gradient(135deg, rgba(122, 44, 255, 0.12), rgba(255, 47, 179, 0.12));
+      border: 0.2px solid #ff2fb3;
+      position: relative;
+      overflow: visible;
+      box-shadow: 0 10px 45px rgba(255, 47, 179, 0.18), 0 0 0 0.8px rgba(255, 47, 179, 0.08), 0 0 55px rgba(255, 47, 179, 0.35), 0 0 110px rgba(255, 47, 179, 0.18), 0 0 170px rgba(255, 47, 179, 0.08), inset 0 0 18px rgba(255, 47, 179, 0.08);
+    }
+    
+    .bento-hero .hero-bg-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+    
+    .bento-hero .hero-bg-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.4;
+    }
+    
+    .bento-hero .hero-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      min-height: 400px;
+      height: 100%;
+      padding: 20px 24px 40px;
+    }
+    
+    .bento-hero .hero-text-simple {
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: 700;
+      line-height: 1.5;
+      color: var(--text);
+      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 47, 179, 0.2);
+      letter-spacing: 0.02em;
+      margin-top: 20px;
+    }
+    
+    .bento-hero .hero-text-simple p {
+      margin: 8px 0;
+      font-size: 26px;
+      line-height: 32px;
+      vertical-align: top;
+      padding-top: 21px;
+      padding-bottom: 21px;
+      height: 224px;
+    }
+    
+    /* Mobile Responsive Critical */
+    @media (max-width: 600px) {
+      .desktop-only {
+        display: none !important;
+      }
+      
+      .mobile-menu-toggle {
+        display: flex;
+      }
+      
+      .topbar {
+        position: fixed;
+      }
+      
+      .header-content {
+        padding: 8px 12px;
+      }
+    }
+  </style>
+  
+  <!-- Non-critical CSS (deferred) -->
+  <link rel="preload" href="styles.css?v=2.3.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="styles.css?v=2.3.0"></noscript>
+  
+  <link rel="preload" href="bento-grid.css?v=1.1.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="bento-grid.css?v=1.1.0"></noscript>
+  
+  <link rel="preload" href="glass-morphism-bottom-bar.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="glass-morphism-bottom-bar.css"></noscript>
+  
+  <link rel="preload" href="css/wallet.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="css/wallet.css"></noscript>
+  
+  <!-- Fallback script for browsers that don't support onload -->
+  <script>
+    !function(e){"use strict";var t=function(t,n,o){var i,r=e.document,a=r.createElement("link");if(o)i=o;else{var l=(r.body||r.getElementsByTagName("head")[0]).childNodes;i=l[l.length-1]}var d=r.styleSheets;a.rel="stylesheet",a.href=t,a.media="only x",function e(t){if(r.body)return t();setTimeout(function(){e(t)})}(function(){i.parentNode.insertBefore(a,i)});var f=function(e){for(var t=a.href,n=d.length;n--;)if(d[n].href===t)return e();setTimeout(function(){f(e)})};return a.addEventListener&&a.addEventListener("load",function(){this.media=o||"all"}),a.onloadcssdefined=f,f(function(){a.media!==o&&(a.media=o||"all")}),a};"undefined"!=typeof exports?exports.loadCSS=t:e.loadCSS=t}("undefined"!=typeof global?global:this);
+  </script>
 </head>
 
 <body>
@@ -269,12 +666,12 @@
           <div class="bento-item bento-projects">
             <h3 class="projects-logos-title">PROJETOS DO ECOSSISTEMA</h3>
             <div class="projects-logos-section">
-              <img src="public/logos/projects/fluxx.png" alt="Fluxx" class="project-logo" />
-              <img src="public/logos/projects/NEEO-SMART2.png" alt="NEEO SMART" class="project-logo" />
-              <img src="public/logos/projects/NEO.png" alt="NEO" class="project-logo" />
-              <img src="public/logos/projects/neoflw-token.png" alt="NEO Flow Token" class="project-logo" />
-              <img src="public/logos/projects/runneo.png" alt="Run NEO" class="project-logo" />
-              <img src="public/logos/projects/wodxpro.png" alt="WODX Pro" class="project-logo" />
+              <img src="public/logos/projects/fluxx.png" alt="Fluxx" class="project-logo" loading="lazy" decoding="async" />
+              <img src="public/logos/projects/NEEO-SMART2.png" alt="NEEO SMART" class="project-logo" loading="lazy" decoding="async" />
+              <img src="public/logos/projects/NEO.png" alt="NEO" class="project-logo" loading="lazy" decoding="async" />
+              <img src="public/logos/projects/neoflw-token.png" alt="NEO Flow Token" class="project-logo" loading="lazy" decoding="async" />
+              <img src="public/logos/projects/runneo.png" alt="Run NEO" class="project-logo" loading="lazy" decoding="async" />
+              <img src="public/logos/projects/wodxpro.png" alt="WODX Pro" class="project-logo" loading="lazy" decoding="async" />
             </div>
           </div>
 
@@ -847,7 +1244,7 @@
         <!-- MELLØ Profile -->
         <div class="mello-profile card glow">
           <div class="mello-image">
-            <img src="public/mello.webp" alt="MELLØ" class="mello-photo-large" />
+            <img src="public/mello.webp" alt="MELLØ" class="mello-photo-large" loading="lazy" decoding="async" />
           </div>
           <div class="mello-info">
             <h3>MELLØ™</h3>
@@ -891,7 +1288,7 @@
       <section class="route" id="ecosystem">
         <div class="badges">
           <div class="badge glass">
-            <img alt="FlowPay" src="public/FLOWPAY.png" />
+            <img alt="FlowPay" src="public/FLOWPAY.png" loading="lazy" decoding="async" />
             <div><b>FlowPay</b><span>Pagamentos integrados</span></div>
             <div class="ecosystem-progress">
               <div class="xp-bar">
@@ -903,7 +1300,7 @@
             <a href="https://flowpaycash.netlify.app/" target="_blank" rel="noopener" class="badge-link">Acessar</a>
           </div>
           <div class="badge glass">
-            <img alt="NEØ Protocol" src="public/neo_ico.png" />
+            <img alt="NEØ Protocol" src="public/neo_ico.png" loading="lazy" decoding="async" />
             <div><b>NEØ Protocol</b><span>Camada tecnológica</span></div>
             <div class="ecosystem-progress">
               <div class="xp-bar">
@@ -914,7 +1311,7 @@
             </div>
           </div>
           <div class="badge glass">
-            <img alt="POSTØN" src="public/logos/POSTON.png" />
+            <img alt="POSTØN" src="public/logos/POSTON.png" loading="lazy" decoding="async" />
             <div><b>POSTØN</b><span>Gestão de redes sociais</span></div>
             <div class="ecosystem-progress">
               <div class="xp-bar">
@@ -925,7 +1322,7 @@
             </div>
           </div>
           <div class="badge glass">
-            <img alt="PRO.IA" src="public/logos/proia.png" />
+            <img alt="PRO.IA" src="public/logos/proia.png" loading="lazy" decoding="async" />
             <div><b>PRO.IA</b><span>Treinamento IA</span></div>
             <div class="ecosystem-progress">
               <div class="xp-bar">
@@ -1095,7 +1492,7 @@
           <a href="https://x.com/neosmartfactory" target="_blank" rel="noopener"
             style="display: flex; align-items: center; gap: 4px; color: inherit; text-decoration: none;">
             <img src="https://res.cloudinary.com/dgyocpguk/image/upload/v1769086787/logo-main_srht1p.png"
-              alt="NΞØ Factory" style="height: 14px; width: auto;">
+              alt="NΞØ Factory" style="height: 14px; width: auto;" loading="lazy" decoding="async">
             <span style="text-decoration: underline;">NΞØ SMART FACTORY</span>
           </a>
         </span>
@@ -1657,7 +2054,7 @@
         <button type="button" class="btn primary" data-close="modal-site-webapp">
           Entendi
         </button>
-        <img src="public/neowhite.png" alt="NEO" class="modal-signature" />
+        <img src="public/neowhite.png" alt="NEO" class="modal-signature" loading="lazy" decoding="async" />
       </div>
     </div>
   </dialog>
@@ -1689,7 +2086,7 @@
         <button type="button" class="btn primary" data-close="modal-saas-baas">
           Entendi
         </button>
-        <img src="public/neowhite.png" alt="NEO" class="modal-signature" />
+        <img src="public/neowhite.png" alt="NEO" class="modal-signature" loading="lazy" decoding="async" />
       </div>
     </div>
   </dialog>
@@ -1743,7 +2140,7 @@
         <button type="button" class="btn primary" data-close="modal-tokenizacao">
           Entendi
         </button>
-        <img src="public/neowhite.png" alt="NEO" class="modal-signature" />
+        <img src="public/neowhite.png" alt="NEO" class="modal-signature" loading="lazy" decoding="async" />
       </div>
     </div>
   </dialog>
@@ -1778,7 +2175,7 @@
         <button type="button" class="btn primary" data-close="modal-agentes-ia">
           Entendi
         </button>
-        <img src="public/neowhite.png" alt="NEO" class="modal-signature" />
+        <img src="public/neowhite.png" alt="NEO" class="modal-signature" loading="lazy" decoding="async" />
       </div>
     </div>
   </dialog>

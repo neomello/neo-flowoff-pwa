@@ -578,11 +578,13 @@ class FormValidator {
 
     // Enviar para API de leads (se existir)
     try {
+      const clientType = window.getClientType ? window.getClientType() : (window.innerWidth >= 1024 ? 'desktop' : 'mobile');
       const response = await fetch('/api/lead', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-Form-Submission': 'true',
+          'X-Client-Type': clientType,
         },
         body: JSON.stringify(leadData),
       });
@@ -623,12 +625,14 @@ class FormValidator {
     try {
       const queue = new window.OfflineQueue();
       await queue.init();
+      const clientType = window.getClientType ? window.getClientType() : (window.innerWidth >= 1024 ? 'desktop' : 'mobile');
       await queue.addRequest({
         url: '/api/lead',
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-Form-Submission': 'true',
+          'X-Client-Type': clientType,
         },
         body: leadData,
       });

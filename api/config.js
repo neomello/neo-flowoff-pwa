@@ -1,4 +1,4 @@
-import { setCORSHeaders, handleOptions } from './utils.js';
+import { setCORSHeaders, handleOptions, detectClientType } from './utils.js';
 
 /**
  * GET /api/config
@@ -18,6 +18,9 @@ export default async function handler(req, res) {
   }
 
   setCORSHeaders(req, res);
+  
+  // Detectar tipo de cliente (para logging/analytics)
+  const clientType = detectClientType(req);
 
   // Retorna apenas variáveis públicas que podem ser expostas no frontend
   // WEB3AUTH_CLIENT_ID é público (pode ser exposto, é o Client ID da aplicação)

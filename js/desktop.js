@@ -209,9 +209,16 @@ class DesktopExperience {
       });
     }
 
-    // Resize da janela (com throttle)
-    const resizeHandler = () => this.handleResize();
-    window.addEventListener('resize', resizeHandler);
+    // Resize da janela (com throttle para performance)
+    const throttleFn = window.throttle || ((fn, wait) => {
+      let timeout;
+      return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => fn.apply(this, args), wait);
+      };
+    });
+    const resizeHandler = throttleFn(() => this.handleResize(), 200);
+    window.addEventListener('resize', resizeHandler, { passive: true });
     this.eventListeners.push({
       element: window,
       event: 'resize',
@@ -229,8 +236,17 @@ class DesktopExperience {
       { element: document, event: 'click', handler: activityHandler }
     );
 
-    // Scroll
-    const scrollHandler = () => this.handleScroll();
+    // Scroll (com throttle usando requestAnimationFrame para melhor performance)
+    let scrollTicking = false;
+    const scrollHandler = () => {
+      if (!scrollTicking) {
+        requestAnimationFrame(() => {
+          this.handleScroll();
+          scrollTicking = false;
+        });
+        scrollTicking = true;
+      }
+    };
     window.addEventListener('scroll', scrollHandler, { passive: true });
     this.eventListeners.push({
       element: window,

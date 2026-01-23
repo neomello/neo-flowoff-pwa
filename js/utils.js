@@ -181,6 +181,56 @@ function safeLocalStorageSet(key, value) {
   }
 }
 
+/**
+ * Throttle function - limita execução de função a uma vez por período
+ * @param {Function} func - Função a ser throttled
+ * @param {number} wait - Tempo de espera em ms
+ * @returns {Function} Função throttled
+ */
+function throttle(func, wait) {
+  let timeout;
+  let lastCall = 0;
+  return function executedFunction(...args) {
+    const now = Date.now();
+    const timeSinceLastCall = now - lastCall;
+    
+    if (timeSinceLastCall >= wait) {
+      // Executa imediatamente se passou tempo suficiente
+      lastCall = now;
+      func.apply(this, args);
+    } else {
+      // Agenda execução para depois
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        lastCall = Date.now();
+        func.apply(this, args);
+      }, wait - timeSinceLastCall);
+    }
+  };
+}
+
+/**
+ * Detecta o tipo de cliente (mobile ou desktop)
+ * Baseado no viewport width e User-Agent
+ * @returns {string} 'mobile' ou 'desktop'
+ */
+function getClientType() {
+  // Verifica se já está definido (pode ser sobrescrito)
+  if (window.CLIENT_TYPE) {
+    return window.CLIENT_TYPE;
+  }
+
+  // Detecta por viewport width (mais confiável)
+  const isDesktop = window.innerWidth >= 1024;
+  
+  // Fallback: User-Agent
+  const userAgent = navigator.userAgent || '';
+  const isMobileUA = /Mobile|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+  
+  // Prioridade: viewport > User-Agent
+  return isDesktop ? 'desktop' : (isMobileUA ? 'mobile' : 'desktop');
+}
+
 // Exporta para uso global
 window.SecurityUtils = {
   sanitizeHTML,
@@ -193,3 +243,19 @@ window.SecurityUtils = {
   safeLocalStorageGet,
   safeLocalStorageSet,
 };
+
+// Helper para detectar tipo de cliente
+window.getClientType = getClientType;
+
+// Helper para throttle
+window.throttle = throttle;
+
+// Definir tipo de cliente globalmente (será atualizado em resize se necessário)
+window.CLIENT_TYPE = getClientType();
+
+// Atualizar tipo de cliente em resize (com throttle para performance)
+const updateClientType = throttle(() => {
+  window.CLIENT_TYPE = getClientType();
+}, 250);
+
+window.addEventListener('resize', updateClientType, { passive: true });

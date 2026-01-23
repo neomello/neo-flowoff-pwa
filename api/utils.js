@@ -68,7 +68,7 @@ export function setCORSHeaders(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader(
     'Access-Control-Allow-Headers',
-    'Content-Type, Authorization, X-Form-Submission, X-API-Key'
+    'Content-Type, Authorization, X-Form-Submission, X-API-Key, X-Client-Type'
   );
   res.setHeader('Access-Control-Max-Age', '86400'); // 24 horas
 }
@@ -226,4 +226,30 @@ export function requireApiToken(req, res) {
 
   res.status(401).json({ error: 'Não autorizado' });
   return false;
+}
+
+/**
+ * Detecta o tipo de cliente (mobile ou desktop)
+ * Prioridade: header X-Client-Type > query parameter > User-Agent
+ * @param {object} req - Request object
+ * @returns {string} 'mobile' ou 'desktop'
+ */
+export function detectClientType(req) {
+  // 1. Prioridade: Header customizado
+  const headerClientType = req.headers['x-client-type']?.toLowerCase()?.trim();
+  if (headerClientType === 'mobile' || headerClientType === 'desktop') {
+    return headerClientType;
+  }
+
+  // 2. Fallback: Query parameter
+  const queryClientType = req.query?.client?.toLowerCase()?.trim();
+  if (queryClientType === 'mobile' || queryClientType === 'desktop') {
+    return queryClientType;
+  }
+
+  // 3. Fallback: User-Agent detection
+  const userAgent = req.headers['user-agent'] || '';
+  const isMobile = /Mobile|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+  
+  return isMobile ? 'mobile' : 'desktop';
 }

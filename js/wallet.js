@@ -616,10 +616,12 @@ class WalletManager {
   // Registra sessão de wallet no backend Neon
   async recordWalletSession(walletAddress, provider) {
     try {
+      const clientType = window.getClientType ? window.getClientType() : (window.innerWidth >= 1024 ? 'desktop' : 'mobile');
       const response = await fetch('/api/wallet-sessions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-Client-Type': clientType,
         },
         body: JSON.stringify({
           wallet_address: walletAddress,

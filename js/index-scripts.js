@@ -82,12 +82,19 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// Fechar menu ao redimensionar para desktop
-window.addEventListener('resize', () => {
+// Fechar menu ao redimensionar para desktop (com throttle)
+const throttleResize = window.throttle || ((fn, wait) => {
+  let timeout;
+  return function(...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => fn.apply(this, args), wait);
+  };
+});
+window.addEventListener('resize', throttleResize(() => {
   if (window.innerWidth > 600 && mobileMenuDropdown) {
     closeMobileMenu();
   }
-});
+}, 200), { passive: true });
 
 // Expor funções globalmente
 window.closeMobileMenu = closeMobileMenu;

@@ -99,6 +99,78 @@ let web3authInstance = null;
 let walletKitInstance = null;
 let currentProvider = null;
 
+// Cache de verificações de window.ethereum (evita verificações repetidas)
+let ethereumCache = {
+  checked: false,
+  available: false,
+  isMetaMask: false,
+  lastCheck: 0,
+  cacheDuration: 5000, // 5 segundos de cache
+};
+
+/**
+ * Verifica window.ethereum com cache para evitar verificações repetidas
+ * @returns {object|null} Objeto com informações do ethereum ou null
+ */
+function getEthereumProvider() {
+  const now = Date.now();
+  
+  // Retornar cache se ainda válido
+  if (ethereumCache.checked && (now - ethereumCache.lastCheck) < ethereumCache.cacheDuration) {
+    return ethereumCache.available ? window.ethereum : null;
+  }
+  
+  // Verificar novamente
+  try {
+    ethereumCache.checked = true;
+    ethereumCache.lastCheck = now;
+    
+    if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
+      ethereumCache.available = true;
+      ethereumCache.isMetaMask = window.ethereum?.isMetaMask || false;
+      return window.ethereum;
+    } else {
+      ethereumCache.available = false;
+      ethereumCache.isMetaMask = false;
+      return null;
+    }
+  } catch (error) {
+    // Filtrar erros de extensões Chrome
+    const isExtensionError = error?.message?.includes('Extension') || 
+                            error?.message?.includes('chrome-extension');
+    if (!isExtensionError) {
+      console.warn('⚠️ Erro ao verificar window.ethereum:', error);
+    }
+    ethereumCache.available = false;
+    ethereumCache.isMetaMask = false;
+    return null;
+  }
+}
+
+/**
+ * Limpa o cache de ethereum (útil quando extensões são instaladas/removidas)
+ */
+function clearEthereumCache() {
+  ethereumCache.checked = false;
+  ethereumCache.available = false;
+  ethereumCache.isMetaMask = false;
+  ethereumCache.lastCheck = 0;
+}
+
+// Limpar cache quando extensões podem mudar
+if (typeof window !== 'undefined') {
+  // Limpar cache após um tempo (extensões podem ser instaladas)
+  setTimeout(clearEthereumCache, 30000); // 30 segundos
+  
+  // Limpar cache em eventos relevantes
+  window.addEventListener('focus', () => {
+    // Limpar cache quando janela ganha foco (extensão pode ter sido instalada)
+    if (Date.now() - ethereumCache.lastCheck > 10000) {
+      clearEthereumCache();
+    }
+  });
+}
+
 // Modal de carregamento
 function showLoadingModal(message = 'Conectando wallet...') {
   const existing = document.querySelector('.wallet-loading-modal');
@@ -400,8 +472,9 @@ window.WalletProvider = {
     console.log('🔄 Redirecionando para MetaMask...');
 
     try {
-      // Verificação segura de MetaMask com filtro de extensões
-      if (typeof window?.ethereum !== 'undefined' && window.ethereum?.isMetaMask) {
+      // Verificação com cache de window.ethereum
+      const ethereum = getEthereumProvider();
+      if (ethereum && ethereumCache.isMetaMask) {
         if (window?.WalletManager?.connectMetaMask) {
           return await window.WalletManager.connectMetaMask();
         }
@@ -435,10 +508,9 @@ window.WalletProvider = {
     }
 
     try {
-      // Verificação segura de window.ethereum com filtro de extensões
-      if (typeof window !== 'undefined' && 
-          typeof window.ethereum !== 'undefined' && 
-          window.ethereum?.isMetaMask) {
+      // Verificação com cache de window.ethereum
+      const ethereum = getEthereumProvider();
+      if (ethereum && ethereumCache.isMetaMask) {
         return await this.connectMetaMask();
       }
     } catch (error) {
@@ -653,7 +725,12 @@ async function bootstrapWalletProvider() {
   try {
     // 1. Tentar buscar configuração do backend
     console.log('🔄 Buscando configuração de Web3Auth...');
-    const response = await fetch('/api/config');
+    const clientType = window.getClientType ? window.getClientType() : (window.innerWidth >= 1024 ? 'desktop' : 'mobile');
+    const response = await fetch('/api/config', {
+      headers: {
+        'X-Client-Type': clientType,
+      },
+    });
 
     if (response.ok) {
       const config = await response.json();

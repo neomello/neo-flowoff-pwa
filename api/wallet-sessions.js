@@ -7,6 +7,7 @@ import {
   sanitizeText,
   isHexString,
   setSecurityHeaders,
+  detectClientType,
 } from './utils.js';
 import { query } from './db.js';
 
@@ -22,8 +23,13 @@ export default async function handler(req, res) {
   setSecurityHeaders(res);
 
   try {
+    // Detectar tipo de cliente
+    const clientType = detectClientType(req);
+    
     if (req.method === 'GET') {
-      if (!enforceRateLimit(req, res, { limit: 120 })) return;
+      // Rate limit adaptado por cliente
+      const rateLimit = clientType === 'desktop' ? 240 : 120;
+      if (!enforceRateLimit(req, res, { limit: rateLimit })) return;
       if (!requireApiToken(req, res)) return;
 
       const wallet =
@@ -53,7 +59,9 @@ export default async function handler(req, res) {
       return;
     }
 
-    if (!enforceRateLimit(req, res, { limit: 60 })) return;
+    // Rate limit adaptado por cliente
+    const rateLimit = clientType === 'desktop' ? 120 : 60;
+    if (!enforceRateLimit(req, res, { limit: rateLimit })) return;
     if (!requireApiToken(req, res)) return;
 
     const body = await parseJsonBody(req, res, MAX_BODY_SIZE);
