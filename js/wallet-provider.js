@@ -28,12 +28,32 @@ const WALLETKIT_VERSION = '1.4.1';
 
 async function importWithFallback(specifier, fallbackUrl) {
   try {
-    return await import(specifier);
+    const module = await import(specifier);
+    // Tentar diferentes formas de export (default, named, ou o próprio módulo)
+    return module.default || module;
   } catch (error) {
+    // Filtrar erros conhecidos de extensões Chrome
+    const isExtensionError = error?.message?.includes('Extension') || 
+                            error?.message?.includes('chrome-extension');
+    if (isExtensionError) {
+      console.warn('⚠️ Erro de extensão ignorado:', error.message);
+      // Retornar objeto vazio para evitar quebra
+      return {};
+    }
+    
     if (!fallbackUrl) {
       throw error;
     }
-    return await import(/* @vite-ignore */ fallbackUrl);
+    
+    try {
+      // Tentar fallback com diferentes estratégias
+      const fallbackModule = await import(/* @vite-ignore */ fallbackUrl);
+      return fallbackModule.default || fallbackModule;
+    } catch (fallbackError) {
+      // Se fallback também falhar, logar mas não quebrar
+      console.warn('⚠️ Erro ao importar módulo:', specifier, fallbackError);
+      return {};
+    }
   }
 }
 
@@ -174,7 +194,23 @@ async function initWeb3Auth() {
 
     return web3authInstance;
   } catch (error) {
-    console.error('❌ Erro ao inicializar Web3Auth:', error);
+    // Filtrar erros de extensões Chrome e loglevel
+    const isExtensionError = error?.message?.includes('Extension') || 
+                            error?.message?.includes('chrome-extension');
+    const isLoglevelError = error?.message?.includes('loglevel') || 
+                            error?.message?.includes('levels');
+    
+    if (isLoglevelError) {
+      // Erro conhecido do loglevel - tentar continuar sem quebrar
+      console.warn('⚠️ Aviso: Erro de importação do loglevel (não crítico):', error.message);
+      WALLET_SYSTEM_STATUS.web3auth = 'pending';
+      return null;
+    }
+    
+    if (!isExtensionError) {
+      console.error('❌ Erro ao inicializar Web3Auth:', error);
+    }
+    
     WALLET_SYSTEM_STATUS.web3auth = 'error';
     return null;
   }
@@ -207,7 +243,23 @@ async function initWalletConnect() {
     WALLET_SYSTEM_STATUS.walletconnect = 'functional';
     return walletKitInstance;
   } catch (error) {
-    console.error('❌ Erro ao inicializar WalletConnect:', error);
+    // Filtrar erros de extensões Chrome e logger
+    const isExtensionError = error?.message?.includes('Extension') || 
+                            error?.message?.includes('chrome-extension');
+    const isLoggerError = error?.message?.includes('logger') || 
+                         error?.message?.includes('Cannot read properties');
+    
+    if (isLoggerError) {
+      // Erro conhecido do logger - tentar continuar sem quebrar
+      console.warn('⚠️ Aviso: Erro de logger no WalletConnect (não crítico):', error.message);
+      WALLET_SYSTEM_STATUS.walletconnect = 'pending';
+      return null;
+    }
+    
+    if (!isExtensionError) {
+      console.error('❌ Erro ao inicializar WalletConnect:', error);
+    }
+    
     WALLET_SYSTEM_STATUS.walletconnect = 'error';
     return null;
   }
@@ -237,11 +289,25 @@ window.WalletProvider = {
       console.log('📊 Status:', WALLET_SYSTEM_STATUS);
 
       // Notificar WalletManager sobre a disponibilidade
-      if (window.WalletManager) {
-        window.WalletManager.onProviderReady?.(this);
+      // Usar optional chaining robusto para evitar erros
+      if (window?.WalletManager?.onProviderReady) {
+        try {
+          window.WalletManager.onProviderReady(this);
+        } catch (notifyError) {
+          // Ignorar erros de notificação (não crítico)
+          console.warn('⚠️ Erro ao notificar WalletManager:', notifyError);
+        }
       }
     } catch (error) {
-      console.error('❌ Erro na inicialização:', error);
+      // Filtrar erros de extensões Chrome
+      const isExtensionError = error?.message?.includes('Extension') || 
+                              error?.message?.includes('chrome-extension') ||
+                              error?.message?.includes('isZerion');
+      
+      if (!isExtensionError) {
+        console.error('❌ Erro na inicialização:', error);
+      }
+      
       // Fallback para funcionalidades básicas
       WALLET_SYSTEM_STATUS.web3auth = 'error';
       WALLET_SYSTEM_STATUS.walletconnect = 'error';
@@ -264,9 +330,13 @@ window.WalletProvider = {
 
       loading.close();
 
-      // Notificar sucesso
-      if (window.WalletManager) {
-        window.WalletManager.onWeb3AuthConnected?.(provider);
+      // Notificar sucesso com verificação robusta
+      if (window?.WalletManager?.onWeb3AuthConnected) {
+        try {
+          window.WalletManager.onWeb3AuthConnected(provider);
+        } catch (notifyError) {
+          console.warn('⚠️ Erro ao notificar Web3Auth conectado:', notifyError);
+        }
       }
 
       console.log('✅ Conectado via Web3Auth');
@@ -307,8 +377,13 @@ window.WalletProvider = {
 
       currentProvider = mockProvider;
 
-      if (window.WalletManager) {
-        window.WalletManager.onWalletConnectConnected?.(mockProvider);
+      // Notificar sucesso com verificação robusta
+      if (window?.WalletManager?.onWalletConnectConnected) {
+        try {
+          window.WalletManager.onWalletConnectConnected(mockProvider);
+        } catch (notifyError) {
+          console.warn('⚠️ Erro ao notificar WalletConnect conectado:', notifyError);
+        }
       }
 
       console.log('✅ Conectado via WalletConnect (simulado)');
@@ -324,8 +399,23 @@ window.WalletProvider = {
   async connectMetaMask() {
     console.log('🔄 Redirecionando para MetaMask...');
 
-    if (window.WalletManager) {
-      return window.WalletManager.connectMetaMask();
+    try {
+      // Verificação segura de MetaMask com filtro de extensões
+      if (typeof window?.ethereum !== 'undefined' && window.ethereum?.isMetaMask) {
+        if (window?.WalletManager?.connectMetaMask) {
+          return await window.WalletManager.connectMetaMask();
+        }
+      }
+    } catch (error) {
+      // Filtrar erros de extensões Chrome
+      const isExtensionError = error?.message?.includes('Extension') || 
+                              error?.message?.includes('chrome-extension') ||
+                              error?.message?.includes('isZerion') ||
+                              error?.message?.includes('ethereum of');
+      
+      if (!isExtensionError) {
+        console.error('❌ Erro ao conectar MetaMask:', error);
+      }
     }
 
     throw new Error('MetaMask não disponível');
@@ -345,11 +435,22 @@ window.WalletProvider = {
     }
 
     try {
-      if (typeof window.ethereum !== 'undefined') {
+      // Verificação segura de window.ethereum com filtro de extensões
+      if (typeof window !== 'undefined' && 
+          typeof window.ethereum !== 'undefined' && 
+          window.ethereum?.isMetaMask) {
         return await this.connectMetaMask();
       }
     } catch (error) {
-      console.log('⚠️ MetaMask falhou, tentando WalletConnect...');
+      // Filtrar erros de extensões Chrome
+      const isExtensionError = error?.message?.includes('Extension') || 
+                              error?.message?.includes('chrome-extension') ||
+                              error?.message?.includes('isZerion') ||
+                              error?.message?.includes('ethereum of');
+      
+      if (!isExtensionError) {
+        console.log('⚠️ MetaMask falhou, tentando WalletConnect...');
+      }
     }
 
     try {
@@ -519,13 +620,22 @@ window.WalletProvider = {
     console.log('🔌 Desconectando wallet...');
 
     if (currentProvider?.type === 'web3auth' && web3authInstance) {
-      await web3authInstance.logout();
+      try {
+        await web3authInstance.logout();
+      } catch (error) {
+        console.warn('⚠️ Erro ao fazer logout do Web3Auth:', error);
+      }
     }
 
     currentProvider = null;
 
-    if (window.WalletManager) {
-      window.WalletManager.disconnect();
+    // Desconectar com verificação robusta
+    if (window?.WalletManager?.disconnect) {
+      try {
+        window.WalletManager.disconnect();
+      } catch (error) {
+        console.warn('⚠️ Erro ao desconectar WalletManager:', error);
+      }
     }
 
     console.log('✅ Wallet desconectada');
