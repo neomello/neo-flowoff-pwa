@@ -16,6 +16,8 @@
     "vercel:cloudinary:all": "node scripts/setup-vercel-cloudinary.js --all",
     "db:migrate": "node scripts/db-migrate.js",
     "check:env": "node scripts/check-vercel-env.js",
+    "sync:env": "node scripts/sync-vercel-env.js",
+    "sync:env:all": "node scripts/sync-vercel-env.js --all",
     "check:storacha": "node scripts/check-storacha.js",
     "version:bump": "node scripts/bump-version.js"
   },
