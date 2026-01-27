@@ -23,6 +23,9 @@ class DesktopExperience {
     // Armazenar referências de event listeners para cleanup
     this.eventListeners = [];
     this.boundHandlers = new Map();
+    
+    // Armazenar timeouts para cleanup (prevenir memory leaks)
+    this.activeTimeouts = new Set();
 
     this.init();
   }
@@ -119,9 +122,32 @@ class DesktopExperience {
     localStorage.setItem('mobile-redirect-from', 'desktop');
 
     // Pequeno delay para mostrar feedback
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       window.location.href = 'index.html?from=desktop';
     }, 1000);
+    this.activeTimeouts.add(timeoutId);
+  }
+  
+  /**
+   * Helper para criar timeout com cleanup automático
+   */
+  createTimeout(callback, delay) {
+    const timeoutId = setTimeout(() => {
+      this.activeTimeouts.delete(timeoutId);
+      callback();
+    }, delay);
+    this.activeTimeouts.add(timeoutId);
+    return timeoutId;
+  }
+  
+  /**
+   * Limpa um timeout específico (wrapper para evitar conflito com clearTimeout global)
+   */
+  clearActiveTimeout(timeoutId) {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      this.activeTimeouts.delete(timeoutId);
+    }
   }
 
   /**
@@ -256,9 +282,28 @@ class DesktopExperience {
   }
 
   /**
-   * Limpa todos os event listeners para prevenir memory leaks
+   * Limpa todos os timeouts e event listeners ativos (prevenir memory leaks)
    */
   cleanup() {
+    // Limpar todos os timeouts ativos
+    this.activeTimeouts.forEach((timeoutId) => {
+      clearTimeout(timeoutId);
+    });
+    this.activeTimeouts.clear();
+    
+    // Limpar referências específicas
+    if (this._apiCallTimeout) {
+      clearTimeout(this._apiCallTimeout);
+      this._apiCallTimeout = null;
+    }
+    
+    // Remover toast ativo se existir
+    if (this._activeToast) {
+      this._activeToast.remove();
+      this._activeToast = null;
+    }
+    
+    // Limpar event listeners
     this.eventListeners.forEach(({ element, event, handler }) => {
       try {
         element.removeEventListener(event, handler);
@@ -324,7 +369,7 @@ class DesktopExperience {
    * Inicializa atalhos de teclado
    */
   initializeKeyboard() {
-    document.addEventListener('keydown', (e) => {
+    const keyboardHandler = (e) => {
       // Ctrl/Cmd + K: Toggle sidebar
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
@@ -347,6 +392,13 @@ class DesktopExperience {
         e.preventDefault();
         this.scrollToTop();
       }
+    };
+    
+    document.addEventListener('keydown', keyboardHandler);
+    this.eventListeners.push({
+      element: document,
+      event: 'keydown',
+      handler: keyboardHandler
     });
   }
 
@@ -360,7 +412,7 @@ class DesktopExperience {
       item.style.opacity = '0';
       item.style.transform = 'translateX(-20px)';
 
-      setTimeout(() => {
+      this.createTimeout(() => {
         item.style.transition = 'all 0.3s ease';
         item.style.opacity = '1';
         item.style.transform = 'translateX(0)';
@@ -373,7 +425,7 @@ class DesktopExperience {
       activeSection.style.opacity = '0';
       activeSection.style.transform = 'translateY(20px)';
 
-      setTimeout(() => {
+      this.createTimeout(() => {
         activeSection.style.transition = 'all 0.5s ease';
         activeSection.style.opacity = '1';
         activeSection.style.transform = 'translateY(0)';
@@ -456,7 +508,7 @@ class DesktopExperience {
       currentSection.style.opacity = '0';
       currentSection.style.transform = 'translateX(-20px)';
 
-      setTimeout(() => {
+      this.createTimeout(() => {
         currentSection.classList.remove('active');
         currentSection.style.opacity = '';
         currentSection.style.transform = '';
@@ -464,20 +516,18 @@ class DesktopExperience {
     }
 
     // Animação de entrada
-    setTimeout(
-      () => {
-        newSection.classList.add('active');
-        newSection.style.opacity = '0';
-        newSection.style.transform = 'translateX(20px)';
+    const entryDelay = currentSection ? 200 : 0;
+    this.createTimeout(() => {
+      newSection.classList.add('active');
+      newSection.style.opacity = '0';
+      newSection.style.transform = 'translateX(20px)';
 
-        setTimeout(() => {
-          newSection.style.transition = 'all 0.3s ease';
-          newSection.style.opacity = '1';
-          newSection.style.transform = 'translateX(0)';
-        }, 50);
-      },
-      currentSection ? 200 : 0
-    );
+      this.createTimeout(() => {
+        newSection.style.transition = 'all 0.3s ease';
+        newSection.style.opacity = '1';
+        newSection.style.transform = 'translateX(0)';
+      }, 50);
+    }, entryDelay);
   }
 
   /**
@@ -646,8 +696,8 @@ class DesktopExperience {
       e.target.reset();
 
       // Redireciona para WhatsApp após sucesso
-      setTimeout(() => {
-        window.open('https://wa.me/+5562983231110', '_blank');
+      this.createTimeout(() => {
+        window.open('https://wa.me/+5562983231110', '_blank', 'noopener,noreferrer');
       }, 2000);
     } catch (error) {
       window.Logger?.error('Erro ao enviar formulário:', error);
@@ -660,7 +710,7 @@ class DesktopExperience {
    */
   async simulateApiCall(data) {
     return new Promise((resolve, reject) => {
-      setTimeout(() => {
+      const timeoutId = this.createTimeout(() => {
         // Simula 90% de sucesso
         if (Math.random() > 0.1) {
           resolve({ success: true });
@@ -668,6 +718,9 @@ class DesktopExperience {
           reject(new Error('API Error'));
         }
       }, 2000);
+      
+      // Armazenar timeout para possível cancelamento
+      this._apiCallTimeout = timeoutId;
     });
   }
 
@@ -706,15 +759,23 @@ class DesktopExperience {
     // Adiciona ao DOM
     document.body.appendChild(toast);
 
+    // Armazenar referência do toast para cleanup
+    this._activeToast = toast;
+
     // Animação de entrada
-    setTimeout(() => {
+    this.createTimeout(() => {
       toast.classList.add('show');
     }, 10);
 
     // Auto-remove após 5 segundos
-    setTimeout(() => {
+    this.createTimeout(() => {
       toast.classList.remove('show');
-      setTimeout(() => toast.remove(), 300);
+      this.createTimeout(() => {
+        toast.remove();
+        if (this._activeToast === toast) {
+          this._activeToast = null;
+        }
+      }, 300);
     }, 5000);
   }
 
@@ -740,9 +801,8 @@ class DesktopExperience {
   destroy() {
     window.Logger?.log('🗑️ Destruindo Desktop Experience');
 
-    // Remove event listeners
-    window.removeEventListener('resize', this.handleResize);
-    window.removeEventListener('scroll', this.handleScroll);
+    // Limpar todos os timeouts e event listeners
+    this.cleanup();
 
     // Limpa localStorage
     localStorage.removeItem('desktop-mode');
@@ -813,21 +873,22 @@ document.head.appendChild(styleSheet);
 // Inicializa quando DOM estiver pronto
 document.addEventListener('DOMContentLoaded', () => {
   window.DesktopExperience = new DesktopExperience();
+});
 
-  // Cleanup ao descarregar página
-  window.addEventListener('beforeunload', () => {
-    if (window.DesktopExperience && typeof window.DesktopExperience.cleanup === 'function') {
+// Cleanup quando página for descarregada (consolidado)
+const cleanupOnUnload = () => {
+  if (window.DesktopExperience) {
+    if (typeof window.DesktopExperience.cleanup === 'function') {
       window.DesktopExperience.cleanup();
     }
-  });
-});
-
-// Cleanup quando página for descarregada
-window.addEventListener('beforeunload', () => {
-  if (window.DesktopExperience) {
-    window.DesktopExperience.destroy();
+    if (typeof window.DesktopExperience.destroy === 'function') {
+      window.DesktopExperience.destroy();
+    }
   }
-});
+};
+
+window.addEventListener('beforeunload', cleanupOnUnload);
+window.addEventListener('pagehide', cleanupOnUnload); // Fallback para navegadores modernos
 
 // API global para debug
 window.debugDesktop = {

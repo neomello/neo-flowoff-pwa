@@ -1,6 +1,6 @@
 {
   "name": "neo-flowoff-pwa",
-  "version": "1.0.7",
+  "version": "1.0.9",
   "description": "NEOFlowOFF Token Integration with Account Abstraction",
   "main": "index.js",
   "scripts": {

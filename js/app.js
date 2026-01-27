@@ -2,7 +2,7 @@
 import './speed-insights.js';
 
 // Versão da PWA (sincronizada com package.json e sw.js)
-const PWA_VERSION = '1.0.7';
+const PWA_VERSION = '1.0.9';
 
 // Registro do Service Worker com detecção de atualizações
 if ('serviceWorker' in navigator) {
