@@ -151,9 +151,29 @@ export default async function handler(req, res) {
         const fs = await import('fs');
         const path = await import('path');
 
-        // Helper para preencher templates
+        // Helper para preencher templates com sanitização
         const fill = (tpl, vars) => {
-          return tpl.replace(/{{\s*([\w]+)\s*}}/g, (_, k) => vars[k] ?? "");
+          // Sanitizar valores antes de inserir no template
+          const sanitizeValue = (val) => {
+            if (val == null) return '';
+            const str = String(val);
+            // Escapar HTML para prevenir XSS em templates
+            return str
+              .replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;')
+              .replace(/'/g, '&#x27;');
+          };
+          
+          return tpl.replace(/{{\s*([\w]+)\s*}}/g, (_, k) => {
+            const value = vars[k];
+            // URLs não devem ser escapadas (já são seguras se construídas corretamente)
+            if (k === 'whatsapp_link' && typeof value === 'string') {
+              return value; // URL já foi construída com encodeURIComponent
+            }
+            return sanitizeValue(value);
+          });
         };
 
         // Carregar templates

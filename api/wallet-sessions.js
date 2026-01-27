@@ -72,11 +72,25 @@ export default async function handler(req, res) {
     const userAgent =
       sanitizeText(body.user_agent || req.headers['user-agent'] || '', 256) ||
       null;
-    const ipRaw =
-      sanitizeText(body.ip, 64) ||
-      req.headers['x-forwarded-for']?.toString().split(',')[0].trim() ||
-      req.socket?.remoteAddress ||
-      null;
+    // Sanitizar IP de forma segura (prevenir null pointer)
+    let ipRaw = null;
+    if (body.ip) {
+      ipRaw = sanitizeText(body.ip, 64);
+    } else if (req.headers['x-forwarded-for']) {
+      try {
+        const forwarded = req.headers['x-forwarded-for'].toString();
+        if (forwarded && forwarded.includes(',')) {
+          ipRaw = sanitizeText(forwarded.split(',')[0].trim(), 64);
+        } else {
+          ipRaw = sanitizeText(forwarded.trim(), 64);
+        }
+      } catch (e) {
+        // Ignorar erro e usar fallback
+      }
+    }
+    if (!ipRaw && req.socket?.remoteAddress) {
+      ipRaw = sanitizeText(req.socket.remoteAddress, 64);
+    }
 
     if (!walletAddress) {
       res.status(400).json({ error: 'wallet_address é obrigatório' });

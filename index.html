@@ -1733,18 +1733,39 @@
 
       // === FEEDBACK VISUAL ===
       function showRedirectFeedback(title, subtitle) {
+        // Sanitizar inputs para prevenir XSS
+        const sanitizedTitle = String(title || '').replace(/[<>]/g, '').slice(0, 100);
+        const sanitizedSubtitle = String(subtitle || '').replace(/[<>]/g, '').slice(0, 200);
+        
         const feedback = document.createElement('div');
         feedback.id = 'redirect-feedback';
-        feedback.innerHTML = `
-          <div class="redirect-overlay">
-            <div class="redirect-content">
-              <div class="redirect-icon">⚡</div>
-              <h3>${title}</h3>
-              <p>${subtitle}</p>
-              <div class="redirect-spinner"></div>
-            </div>
-          </div>
-        `;
+        
+        // Criar elementos de forma segura (sem innerHTML)
+        const overlay = document.createElement('div');
+        overlay.className = 'redirect-overlay';
+        
+        const content = document.createElement('div');
+        content.className = 'redirect-content';
+        
+        const icon = document.createElement('div');
+        icon.className = 'redirect-icon';
+        icon.textContent = '⚡';
+        
+        const h3 = document.createElement('h3');
+        h3.textContent = sanitizedTitle; // Usar textContent
+        
+        const p = document.createElement('p');
+        p.textContent = sanitizedSubtitle; // Usar textContent
+        
+        const spinner = document.createElement('div');
+        spinner.className = 'redirect-spinner';
+        
+        content.appendChild(icon);
+        content.appendChild(h3);
+        content.appendChild(p);
+        content.appendChild(spinner);
+        overlay.appendChild(content);
+        feedback.appendChild(overlay);
 
         // Estilos inline
         const styles = document.createElement('style');
@@ -1833,7 +1854,7 @@
         const toggle = document.createElement('a');
         toggle.id = 'version-toggle';
         toggle.href = '#';
-        toggle.innerHTML = isDesktopDevice()
+        toggle.textContent = isDesktopDevice() // Usar textContent ao invés de innerHTML
           ? '📱 Versão Mobile'
           : '🖥️ Versão Desktop';
         toggle.style.cssText = `

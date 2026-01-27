@@ -158,16 +158,27 @@ function clearEthereumCache() {
 }
 
 // Limpar cache quando extensões podem mudar
+let ethereumCacheTimeout = null;
 if (typeof window !== 'undefined') {
   // Limpar cache após um tempo (extensões podem ser instaladas)
-  setTimeout(clearEthereumCache, 30000); // 30 segundos
+  ethereumCacheTimeout = setTimeout(clearEthereumCache, 30000); // 30 segundos
   
   // Limpar cache em eventos relevantes
-  window.addEventListener('focus', () => {
+  const focusHandler = () => {
     // Limpar cache quando janela ganha foco (extensão pode ter sido instalada)
     if (Date.now() - ethereumCache.lastCheck > 10000) {
       clearEthereumCache();
     }
+  };
+  window.addEventListener('focus', focusHandler);
+  
+  // Cleanup ao descarregar página
+  window.addEventListener('beforeunload', () => {
+    if (ethereumCacheTimeout) {
+      clearTimeout(ethereumCacheTimeout);
+      ethereumCacheTimeout = null;
+    }
+    window.removeEventListener('focus', focusHandler);
   });
 }
 
@@ -176,14 +187,27 @@ function showLoadingModal(message = 'Conectando wallet...') {
   const existing = document.querySelector('.wallet-loading-modal');
   if (existing) existing.remove();
 
+  // Sanitizar mensagem para prevenir XSS
+  const sanitizedMessage = String(message || 'Conectando wallet...')
+    .replace(/[<>]/g, '')
+    .slice(0, 100);
+
   const modal = document.createElement('dialog');
   modal.className = 'wallet-loading-modal';
-  modal.innerHTML = `
-    <div class="loading-content">
-      <div class="loading-spinner"></div>
-      <p>${message}</p>
-    </div>
-  `;
+  
+  // Criar elementos de forma segura (sem innerHTML)
+  const loadingContent = document.createElement('div');
+  loadingContent.className = 'loading-content';
+  
+  const spinner = document.createElement('div');
+  spinner.className = 'loading-spinner';
+  
+  const messageP = document.createElement('p');
+  messageP.textContent = sanitizedMessage; // Usar textContent ao invés de innerHTML
+  
+  loadingContent.appendChild(spinner);
+  loadingContent.appendChild(messageP);
+  modal.appendChild(loadingContent);
 
   const style = document.createElement('style');
   style.textContent = `
@@ -537,35 +561,85 @@ window.WalletProvider = {
   async buy() {
     console.log('💰 Buy $NEOFLW: Sistema em implementação');
 
-    // Modal informativo sobre compra
+    // Modal informativo sobre compra (criado de forma segura sem innerHTML)
     const modal = document.createElement('dialog');
     modal.className = 'wallet-buy-modal';
-    modal.innerHTML = `
-      <div class="buy-content">
-        <div class="buy-header">
-          <div class="buy-icon">🪙</div>
-          <h3>Comprar $NEOFLW</h3>
-          <button class="buy-close" onclick="this.closest('dialog').close()">×</button>
-        </div>
-
-        <div class="buy-body">
-          <p>Sistema de compra estará disponível em breve!</p>
-          <p>Por enquanto, você pode:</p>
-
-          <div class="buy-options">
-            <a href="https://polygonscan.com/token/0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2" target="_blank" class="buy-option">
-              <span class="option-icon">🔍</span>
-              <span>Ver no PolygonScan</span>
-            </a>
-
-            <a href="https://dexscreener.com/polygon/0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2" target="_blank" class="buy-option">
-              <span class="option-icon">📊</span>
-              <span>Ver no DexScreener</span>
-            </a>
-          </div>
-        </div>
-      </div>
-    `;
+    
+    const buyContent = document.createElement('div');
+    buyContent.className = 'buy-content';
+    
+    // Header
+    const buyHeader = document.createElement('div');
+    buyHeader.className = 'buy-header';
+    
+    const buyIcon = document.createElement('div');
+    buyIcon.className = 'buy-icon';
+    buyIcon.textContent = '🪙';
+    
+    const buyTitle = document.createElement('h3');
+    buyTitle.textContent = 'Comprar $NEOFLW';
+    
+    const buyClose = document.createElement('button');
+    buyClose.className = 'buy-close';
+    buyClose.textContent = '×';
+    buyClose.setAttribute('aria-label', 'Fechar');
+    buyClose.addEventListener('click', () => modal.close());
+    
+    buyHeader.appendChild(buyIcon);
+    buyHeader.appendChild(buyTitle);
+    buyHeader.appendChild(buyClose);
+    
+    // Body
+    const buyBody = document.createElement('div');
+    buyBody.className = 'buy-body';
+    
+    const p1 = document.createElement('p');
+    p1.textContent = 'Sistema de compra estará disponível em breve!';
+    
+    const p2 = document.createElement('p');
+    p2.textContent = 'Por enquanto, você pode:';
+    
+    const buyOptions = document.createElement('div');
+    buyOptions.className = 'buy-options';
+    
+    // Link PolygonScan
+    const link1 = document.createElement('a');
+    link1.href = 'https://polygonscan.com/token/0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2';
+    link1.target = '_blank';
+    link1.rel = 'noopener noreferrer';
+    link1.className = 'buy-option';
+    const icon1 = document.createElement('span');
+    icon1.className = 'option-icon';
+    icon1.textContent = '🔍';
+    const text1 = document.createElement('span');
+    text1.textContent = 'Ver no PolygonScan';
+    link1.appendChild(icon1);
+    link1.appendChild(text1);
+    
+    // Link DexScreener
+    const link2 = document.createElement('a');
+    link2.href = 'https://dexscreener.com/polygon/0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2';
+    link2.target = '_blank';
+    link2.rel = 'noopener noreferrer';
+    link2.className = 'buy-option';
+    const icon2 = document.createElement('span');
+    icon2.className = 'option-icon';
+    icon2.textContent = '📊';
+    const text2 = document.createElement('span');
+    text2.textContent = 'Ver no DexScreener';
+    link2.appendChild(icon2);
+    link2.appendChild(text2);
+    
+    buyOptions.appendChild(link1);
+    buyOptions.appendChild(link2);
+    
+    buyBody.appendChild(p1);
+    buyBody.appendChild(p2);
+    buyBody.appendChild(buyOptions);
+    
+    buyContent.appendChild(buyHeader);
+    buyContent.appendChild(buyBody);
+    modal.appendChild(buyContent);
 
     // Estilos
     const style = document.createElement('style');

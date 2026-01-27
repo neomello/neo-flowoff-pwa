@@ -122,10 +122,15 @@ export function enforceRateLimit(req, res, options = {}) {
   const key = options.key || getClientIp(req) || 'unknown';
   const now = Date.now();
 
+  // Limpeza periódica do store para prevenir memory leak
   if (rateLimitStore.size > 1000) {
+    let deleted = 0;
     for (const [entryKey, entry] of rateLimitStore.entries()) {
       if (now > entry.resetAt) {
         rateLimitStore.delete(entryKey);
+        deleted++;
+        // Limitar iterações para prevenir DoS
+        if (deleted > 500) break;
       }
     }
   }

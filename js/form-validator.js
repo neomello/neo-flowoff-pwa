@@ -10,6 +10,20 @@ class FormValidator {
     this.submissionResetTime = 60000; // 1 minuto
     this.maxSubmissionsPerMinute = 3;
     this.maxDataSize = 10000; // 10KB máximo por submissão
+    this._whatsappTimeout = null; // Timeout para cleanup
+    this._redirectTimeout = null; // Timeout para cleanup
+  }
+  
+  // Cleanup de timeouts (prevenir memory leaks)
+  cleanup() {
+    if (this._whatsappTimeout) {
+      clearTimeout(this._whatsappTimeout);
+      this._whatsappTimeout = null;
+    }
+    if (this._redirectTimeout) {
+      clearTimeout(this._redirectTimeout);
+      this._redirectTimeout = null;
+    }
   }
 
   async init() {
@@ -555,10 +569,14 @@ class FormValidator {
       statusEl.style.color = '#f59e0b';
 
       // Ainda abrir WhatsApp (pode funcionar se o app estiver instalado)
-      setTimeout(() => {
+      const timeoutId1 = setTimeout(() => {
         window.open(whatsappUrl, '_blank');
-        document.getElementById('lead-form').reset();
+        const form = document.getElementById('lead-form');
+        if (form) form.reset();
       }, 500);
+      
+      // Armazenar timeout para possível cleanup (se necessário)
+      this._whatsappTimeout = timeoutId1;
 
       return;
     }
@@ -607,12 +625,18 @@ class FormValidator {
     statusEl.textContent = '✓ Dados válidos! Redirecionando...';
     statusEl.style.color = '#4ade80';
 
-    setTimeout(() => {
+    const timeoutId2 = setTimeout(() => {
       window.open(whatsappUrl, '_blank');
-      document.getElementById('lead-form').reset();
-      statusEl.textContent = '✓ Redirecionado para WhatsApp!';
+      const form = document.getElementById('lead-form');
+      if (form) form.reset();
+      if (statusEl) {
+        statusEl.textContent = '✓ Redirecionado para WhatsApp!';
+      }
       navigator.vibrate?.(10);
     }, 500);
+    
+    // Armazenar timeout para possível cleanup (se necessário)
+    this._redirectTimeout = timeoutId2;
   }
 
   async queueForOfflineSync(leadData) {

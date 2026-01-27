@@ -518,10 +518,24 @@ function startUpdateCheck() {
 startUpdateCheck();
 
 // Limpa interval quando página é descarregada
-window.addEventListener('beforeunload', () => {
+const cleanupUpdateCheck = () => {
   if (updateCheckInterval) {
     clearInterval(updateCheckInterval);
     updateCheckInterval = null;
+  }
+};
+
+window.addEventListener('beforeunload', cleanupUpdateCheck);
+window.addEventListener('pagehide', cleanupUpdateCheck); // Fallback para navegadores modernos
+
+// Cleanup também em visibility change (página em background)
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && updateCheckInterval) {
+    // Pausar verificação quando página está em background
+    cleanupUpdateCheck();
+  } else if (!document.hidden && !updateCheckInterval) {
+    // Retomar quando página volta ao foco
+    startUpdateCheck();
   }
 });
 
