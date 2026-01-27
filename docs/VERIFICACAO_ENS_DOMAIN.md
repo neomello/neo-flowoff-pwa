@@ -8,6 +8,7 @@
 ## 📋 Configuração Atual do ENS Domain
 
 ### Domain Configurado
+
 - **ENS Domain**: `neoflowoff.eth`
 - **Gateway IPFS**: `https://neoflowoff.eth.link`
 - **IPNS Key**: `neo-flowoff-pwa`
@@ -16,6 +17,7 @@
 ### Onde está Configurado
 
 1. **`api/utils.js`** (linha 54):
+
    ```javascript
    'https://neoflowoff.eth.link',
    ```
@@ -36,12 +38,14 @@
 ### 1. Verificar Resolução do ENS
 
 #### Opção A: Via Navegador (com extensão MetaMask)
+
 1. Abra o MetaMask
 2. Vá para "Settings" → "Advanced" → "Show incoming transactions"
 3. Acesse: `https://neoflowoff.eth.link` no navegador
 4. Verifique se o site carrega corretamente
 
 #### Opção B: Via Terminal (usando `ens-resolver` ou `ethers`)
+
 ```bash
 # Instalar ferramenta (se necessário)
 npm install -g @ensdomains/ens
@@ -51,6 +55,7 @@ ens resolve neoflowoff.eth
 ```
 
 #### Opção C: Via Etherscan/ENS Explorer
+
 1. Acesse: https://app.ens.domains/neoflowoff.eth
 2. Verifique:
    - ✅ Domain está registrado
@@ -64,6 +69,7 @@ O Content Hash do ENS deve apontar para o IPNS ID atual:
 **IPNS ID Atual**: `k51qzi5uqu5dibn355zoh239agkln7mpvvu8iyk4jv2t1letihnm36s6ym4yts`
 
 **Como verificar**:
+
 1. Acesse: https://app.ens.domains/neoflowoff.eth
 2. Vá para a aba "Records"
 3. Verifique o campo "Content Hash"
@@ -97,6 +103,7 @@ curl -I https://dweb.link/ipns/k51qzi5uqu5dibn355zoh239agkln7mpvvu8iyk4jv2t1leti
 ## 🔧 Como Atualizar o ENS Domain (se necessário)
 
 ### Pré-requisitos
+
 - MetaMask instalado e configurado
 - Wallet com ETH suficiente para gas fees
 - Acesso ao domain `neoflowoff.eth`
