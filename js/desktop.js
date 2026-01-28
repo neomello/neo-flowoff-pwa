@@ -42,9 +42,9 @@ class DesktopExperience {
       return;
     }
 
-    // Marca como experiência desktop
-    localStorage.setItem('desktop-mode', 'true');
-    localStorage.setItem('desktop-visit-time', Date.now().toString());
+    // Marca como experiência desktop (usando SafeLocalStorage para prevenir crash em private mode)
+    window.SafeLocalStorage?.setItem('desktop-mode', 'true');
+    window.SafeLocalStorage?.setItem('desktop-visit-time', Date.now().toString());
 
     this.cacheElements();
     this.bindEvents();
@@ -64,7 +64,7 @@ class DesktopExperience {
    */
   shouldRedirectToMobile() {
     // Verifica se usuário forçou desktop
-    const forceDesktop = localStorage.getItem('force-desktop') === 'true';
+    const forceDesktop = window.SafeLocalStorage?.getItem('force-desktop') === 'true';
     if (forceDesktop) {
       return false;
     }
@@ -72,7 +72,7 @@ class DesktopExperience {
     // Verifica parâmetros de URL
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('force-desktop') === 'true') {
-      localStorage.setItem('force-desktop', 'true');
+      window.SafeLocalStorage?.setItem('force-desktop', 'true');
       return false;
     }
 
@@ -87,7 +87,7 @@ class DesktopExperience {
     // Redireciona para mobile se for dispositivo móvel ou tela pequena
     if (isMobileDevice || isSmallScreen) {
       // Verifica se já tentou redirecionar recentemente (evita loops)
-      const lastMobileRedirect = localStorage.getItem('last-mobile-redirect');
+      const lastMobileRedirect = window.SafeLocalStorage?.getItem('last-mobile-redirect');
       const now = Date.now();
 
       if (!lastMobileRedirect || now - parseInt(lastMobileRedirect) > 30000) {
@@ -118,8 +118,8 @@ class DesktopExperience {
   redirectToMobile() {
     window.Logger?.log('📱 Redirecionando para versão mobile...');
 
-    localStorage.setItem('last-mobile-redirect', Date.now().toString());
-    localStorage.setItem('mobile-redirect-from', 'desktop');
+    window.SafeLocalStorage?.setItem('last-mobile-redirect', Date.now().toString());
+    window.SafeLocalStorage?.setItem('mobile-redirect-from', 'desktop');
 
     // Pequeno delay para mostrar feedback
     const timeoutId = setTimeout(() => {
@@ -340,7 +340,7 @@ class DesktopExperience {
    */
   initializeSidebar() {
     // Recupera estado da sidebar do localStorage
-    const collapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+    const collapsed = window.SafeLocalStorage?.getItem('sidebar-collapsed') === 'true';
     if (collapsed) {
       this.collapseSidebar();
     }
@@ -359,7 +359,7 @@ class DesktopExperience {
     this.scrollToTop();
 
     // Salva posição do scroll
-    const savedScroll = localStorage.getItem('desktop-scroll-position');
+    const savedScroll = window.SafeLocalStorage?.getItem('desktop-scroll-position');
     if (savedScroll) {
       window.scrollTo(0, parseInt(savedScroll));
     }
@@ -548,7 +548,7 @@ class DesktopExperience {
     this.sidebar.classList.remove('collapsed');
     this.main.classList.remove('sidebar-collapsed');
     this.sidebarCollapsed = false;
-    localStorage.setItem('sidebar-collapsed', 'false');
+    window.SafeLocalStorage?.setItem('sidebar-collapsed', 'false');
 
     // Feedback visual
     this.showToast('Sidebar expandida', 'info');
@@ -561,7 +561,7 @@ class DesktopExperience {
     this.sidebar.classList.add('collapsed');
     this.main.classList.add('sidebar-collapsed');
     this.sidebarCollapsed = true;
-    localStorage.setItem('sidebar-collapsed', 'true');
+    window.SafeLocalStorage?.setItem('sidebar-collapsed', 'true');
 
     // Feedback visual
     this.showToast('Sidebar recolhida', 'info');
@@ -576,7 +576,7 @@ class DesktopExperience {
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
 
     document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('desktop-theme', newTheme);
+    window.SafeLocalStorage?.setItem('desktop-theme', newTheme);
 
     // Atualiza ícone
     this.updateThemeIcon(newTheme);
@@ -650,7 +650,7 @@ class DesktopExperience {
     this.scrollPosition = window.scrollY;
 
     // Salva posição do scroll
-    localStorage.setItem(
+    window.SafeLocalStorage?.setItem(
       'desktop-scroll-position',
       this.scrollPosition.toString()
     );
@@ -805,9 +805,9 @@ class DesktopExperience {
     this.cleanup();
 
     // Limpa localStorage
-    localStorage.removeItem('desktop-mode');
-    localStorage.removeItem('sidebar-collapsed');
-    localStorage.removeItem('desktop-scroll-position');
+    window.SafeLocalStorage?.removeItem('desktop-mode');
+    window.SafeLocalStorage?.removeItem('sidebar-collapsed');
+    window.SafeLocalStorage?.removeItem('desktop-scroll-position');
   }
 }
 

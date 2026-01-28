@@ -28,6 +28,20 @@
    - Registrar FCP, LCP, TBT, Speed Index e Performance.
    - Atualizar métricas finais em `docs/Lighthouse-mobile.md`.
 
+3. ✅ **SafeStorage integrado** (CONCLUÍDO)
+   - ✅ storage-wrapper.js adicionado em index.html e desktop.html
+   - ✅ Migrado js/desktop.js para usar SafeLocalStorage
+   - ✅ Migrado js/index-scripts.js para usar SafeLocalStorage
+   - ✅ Migrado js/wallet.js para usar SafeLocalStorage
+   - ✅ Previne crash em private mode/quota excedida
+
+4. ✅ **Auditoria de Segurança** (CONCLUÍDO)
+   - ✅ 5 vulnerabilidades XSS corrigidas
+   - ✅ 3 memory leaks eliminados
+   - ✅ DoS via slow requests bloqueado
+   - ✅ CSP e HSTS headers adicionados
+   - ✅ Ver relatório completo: `docs/SECURITY_AUDIT_2025-01-27.md`
+
 ### Backlog (TASKS.md)
 
 3. **Log estruturado (Resend)** — warn/error estruturado nos envios de email.

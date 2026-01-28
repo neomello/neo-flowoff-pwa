@@ -82,7 +82,7 @@ class WalletManager {
       });
     } else {
       try {
-        localStorage.removeItem('wallet_state');
+        window.SafeLocalStorage?.removeItem('wallet_state');
       } catch (e) {
         window.Logger?.warn('Erro ao remover wallet_state:', e);
       }
@@ -1115,7 +1115,7 @@ class WalletManager {
     this.balance = null;
 
     try {
-      localStorage.removeItem('wallet_state');
+      window.SafeLocalStorage?.removeItem('wallet_state');
     } catch (e) {
       window.Logger?.warn('Erro ao remover wallet_state:', e);
     }

@@ -388,7 +388,7 @@ if ('serviceWorker' in navigator) {
 
 // Função para mostrar toast de atualização
 function showUpdateBanner() {
-  if (bannerShown || localStorage.getItem('update-dismissed') === 'true') {
+  if (bannerShown || window.SafeLocalStorage?.getItem('update-dismissed') === 'true') {
     return;
   }
 
@@ -425,7 +425,7 @@ if (updateDismiss) {
   updateDismiss.addEventListener('click', (e) => {
     e.stopPropagation();
     hideUpdateBanner();
-    localStorage.setItem('update-dismissed', 'true');
+    window.SafeLocalStorage?.setItem('update-dismissed', 'true');
   });
 }
 
@@ -464,7 +464,7 @@ showUpdateBanner = function () {
 // Função para testar o toast manualmente (debug)
 window.testUpdateBanner = () => {
   if (updateBanner) {
-    localStorage.removeItem('update-dismissed');
+    window.SafeLocalStorage?.removeItem('update-dismissed');
     updateBanner.classList.add('show');
     updateBanner.classList.remove('hiding');
     bannerShown = true;
@@ -482,7 +482,7 @@ window.testOfflineBanner = () => {
 
 // Função para limpar o estado do banner (debug)
 window.clearUpdateState = () => {
-  localStorage.removeItem('update-dismissed');
+  window.SafeLocalStorage?.removeItem('update-dismissed');
 };
 
 // Verificar atualizações periodicamente (a cada 5 minutos)
@@ -617,11 +617,11 @@ document.addEventListener('DOMContentLoaded', function () {
     if (isExpanded) {
       neoflwCard.classList.remove('expanded');
       // Salvar estado no localStorage
-      localStorage.setItem('neoflw-expanded', 'false');
+      window.SafeLocalStorage?.setItem('neoflw-expanded', 'false');
     } else {
       neoflwCard.classList.add('expanded');
       // Salvar estado no localStorage
-      localStorage.setItem('neoflw-expanded', 'true');
+      window.SafeLocalStorage?.setItem('neoflw-expanded', 'true');
 
       // Scroll suave para o card quando expandir
       setTimeout(() => {
@@ -651,7 +651,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // Restaurar estado salvo
-  const savedState = localStorage.getItem('neoflw-expanded');
+  const savedState = window.SafeLocalStorage?.getItem('neoflw-expanded');
   if (savedState === 'true') {
     // Pequeno delay para garantir que o CSS está carregado
     setTimeout(() => {

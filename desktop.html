@@ -1214,6 +1214,12 @@
   </div>
 
   <!-- Scripts -->
+  <!-- Utils e Logger devem ser carregados primeiro -->
+  <script src="js/utils.js?v=1.0.0"></script>
+  <script src="js/logger.js?v=1.0.0"></script>
+  <!-- Safe Storage Wrapper (previne crash em private mode) -->
+  <script src="js/storage-wrapper.js?v=1.0.0"></script>
+  
   <script src="js/lib/p5.min.js" async></script>
   <script src="js/p5-background.js?v=1.4.6" defer></script>
   <script src="js/form-validator.js?v=1.0.0" defer></script>

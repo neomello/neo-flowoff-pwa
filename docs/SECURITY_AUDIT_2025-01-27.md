@@ -11,6 +11,7 @@
 ### 1. ❌ VULNERABILIDADE XSS — js/utils.js (CRÍTICO)
 
 **Problema**:
+
 ```javascript
 function sanitizeHTML(str) {
   const div = document.createElement('div');
@@ -22,6 +23,7 @@ function sanitizeHTML(str) {
 **Por que é crítico**: O uso de `div.innerHTML` após `textContent` pode ainda retornar conteúdo HTML malicioso em certos edge cases, especialmente com caracteres especiais e entidades HTML.
 
 **✅ CORREÇÃO APLICADA**:
+
 ```javascript
 function sanitizeHTML(str) {
   if (typeof str !== 'string') return '';
@@ -44,6 +46,7 @@ function sanitizeHTML(str) {
 ### 2. ❌ REQUEST TIMEOUT INFINITO — api/utils.js (CRÍTICO)
 
 **Problema**:
+
 ```javascript
 export function parseJsonBody(req, res, maxSize) {
   return new Promise((resolve) => {
@@ -57,6 +60,7 @@ export function parseJsonBody(req, res, maxSize) {
 **Por que é crítico**: Se um cliente malicioso enviar dados muito lentamente (slowloris attack), a promise nunca resolve e o servidor fica preso consumindo memória.
 
 **✅ CORREÇÃO APLICADA**:
+
 ```javascript
 export function parseJsonBody(req, res, maxSize) {
   return new Promise((resolve) => {
@@ -86,6 +90,7 @@ export function parseJsonBody(req, res, maxSize) {
 ### 3. ❌ MEMORY LEAK — api/utils.js rateLimitStore (CRÍTICO)
 
 **Problema**:
+
 ```javascript
 const rateLimitStore = new Map(); // ❌ Cresce infinitamente
 
@@ -97,6 +102,7 @@ export function enforceRateLimit(req, res, options) {
 **Por que é crítico**: Em produção com tráfego alto, o Map cresce sem limite consumindo memória até crashar o processo.
 
 **✅ CORREÇÃO APLICADA**:
+
 ```javascript
 const MAX_RATE_LIMIT_ENTRIES = 10000;
 let lastCleanupTime = 0;
@@ -138,6 +144,7 @@ export function enforceRateLimit(req, res, options) {
 ### 4. ❌ FALTA CSP HEADERS — api/utils.js (ALTA PRIORIDADE)
 
 **Problema**:
+
 ```javascript
 export function setSecurityHeaders(res) {
   res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -150,6 +157,7 @@ export function setSecurityHeaders(res) {
 **Por que é crítico**: Sem CSP, a aplicação fica vulnerável a XSS, clickjacking, e outros ataques mesmo com sanitização.
 
 **✅ CORREÇÃO APLICADA**:
+
 ```javascript
 export function setSecurityHeaders(res) {
   res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -182,6 +190,7 @@ export function setSecurityHeaders(res) {
 ### 5. ❌ LOCALSTORAGE SEM TRY/CATCH — Múltiplos arquivos (MÉDIO)
 
 **Problema**:
+
 ```javascript
 // js/desktop.js, js/index-scripts.js, etc
 localStorage.setItem('key', 'value'); // ❌ Crash em private mode
@@ -251,6 +260,7 @@ window.SafeSessionStorage = new SafeStorage(sessionStorage);
 ## 🛡️ MEDIDAS DE SEGURANÇA ADICIONADAS
 
 ### Headers de Segurança
+
 - ✅ `Content-Security-Policy` configurado
 - ✅ `Strict-Transport-Security` (HSTS) com 1 ano
 - ✅ `X-Content-Type-Options: nosniff`
@@ -259,12 +269,14 @@ window.SafeSessionStorage = new SafeStorage(sessionStorage);
 - ✅ `Permissions-Policy` restritivo
 
 ### Rate Limiting Melhorado
+
 - ✅ Headers `X-RateLimit-*` adicionados (Limit, Remaining, Reset)
 - ✅ Limpeza automática de entradas expiradas
 - ✅ Limite máximo de 10K entradas (previne memory leak)
 - ✅ Remoção de 50% das entradas mais antigas quando atinge 90% do limite
 
 ### Input Sanitization
+
 - ✅ Todos os caracteres perigosos escapados corretamente
 - ✅ Validação de tamanho antes de processar
 - ✅ Timeout em todas as operações de I/O
@@ -275,6 +287,7 @@ window.SafeSessionStorage = new SafeStorage(sessionStorage);
 ## ⚡ OTIMIZAÇÕES IMPLEMENTADAS
 
 ### Performance
+
 1. **Throttle global em event listeners** (resize, scroll) — reduz execuções desnecessárias
 2. **Cache de verificações** (window.ethereum) — evita verificações repetidas (5s cache)
 3. **Lazy loading implementado** — 25 imagens otimizadas
@@ -282,6 +295,7 @@ window.SafeSessionStorage = new SafeStorage(sessionStorage);
 5. **Rate limit com headers informativos** — cliente sabe quando pode tentar de novo
 
 ### Memory Management
+
 1. **Cleanup de timeouts** — todos os timeouts rastreados e limpos
 2. **Safe Storage wrapper** — fallback em memória previne crash
 3. **Rate limit store com limite** — máximo 10K entradas
@@ -293,6 +307,7 @@ window.SafeSessionStorage = new SafeStorage(sessionStorage);
 ## 🎯 RESULTADO FINAL
 
 ### Bugs Críticos Eliminados
+
 - ✅ **5 vulnerabilidades XSS** corrigidas
 - ✅ **3 memory leaks** eliminados
 - ✅ **2 race conditions** resolvidos
@@ -300,6 +315,7 @@ window.SafeSessionStorage = new SafeStorage(sessionStorage);
 - ✅ **7 null pointer crashes** prevenidos
 
 ### Vulnerabilidades Corrigidas
+
 - ✅ **XSS** via innerHTML
 - ✅ **DoS** via slow requests (timeout adicionado)
 - ✅ **Memory leak** em rate limiting
@@ -307,6 +323,7 @@ window.SafeSessionStorage = new SafeStorage(sessionStorage);
 - ✅ **Sem CSP/HSTS** (headers adicionados)
 
 ### Otimizações Aplicadas
+
 - ✅ **Throttle** em 12 event listeners
 - ✅ **Cache** de verificações (ethereum provider)
 - ✅ **Lazy loading** de 25 imagens
@@ -318,18 +335,21 @@ window.SafeSessionStorage = new SafeStorage(sessionStorage);
 ## 📋 PRÓXIMAS RECOMENDAÇÕES
 
 ### Curto Prazo (Crítico)
+
 1. **Integrar storage-wrapper.js** no `index.html` e `desktop.html`
 2. **Migrar código existente** para usar `SafeLocalStorage`
 3. **Adicionar circuit breaker** nos fetchBalance e RPC calls
 4. **Implementar retry logic** com exponential backoff em todos os fetch()
 
 ### Médio Prazo (Alta Prioridade)
+
 1. **Logging estruturado** (warn/error) para Resend e API calls
 2. **Monitoring de rate limit** (quantos 429s por hora)
 3. **Alertas de memory usage** quando rateLimitStore > 80% do limite
 4. **Testes de carga** para validar limites e timeouts
 
 ### Longo Prazo (Melhoria Contínua)
+
 1. **Migrar para Redis** para rate limiting distribuído
 2. **WAF/CDN** (Cloudflare) para proteção adicional
 3. **Penetration testing** profissional
