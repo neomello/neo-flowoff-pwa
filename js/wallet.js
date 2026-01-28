@@ -612,6 +612,23 @@ class WalletManager {
         // Não exibe erro ao usuário - operação em background
       });
     }
+
+    // 🎉 Mostrar onboarding/boas-vindas após conexão
+    // Aguardar um pouco para UX suave (modal fecha primeiro)
+    setTimeout(() => {
+      if (window.WalletOnboarding) {
+        const isFirstConnection = window.WalletOnboarding.checkFirstConnection(address);
+        
+        if (isFirstConnection) {
+          // Primeira conexão: mostrar modal completo
+          window.WalletOnboarding.showWelcomeModal(address, method);
+          window.WalletOnboarding.showAchievementToast('🎉 Primeira conexão! Bem-vindo ao NEØ FlowOFF!');
+        } else {
+          // Conexões subsequentes: toast rápido
+          window.WalletOnboarding.showAchievementToast(`✅ Conectado via ${method}`);
+        }
+      }
+    }, 800);
   }
 
   // Registra sessão de wallet no backend Neon
