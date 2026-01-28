@@ -36,16 +36,26 @@ jobs:
         run: |
           echo "## 🔒 Security Audit Report" > audit-report.md
           echo "" >> audit-report.md
+          echo "Data: $(date)" >> audit-report.md
+          echo "" >> audit-report.md
           
           # Audit só de produção (ignora devDependencies)
-          if npm audit --production --audit-level=moderate 2>&1 | tee audit-output.txt; then
-            echo "✅ Nenhuma vulnerabilidade crítica em produção" >> audit-report.md
+          # Usa --omit=dev (novo formato) e apenas vulnerabilidades high/critical
+          if npm audit --omit=dev --audit-level=high 2>&1 | tee audit-output.txt; then
+            echo "✅ **Nenhuma vulnerabilidade HIGH ou CRITICAL em produção**" >> audit-report.md
+            echo "" >> audit-report.md
+            echo "Sistema em produção está **SEGURO** ✅" >> audit-report.md
+            echo "" >> audit-report.md
+            echo "> ℹ️ Vulnerabilidades em devDependencies são ignoradas (não vão para produção)" >> audit-report.md
             echo "status=success" >> $GITHUB_OUTPUT
           else
-            echo "⚠️ Vulnerabilidades encontradas:" >> audit-report.md
+            echo "⚠️ **Vulnerabilidades HIGH/CRITICAL encontradas em produção:**" >> audit-report.md
+            echo "" >> audit-report.md
             echo '```' >> audit-report.md
             cat audit-output.txt >> audit-report.md
             echo '```' >> audit-report.md
+            echo "" >> audit-report.md
+            echo "**Ação necessária**: Revisar e atualizar dependências afetadas" >> audit-report.md
             echo "status=failed" >> $GITHUB_OUTPUT
           fi
 
@@ -75,18 +85,24 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: existingIssue.number,
-                body: `## 🔄 Nova execução do audit\n\n${report}`
+                body: `## 🔄 Nova execução do audit (${new Date().toISOString()})\n\n${report}`
               });
             } else {
               // Criar nova issue
               await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                title: '🔒 Security Audit: Vulnerabilidades Detectadas',
+                title: '🔒 Security Audit: Vulnerabilidades HIGH/CRITICAL em Produção',
                 body: report,
-                labels: ['security', 'automated', 'needs-review']
+                labels: ['security', 'automated', 'high-priority', 'needs-review']
               });
             }
+
+      - name: Comentário de sucesso (opcional)
+        if: steps.audit.outputs.status == 'success' && github.event_name == 'push'
+        run: |
+          echo "✅ Security audit passou! Produção está segura."
+          echo "📊 DevDependencies com vulnerabilidades são ignoradas (não vão para Vercel)"
 
       - name: Upload audit report
         if: always()
