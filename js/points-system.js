@@ -28,7 +28,7 @@ class PointsSystem {
 
     try {
       const clientType = window.getClientType ? window.getClientType() : 'mobile';
-      const response = await fetch(`/api/points/balance?wallet_address=${this.walletAddress}`, {
+      const response = await fetch(`/api/points?wallet_address=${this.walletAddress}`, {
         headers: {
           'X-Client-Type': clientType,
         },
@@ -64,7 +64,7 @@ class PointsSystem {
 
     try {
       const clientType = window.getClientType ? window.getClientType() : 'mobile';
-      const response = await fetch('/api/points/record', {
+      const response = await fetch('/api/points', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

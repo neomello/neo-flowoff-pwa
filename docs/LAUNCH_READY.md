@@ -23,35 +23,35 @@
 
 ### 💾 Backend Completo
 
-- [x] Banco de dados Neon configurado
-- [x] 10 tabelas SQL criadas
-- [x] 3 views automáticas
-- [x] 3 triggers funcionando
-- [x] 5 APIs REST operacionais
+-[x] Banco de dados Neon configurado
+-[x] 10 tabelas SQL criadas
+-[x] 3 views automáticas
+-[x] 3 triggers funcionando
+-[x] 5 APIs REST operacionais
 
 **APIs Disponíveis**:
 
-- `/api/points/record` — Registrar pontos
-- `/api/points/balance` — Consultar saldo
-- `/api/referral/create` — Criar código de convite
-- `/api/referral/use` — Usar código de convite
-- `/api/leaderboard` — Ranking top 100
+-`/api/points/record` — Registrar pontos
+-`/api/points/balance` — Consultar saldo
+-`/api/referral/create` — Criar código de convite
+-`/api/referral/use` — Usar código de convite
+-`/api/leaderboard` — Ranking top 100
 
 ---
 
 ### 🎮 Frontend Gamificado
 
-- [x] Sistema de pontos implementado
-- [x] Sistema de referral com compartilhamento social
-- [x] Leaderboard em tempo real
-- [x] Toast notifications animados
-- [x] Modal de onboarding pós-conexão
-- [x] Widget de ranking flutuante
+-[x] Sistema de pontos implementado
+-[x] Sistema de referral com compartilhamento social
+-[x] Leaderboard em tempo real
+-[x] Toast notifications animados
+-[x] Modal de onboarding pós-conexão
+-[x] Widget de ranking flutuante
 
 **Módulos JS**:
-- `js/points-system.js` — 249 linhas
-- `js/referral-system.js` — 340 linhas
-- `js/leaderboard-widget.js` — 258 linhas
+-`js/points-system.js` — 249 linhas
+-`js/referral-system.js` — 340 linhas
+-`js/leaderboard-widget.js` — 258 linhas
 
 ---
 
@@ -72,33 +72,33 @@
 | Perfil Completo | 25 | 1x |
 
 **Tiers Automáticos**:
-- 🥉 Bronze: 0-99 pts
-- 🥈 Silver: 100-249 pts
-- 🥇 Gold: 250-499 pts
-- 💎 Platinum: 500-999 pts
-- 💠 Diamond: 1000+ pts
+-🥉 Bronze: 0-99 pts
+-🥈 Silver: 100-249 pts
+-🥇 Gold: 250-499 pts
+-💎 Platinum: 500-999 pts
+-💠 Diamond: 1000+ pts
 
 ---
 
 ### 🔗 Integração Wallet
 
-- [x] MetaMask
-- [x] WalletConnect
-- [x] Web3Auth (configurável)
-- [x] Detecção automática de rede
-- [x] Switch automático para BASE
-- [x] Onboarding pós-conexão
+-[x] MetaMask
+-[x] WalletConnect
+-[x] Web3Auth (configurável)
+-[x] Detecção automática de rede
+-[x] Switch automático para BASE
+-[x] Onboarding pós-conexão
 
 ---
 
 ### 📱 Funcionalidades Ativas
 
-1. **Conectar Wallet** → Ganha 20 pontos
-2. **Usar Código de Referral** → Ganha 50 pontos (quem convidou)
-3. **Compartilhar nas Redes** → Ganha 15 pontos por rede
-4. **Comprar Tokens** → Swap ETH → $NEOFLW via Uniswap V3
-5. **Ver Ranking** → Leaderboard em tempo real
-6. **Registrar Conta** → Vincular email à wallet
+1.**Conectar Wallet** → Ganha 20 pontos
+2.**Usar Código de Referral** → Ganha 50 pontos (quem convidou)
+3.**Compartilhar nas Redes** → Ganha 15 pontos por rede
+4.**Comprar Tokens** → Swap ETH → $NEOFLW via Uniswap V3
+5.**Ver Ranking** → Leaderboard em tempo real
+6.**Registrar Conta** → Vincular email à wallet
 
 ---
 

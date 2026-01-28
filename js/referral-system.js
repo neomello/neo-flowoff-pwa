@@ -27,7 +27,7 @@ class ReferralSystem {
     if (!this.walletAddress) return null;
 
     try {
-      const response = await fetch('/api/referral/create', {
+      const response = await fetch('/api/referral?action=create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -77,7 +77,7 @@ class ReferralSystem {
     }
 
     try {
-      const response = await fetch('/api/referral/use', {
+      const response = await fetch('/api/referral?action=use', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
