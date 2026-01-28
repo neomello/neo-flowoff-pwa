@@ -10,6 +10,8 @@
 - **Lighthouse (Fases 1–5)**: concluídas (erros críticos, scripts, CSS, lazy load, throttle/cache/preload).
 - **CSS Mobile/Desktop**: 14 problemas corrigidos (z-index, overflow, safe-area).
 - **Wallet & Token**: ✅ Migrado para BASE Network, contrato validado.
+- **Sistema de Swap**: ✅ Implementado (js/token-swap.js, js/swap-ui.js) — aguarda liquidez no Uniswap.
+- **Sistema de Registro**: ✅ Implementado (api/register.js, js/user-registration.js) — aguarda migração SQL.
 - **ENS**: doc de verificação em `docs/VERIFICACAO_ENS_DOMAIN.md`; checklist ainda não executado.
 - **Deploy**: IPFS + Vercel ativos.
 - **Backlog**: ver `TASKS.md`.
@@ -62,25 +64,32 @@
 
 ### Wallet & Token (Prioridade Alta)
 
-1. **Adicionar Liquidez em DEX** (P1 - Crítico para Negócio)
+1. ✅ **Sistema de Swap/Compra** (IMPLEMENTADO)
+   - ✅ Dependências instaladas (@uniswap/sdk-core, @uniswap/v3-sdk, ethers@5)
+   - ✅ js/token-swap.js criado (288 linhas)
+   - ✅ js/swap-ui.js criado (424 linhas)
+   - ✅ Integração Uniswap V3 na BASE
+   - ✅ Slippage control, quoter, error handling
+   - ⬜ **PENDENTE**: Adicionar scripts em HTML (index.html, desktop.html)
+   - ⬜ **PENDENTE**: Integrar com js/wallet.js
+
+2. ✅ **Sistema de Registro de Usuário** (IMPLEMENTADO)
+   - ✅ migrations/001_create_users_tables.sql criado (235 linhas)
+   - ✅ api/register.js criado (269 linhas)
+   - ✅ js/user-registration.js criado (363 linhas)
+   - ✅ Tabelas: users, user_wallets, user_sessions
+   - ✅ Rate limiting: 10 req/hora
+   - ✅ Validações completas
+   - ⬜ **PENDENTE**: Executar migração SQL no Neon
+   - ⬜ **PENDENTE**: Adicionar scripts em HTML
+
+3. 🔴 **Adicionar Liquidez em Uniswap V3** (CRÍTICO — BLOQUEADOR)
    - Adicionar par ETH/NEOFLW no Uniswap V3 (BASE)
-   - Fee tier recomendado: 0.3% ou 1%
+   - Fee tier: 0.3% (3000 basis points)
    - Range de liquidez: ±20% do preço inicial
+   - Exemplo: 1 ETH + 10,000 NEOFLW
    - Obter endereço do pool para tracking
-
-2. **Implementar Funcionalidade de Compra/Swap** (P1 - Crítico)
-   - Instalar: `npm install @uniswap/sdk-core @uniswap/v3-sdk`
-   - Implementar função `swapETHForNEOFLW()` em `js/token-swap.js`
-   - UI de swap: input amount, output amount, slippage control
-   - Integração com wallet (MetaMask, Web3Auth)
-   - Ver exemplo em: `docs/BASE_MIGRATION.md`
-
-3. **Sistema de Registro de Usuário** (P1 - Alto)
-   - Criar tabela `users` no banco Neon (SQL em audit)
-   - Criar tabela `user_wallets` para vincular wallet → usuário
-   - API `/api/register`: cadastro com email + wallet_address
-   - API `/api/user/profile`: obter perfil do usuário
-   - Frontend: formulário de registro
+   - **Ação manual necessária**: https://app.uniswap.org/pools
 
 ### Backlog (TASKS.md)
 
@@ -113,6 +122,8 @@
 - **Wallet & Token**: `docs/WALLET_TOKEN_AUDIT.md`, `docs/BASE_MIGRATION.md`
 - **CSS Fixes**: `docs/CSS_MOBILE_FIXES.md`
 - **Segurança**: `docs/SECURITY_AUDIT_2025-01-27.md`
+- **Swap & Registro**: `docs/SWAP_REGISTRATION_GUIDE.md`
+- **Próximos Passos Imediatos**: `docs/PROXIMOS_PASSOS_IMEDIATOS.md` 🔥
 
 ---
 
@@ -120,6 +131,9 @@
 - Migração para BASE Network concluída
 - Token $NEOFLW validado e verificado na BASE
 - CSS mobile/desktop 100% corrigido
-- Sistema pronto para integração com DEX
+- ✅ **Sistema de Swap implementado** (js/token-swap.js, js/swap-ui.js)
+- ✅ **Sistema de Registro implementado** (api/register.js, js/user-registration.js, SQL migrations)
+- ✅ **Documentação completa criada** (docs/SWAP_REGISTRATION_GUIDE.md, docs/PROXIMOS_PASSOS_IMEDIATOS.md)
+- 📦 **Total**: 6 novos arquivos, 2,135 linhas, 284 packages instalados
 
-*Próximo marco: Adicionar liquidez e implementar swap*
+*Próximo marco crítico: Executar migração SQL + Adicionar liquidez no Uniswap V3*

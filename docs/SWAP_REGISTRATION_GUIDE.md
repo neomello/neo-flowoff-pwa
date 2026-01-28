@@ -10,11 +10,13 @@
 ### 1. Sistema de Swap
 
 **js/token-swap.js** (288 linhas)
+
 - Classe `TokenSwap` para swap ETH → $NEOFLW
 - Integração com Uniswap V3 na BASE
 - Funções: `getQuote()`, `swapETHForNEOFLW()`, `getCurrentPrice()`
 
 **js/swap-ui.js** (424 linhas)
+
 - Classe `SwapUI` com interface de swap
 - Modal responsivo com input/output
 - Atualização de cotação em tempo real
@@ -23,18 +25,21 @@
 ### 2. Sistema de Registro
 
 **api/register.js** (269 linhas)
+
 - API endpoint POST `/api/register`
 - Validação completa de inputs
 - Rate limiting: 10 req/hora
 - Rollback automático em caso de erro
 
 **js/user-registration.js** (363 linhas)
+
 - Classe `UserRegistration` para cadastro de usuário
 - Modal de registro com formulário
 - Vinculação de wallet ao usuário
 - Persistência em localStorage
 
 **migrations/001_create_users_tables.sql** (235 linhas)
+
 - Schema completo: `users`, `user_wallets`, `user_sessions`
 - Triggers automáticos (updated_at, primary wallet)
 - Views úteis: `v_users_with_wallets`
@@ -64,6 +69,7 @@ psql $DATABASE_URL
 ### 2. Adicionar Scripts no HTML
 
 **index.html** (antes do fechamento do `</body>`):
+
 ```html
 <!-- Swap & Registration -->
 <script src="js/token-swap.js?v=1.0.0"></script>
@@ -72,6 +78,7 @@ psql $DATABASE_URL
 ```
 
 **desktop.html** (mesma localização):
+
 ```html
 <!-- Swap & Registration -->
 <script src="js/token-swap.js?v=1.0.0"></script>
