@@ -93,6 +93,7 @@ body {
   left: 0;
   width: var(--sidebar-width);
   height: 100vh;
+  height: 100dvh; /* Dynamic viewport height para mobile */
   background: linear-gradient(
     180deg,
     rgba(15, 15, 24, 0.95),
@@ -105,6 +106,7 @@ body {
   display: flex;
   flex-direction: column;
   transition: transform var(--transition-normal);
+  overflow: hidden; /* Prevenir scroll horizontal */
 }
 
 .desktop-sidebar.collapsed {
@@ -164,6 +166,10 @@ body {
   flex: 1;
   padding: 24px 0;
   overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch; /* Smooth scroll iOS */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
 
 .nav-section {
@@ -282,12 +288,14 @@ body {
   flex: 1;
   margin-left: var(--sidebar-width);
   min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height */
   width: calc(100% - var(--sidebar-width));
   max-width: calc(100% - var(--sidebar-width));
   display: flex;
   flex-direction: column;
   transition: margin-left var(--transition-normal);
   overflow-x: hidden;
+  padding-bottom: 48px; /* Espaço para footer */
 }
 
 .desktop-main.sidebar-collapsed {
@@ -708,6 +716,19 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 32px;
   margin-top: 48px;
+}
+
+/* Prevenir overflow em telas menores */
+@media (max-width: 900px) {
+  .services-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .service-card {
@@ -1561,14 +1582,21 @@ body {
 
   .desktop-sidebar {
     transform: translateX(-100%);
+    /* Aumentar z-index em mobile para ficar acima de tudo quando aberto */
+    z-index: 1100;
   }
 
   .desktop-sidebar.mobile-open {
     transform: translateX(0);
+    /* Adicionar shadow quando aberto */
+    box-shadow: 2px 0 24px rgba(0, 0, 0, 0.5);
   }
 
   .desktop-main {
     margin-left: 0;
+    width: 100%;
+    max-width: 100%;
+    padding-bottom: calc(90px + env(safe-area-inset-bottom)); /* Espaço para bottom bar */
   }
 
   .desktop-header {

@@ -1819,7 +1819,7 @@ main {
   position: fixed;
   bottom: 100px;
   right: 20px;
-  z-index: 1000;
+  z-index: 99; /* Abaixo de bottom bar (101) e sidebar (1000) */
   font-family:
     -apple-system,
     BlinkMacSystemFont,
@@ -1828,6 +1828,14 @@ main {
     Segoe UI,
     Roboto,
     Ubuntu;
+}
+
+/* Em desktop, posicionar melhor quando sidebar está aberta */
+@media (min-width: 769px) {
+  .agent-widget {
+    right: 40px;
+    bottom: 40px;
+  }
 }
 
 .agent-widget-toggle {
@@ -2336,27 +2344,7 @@ main {
   }
 }
 
-/* Botão de teste */
-.test-button {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 1000;
-  background: var(--blue);
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: var(--radius);
-  cursor: pointer;
-  font-size: 14px;
-  box-shadow: var(--shadow);
-  transition: all 0.3s ease;
-}
-
-.test-button:hover {
-  background: var(--vio);
-  transform: translateY(-2px);
-}
+/* Botão de teste - REMOVIDO (duplicado em styles.css) */
 
 /* Status de validação */
 .validation-success {
