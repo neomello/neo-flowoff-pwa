@@ -3685,9 +3685,9 @@ canvas {
 /* Botão de teste */
 .test-button {
   position: fixed;
-  bottom: 20px;
+  bottom: 100px; /* Acima do bottom bar */
   right: 20px;
-  z-index: 1000;
+  z-index: 100; /* Abaixo do bottom bar (z-index: 101) */
   background: var(--blue);
   color: white;
   border: none;
@@ -3702,6 +3702,13 @@ canvas {
 .test-button:hover {
   background: var(--vio);
   transform: translateY(-2px);
+}
+
+/* Esconder em mobile para evitar conflito com bottom bar */
+@media (max-width: 768px) {
+  .test-button {
+    display: none;
+  }
 }
 
 /* Status de validação */
