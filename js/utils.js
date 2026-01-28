@@ -7,9 +7,14 @@
 function sanitizeHTML(str) {
   if (typeof str !== 'string') return '';
 
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
+  // Escapar caracteres perigosos para prevenir XSS
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
 }
 
 // Valida endereço Ethereum/Base

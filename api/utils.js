@@ -81,6 +81,13 @@ export function setSecurityHeaders(res) {
     'Permissions-Policy',
     'geolocation=(), microphone=(), camera=()'
   );
+  // Content Security Policy - prevenir XSS e outros ataques
+  res.setHeader(
+    'Content-Security-Policy',
+    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://esm.sh https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://*.vercel.app https://*.base.org https://*.polygon.technology https://*.infura.io https://*.alchemy.com https://api.hunter.io https://api.resend.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self';"
+  );
+  // Strict Transport Security - força HTTPS
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
 }
 
 /**
@@ -112,6 +119,11 @@ export function getClientIp(req) {
   );
 }
 
+// Memory leak protection - limitar tamanho máximo do Map
+const MAX_RATE_LIMIT_ENTRIES = 10000;
+let lastCleanupTime = 0;
+const CLEANUP_INTERVAL = 60000; // 1 minuto
+
 export function enforceRateLimit(req, res, options = {}) {
   const limit = Number.isFinite(options.limit)
     ? options.limit
@@ -122,16 +134,31 @@ export function enforceRateLimit(req, res, options = {}) {
   const key = options.key || getClientIp(req) || 'unknown';
   const now = Date.now();
 
-  // Limpeza periódica do store para prevenir memory leak
-  if (rateLimitStore.size > 1000) {
+  // Limpeza periódica mais agressiva para prevenir memory leak
+  if (now - lastCleanupTime > CLEANUP_INTERVAL || rateLimitStore.size > MAX_RATE_LIMIT_ENTRIES) {
+    lastCleanupTime = now;
     let deleted = 0;
+    const entriesToDelete = [];
+    
     for (const [entryKey, entry] of rateLimitStore.entries()) {
       if (now > entry.resetAt) {
-        rateLimitStore.delete(entryKey);
+        entriesToDelete.push(entryKey);
         deleted++;
         // Limitar iterações para prevenir DoS
-        if (deleted > 500) break;
+        if (deleted > 1000) break;
       }
+    }
+    
+    // Deletar em batch após iterar (evita modificar Map durante iteração)
+    entriesToDelete.forEach(k => rateLimitStore.delete(k));
+    
+    // Se ainda está muito grande após limpeza, remover entradas mais antigas
+    if (rateLimitStore.size > MAX_RATE_LIMIT_ENTRIES * 0.9) {
+      const sortedEntries = Array.from(rateLimitStore.entries())
+        .sort((a, b) => a[1].resetAt - b[1].resetAt)
+        .slice(0, Math.floor(MAX_RATE_LIMIT_ENTRIES * 0.5));
+      
+      sortedEntries.forEach(([k]) => rateLimitStore.delete(k));
     }
   }
 
@@ -144,11 +171,21 @@ export function enforceRateLimit(req, res, options = {}) {
   if (record.count >= limit) {
     const retryAfter = Math.max(1, Math.ceil((record.resetAt - now) / 1000));
     res.setHeader('Retry-After', retryAfter.toString());
-    res.status(429).json({ error: 'Rate limit excedido' });
+    res.setHeader('X-RateLimit-Limit', limit.toString());
+    res.setHeader('X-RateLimit-Remaining', '0');
+    res.setHeader('X-RateLimit-Reset', Math.ceil(record.resetAt / 1000).toString());
+    res.status(429).json({ 
+      error: 'Rate limit excedido',
+      retryAfter: retryAfter,
+      limit: limit
+    });
     return false;
   }
 
   record.count += 1;
+  res.setHeader('X-RateLimit-Limit', limit.toString());
+  res.setHeader('X-RateLimit-Remaining', (limit - record.count).toString());
+  res.setHeader('X-RateLimit-Reset', Math.ceil(record.resetAt / 1000).toString());
   return true;
 }
 
@@ -185,10 +222,24 @@ export function parseJsonBody(req, res, maxSize = DEFAULT_MAX_BODY_SIZE) {
   return new Promise((resolve) => {
     const chunks = [];
     let size = 0;
+    let resolved = false;
+
+    // Timeout de 10 segundos para prevenir req.on('data') pendente
+    const timeoutId = setTimeout(() => {
+      if (!resolved) {
+        resolved = true;
+        res.status(408).json({ error: 'Request timeout' });
+        resolve(null);
+      }
+    }, 10000);
 
     req.on('data', (chunk) => {
+      if (resolved) return; // Ignorar se já resolveu
+      
       size += chunk.length;
       if (size > maxSize) {
+        resolved = true;
+        clearTimeout(timeoutId);
         res.status(413).json({ error: 'Payload muito grande' });
         resolve(null);
         return;
@@ -197,11 +248,18 @@ export function parseJsonBody(req, res, maxSize = DEFAULT_MAX_BODY_SIZE) {
     });
 
     req.on('error', () => {
+      if (resolved) return;
+      resolved = true;
+      clearTimeout(timeoutId);
       res.status(400).json({ error: 'Erro ao ler payload' });
       resolve(null);
     });
 
     req.on('end', () => {
+      if (resolved) return;
+      resolved = true;
+      clearTimeout(timeoutId);
+      
       if (!chunks.length) {
         resolve({});
         return;

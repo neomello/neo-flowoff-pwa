@@ -110,8 +110,8 @@ curl -I https://dweb.link/ipns/k51qzi5uqu5dibn355zoh239agkln7mpvvu8iyk4jv2t1leti
 
 ### Passos para Atualizar
 
-1. **Acesse o ENS Manager**:
-   - https://app.ens.domains/neoflowoff.eth
+1.**Acesse o ENS Manager**:
+   <https://app.ens.domains/neoflowoff.eth>
 
 2. **Conecte sua Wallet**:
    - Clique em "Connect Wallet"
