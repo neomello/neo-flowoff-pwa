@@ -51,7 +51,7 @@ jobs:
 
       - name: Criar Issue se houver vulnerabilidades críticas
         if: steps.audit.outputs.status == 'failed'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const fs = require('fs');
