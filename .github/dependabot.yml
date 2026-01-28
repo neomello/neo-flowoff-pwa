@@ -1,0 +1,52 @@
+# Dependabot - Atualizações Automáticas de Dependências
+# GitHub cria PRs automaticamente quando há updates disponíveis
+
+version: 2
+updates:
+  # NPM dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "neomello"
+    assignees:
+      - "neomello"
+    commit-message:
+      prefix: "deps"
+      prefix-development: "deps(dev)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "automated"
+    # Agrupar updates menores em um único PR
+    groups:
+      development-dependencies:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+      production-dependencies:
+        dependency-type: "production"
+        update-types:
+          - "patch"
+    # Ignorar deps específicas se necessário
+    ignore:
+      # Manter ethers v5 (v6 tem breaking changes)
+      - dependency-name: "ethers"
+        update-types: ["version-update:semver-major"]
+      # Ignorar updates de dev deps com vulnerabilidades conhecidas não-críticas
+      - dependency-name: "elliptic"
+        update-types: ["version-update:semver-major"]
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "github-actions"
+      - "automated"

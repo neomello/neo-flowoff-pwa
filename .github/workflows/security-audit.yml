@@ -1,0 +1,97 @@
+name: Security Audit
+
+on:
+  # Rodar toda segunda-feira às 9h
+  schedule:
+    - cron: '0 9 * * 1'
+  # Rodar em cada push para main
+  push:
+    branches: [main]
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+  # Permitir execução manual
+  workflow_dispatch:
+
+jobs:
+  audit:
+    name: NPM Security Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Audit de segurança (somente produção)
+        id: audit
+        run: |
+          echo "## 🔒 Security Audit Report" > audit-report.md
+          echo "" >> audit-report.md
+          
+          # Audit só de produção (ignora devDependencies)
+          if npm audit --production --audit-level=moderate 2>&1 | tee audit-output.txt; then
+            echo "✅ Nenhuma vulnerabilidade crítica em produção" >> audit-report.md
+            echo "status=success" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️ Vulnerabilidades encontradas:" >> audit-report.md
+            echo '```' >> audit-report.md
+            cat audit-output.txt >> audit-report.md
+            echo '```' >> audit-report.md
+            echo "status=failed" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Criar Issue se houver vulnerabilidades críticas
+        if: steps.audit.outputs.status == 'failed'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('audit-report.md', 'utf8');
+            
+            // Verificar se já existe issue aberta
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'security,automated'
+            });
+            
+            const existingIssue = issues.data.find(issue => 
+              issue.title.includes('Security Audit')
+            );
+            
+            if (existingIssue) {
+              // Atualizar issue existente
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existingIssue.number,
+                body: `## 🔄 Nova execução do audit\n\n${report}`
+              });
+            } else {
+              // Criar nova issue
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: '🔒 Security Audit: Vulnerabilidades Detectadas',
+                body: report,
+                labels: ['security', 'automated', 'needs-review']
+              });
+            }
+
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-audit-report
+          path: audit-report.md
+          retention-days: 30
