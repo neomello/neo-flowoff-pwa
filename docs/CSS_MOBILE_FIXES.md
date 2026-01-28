@@ -151,6 +151,7 @@ main {
 ### 4. **SIDEBAR SEM OVERFLOW CONTROL** (MÉDIO)
 
 ❌ **PROBLEMA**:
+
 ```css
 .desktop-sidebar {
   height: 100vh;
@@ -166,6 +167,7 @@ main {
 ```
 
 ✅ **CORREÇÃO**:
+
 ```css
 .desktop-sidebar {
   height: 100vh;
@@ -187,6 +189,7 @@ main {
 ### 5. **DESKTOP-MAIN SEM PADDING-BOTTOM** (MÉDIO)
 
 ❌ **PROBLEMA**:
+
 ```css
 .desktop-main {
   min-height: 100vh;
@@ -196,6 +199,7 @@ main {
 ```
 
 ✅ **CORREÇÃO**:
+
 ```css
 .desktop-main {
   min-height: 100vh;
@@ -215,6 +219,7 @@ main {
 ### 6. **STICKY HEADER QUEBRADO NO SAFARI** (MÉDIO)
 
 ❌ **PROBLEMA**:
+
 ```css
 .desktop-header {
   position: sticky;
@@ -223,6 +228,7 @@ main {
 ```
 
 ✅ **CORREÇÃO**:
+
 ```css
 .desktop-header {
   position: sticky;
@@ -236,6 +242,7 @@ main {
 ### 7. **AGENT-WIDGET Z-INDEX CONFLITO** (BAIXO)
 
 ❌ **PROBLEMA**:
+
 ```css
 .agent-widget {
   z-index: 1000; /* ❌ Conflita com sidebar (1000) */
@@ -243,6 +250,7 @@ main {
 ```
 
 ✅ **CORREÇÃO**:
+
 ```css
 .agent-widget {
   z-index: 99; /* ✅ Abaixo de sidebar e bottom bar */
