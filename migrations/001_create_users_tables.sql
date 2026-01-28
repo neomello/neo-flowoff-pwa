@@ -150,10 +150,13 @@ BEGIN
       -- Marcar a wallet mais antiga como primária
       UPDATE user_wallets 
       SET is_primary = true 
-      WHERE user_id = NEW.user_id 
-        AND id != NEW.id
-      ORDER BY created_at ASC
-      LIMIT 1;
+      WHERE id = (
+        SELECT id FROM user_wallets 
+        WHERE user_id = NEW.user_id 
+          AND id != NEW.id
+        ORDER BY created_at ASC
+        LIMIT 1
+      );
     END IF;
   END IF;
   

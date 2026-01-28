@@ -97,16 +97,35 @@ class WalletOnboarding {
       actionsList.appendChild(action2);
     }
 
-    // Ação 3: Explorar
+    // Ação 3: Convidar Amigos (Referral)
     const action3 = this.createActionItem(
-      '🔍',
-      'Ver no BaseScan',
-      'Visualize sua wallet no explorador da BASE',
+      '🎁',
+      'Convidar Amigos',
+      'Ganhe 50 pontos para cada amigo que conectar',
       () => {
-        window.open(`https://basescan.org/address/${walletAddress}`, '_blank');
+        modal.close();
+        if (window.ReferralSystem) {
+          window.ReferralSystem.showShareModal();
+        }
       }
     );
     actionsList.appendChild(action3);
+
+    // Ação 4: Ver Leaderboard
+    const action4 = this.createActionItem(
+      '🏆',
+      'Ver Ranking',
+      'Veja sua posição no ranking de pontos',
+      () => {
+        modal.close();
+        if (window.LeaderboardWidget) {
+          window.LeaderboardWidget.createWidget().then(() => {
+            window.LeaderboardWidget.show();
+          });
+        }
+      }
+    );
+    actionsList.appendChild(action4);
 
     // Footer com "Não mostrar novamente"
     const footer = document.createElement('div');

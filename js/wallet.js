@@ -613,6 +613,26 @@ class WalletManager {
       });
     }
 
+    // 🎉 Inicializar sistemas de pontos e referral
+    if (window.PointsSystem) {
+      await window.PointsSystem.init(address);
+      
+      // Registrar pontos pela conexão de wallet
+      try {
+        await window.PointsSystem.recordAction('wallet_connect');
+      } catch (error) {
+        // Já conectou antes ou limite atingido
+        console.log('Pontos de wallet_connect já registrados');
+      }
+    }
+
+    if (window.ReferralSystem) {
+      await window.ReferralSystem.init(address);
+      
+      // Processar código de referral pendente (se chegou via link)
+      await window.ReferralSystem.processPendingReferral();
+    }
+
     // 🎉 Mostrar onboarding/boas-vindas após conexão
     // Aguardar um pouco para UX suave (modal fecha primeiro)
     setTimeout(() => {
