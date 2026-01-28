@@ -2,9 +2,10 @@
  * Wallet Manager - RPC Direct Integration
  * Gerencia conexão de wallet via RPC direto (preparado para migração futura)
  *
- * Token: $NEOFLW na Polygon
+ * Token: $NEOFLW na BASE (Coinbase L2)
  *
- * Nota: Preparado para integração futura com ZeroDev/WalletConnect/Base x402
+ * Rede: BASE Mainnet (chainId: 8453 / 0x2105)
+ * Contrato: 0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B
  *
  * ⚠️ STATUS: Wallet implementada mas aguardando backend Neon SQL
  * Para habilitar: defina window.WALLET_ENABLED = true

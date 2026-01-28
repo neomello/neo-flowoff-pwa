@@ -8,7 +8,9 @@
  * - Social Login: ✅ Email Passwordless, GitHub, LinkedIn, Farcaster
  * - External Wallets: ✅ Suportado via Web3Auth
  *
- * Token: $NEOFLW na Polygon Network
+ * Token: $NEOFLW na BASE Network (Coinbase L2)
+ * Rede: BASE Mainnet (chainId: 8453 / 0x2105)
+ * Contrato: 0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B
  */
 
 // Imports dinâmicos para evitar erros se dependências não estiverem disponíveis
@@ -67,13 +69,13 @@ function getWeb3AuthConfig() {
     web3AuthNetwork: 'sapphire_mainnet',
     chainConfig: {
       chainNamespace: 'eip155',
-      chainId: '0x89', // Polygon Mainnet
-      rpcTarget: window?.DRPC_RPC_KEY || 'null', // DRPC_RPC_KEY já é URL completa
-      displayName: 'Polygon Mainnet',
-      blockExplorerUrl: 'https://polygonscan.com',
-      ticker: 'MATIC',
-      tickerName: 'MATIC',
-      avatarUrl: 'https://cryptologos.cc/logos/polygon-matic-logo.png',
+      chainId: '0x2105', // BASE Mainnet (8453)
+      rpcTarget: window?.BASE_RPC_URL || 'https://mainnet.base.org', // BASE RPC
+      displayName: 'BASE Mainnet',
+      blockExplorerUrl: 'https://basescan.org',
+      ticker: 'ETH',
+      tickerName: 'Ethereum',
+      avatarUrl: 'https://avatars.githubusercontent.com/u/108554348?s=280&v=4', // BASE logo
     },
     uiConfig: {
       theme: 'dark',
@@ -602,9 +604,9 @@ window.WalletProvider = {
     const buyOptions = document.createElement('div');
     buyOptions.className = 'buy-options';
     
-    // Link PolygonScan
+    // Link BaseScan
     const link1 = document.createElement('a');
-    link1.href = 'https://polygonscan.com/token/0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2';
+    link1.href = 'https://basescan.org/token/0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B';
     link1.target = '_blank';
     link1.rel = 'noopener noreferrer';
     link1.className = 'buy-option';
@@ -612,13 +614,13 @@ window.WalletProvider = {
     icon1.className = 'option-icon';
     icon1.textContent = '🔍';
     const text1 = document.createElement('span');
-    text1.textContent = 'Ver no PolygonScan';
+    text1.textContent = 'Ver no BaseScan';
     link1.appendChild(icon1);
     link1.appendChild(text1);
     
-    // Link DexScreener
+    // Link DexScreener (BASE)
     const link2 = document.createElement('a');
-    link2.href = 'https://dexscreener.com/polygon/0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2';
+    link2.href = 'https://dexscreener.com/base/0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B';
     link2.target = '_blank';
     link2.rel = 'noopener noreferrer';
     link2.className = 'buy-option';
@@ -626,7 +628,7 @@ window.WalletProvider = {
     icon2.className = 'option-icon';
     icon2.textContent = '📊';
     const text2 = document.createElement('span');
-    text2.textContent = 'Ver no DexScreener';
+    text2.textContent = 'Ver no DexScreener (BASE)';
     link2.appendChild(icon2);
     link2.appendChild(text2);
     

@@ -28,7 +28,7 @@ beforeEach(() => {
       on: vi.fn(),
       removeListener: vi.fn(),
       selectedAddress: null,
-      chainId: '0x89', // Polygon
+      chainId: '0x2105', // BASE (8453)
     },
   };
 
@@ -49,18 +49,18 @@ beforeEach(() => {
 describe('Inicialização do SDK', () => {
   it('deve inicializar configuração básica corretamente', () => {
     const TOKEN_CONFIG = {
-      address: '0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2',
+      address: '0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B',
       symbol: 'NEOFLW',
       name: 'NEOFlowOFF',
       decimals: 18,
-      chainId: 137, // Polygon
-      chain: 'polygon',
+      chainId: 8453, // BASE
+      chain: 'base',
     };
 
     expect(TOKEN_CONFIG).toHaveProperty('address');
     expect(TOKEN_CONFIG).toHaveProperty('symbol');
     expect(TOKEN_CONFIG).toHaveProperty('chainId');
-    expect(TOKEN_CONFIG.chainId).toBe(137);
+    expect(TOKEN_CONFIG.chainId).toBe(8453);
     expect(TOKEN_CONFIG.symbol).toBe('NEOFLW');
   });
 
@@ -92,7 +92,7 @@ describe('Conexão de Wallet', () => {
         return Promise.resolve(mockAccounts);
       }
       if (method === 'eth_chainId') {
-        return Promise.resolve('0x89'); // Polygon
+        return Promise.resolve('0x2105'); // BASE (8453)
       }
       return Promise.resolve(null);
     });
@@ -172,7 +172,7 @@ describe('Conexão de Wallet', () => {
 describe('Execução de Transação Simples', () => {
   it('deve mockar execução de transação básica', async () => {
     const mockTransaction = {
-      to: '0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2',
+      to: '0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B',
       value: '0x0',
       data: '0xa9059cbb000000000000000000000000460F9D0cf3e6E84faC1A7Abc524ddfa66fb64f6000000000000000000000000000000000000000000000000000de0b6b3a7640000',
     };
@@ -208,7 +208,7 @@ describe('Execução de Transação Simples', () => {
       hash: mockTxHash,
       status: 'pending',
       from: '0x460F9D0cf3e6E84faC1A7Abc524ddfa66fb64f60',
-      to: '0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2',
+      to: '0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B',
     };
 
     expect(transactionState).toHaveProperty('hash');
@@ -231,7 +231,7 @@ describe('Execução de Transação Simples', () => {
       method: 'eth_call',
       params: [
         {
-          to: '0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2',
+          to: '0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B',
           data: '0x70a08231000000000000000000000000460F9D0cf3e6E84faC1A7Abc524ddfa66fb64f60',
         },
         'latest',

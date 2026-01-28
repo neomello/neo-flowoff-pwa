@@ -84,7 +84,7 @@ export function setSecurityHeaders(res) {
   // Content Security Policy - prevenir XSS e outros ataques
   res.setHeader(
     'Content-Security-Policy',
-    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://esm.sh https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://*.vercel.app https://*.base.org https://*.polygon.technology https://*.infura.io https://*.alchemy.com https://api.hunter.io https://api.resend.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self';"
+    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://esm.sh https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://*.vercel.app https://*.base.org https://mainnet.base.org https://basescan.org https://*.infura.io https://*.alchemy.com https://api.hunter.io https://api.resend.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self';"
   );
   // Strict Transport Security - força HTTPS
   res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');

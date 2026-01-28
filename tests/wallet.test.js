@@ -34,12 +34,12 @@ beforeEach(() => {
 
 // Configuração do TOKEN_CONFIG para testes
 const TOKEN_CONFIG = {
-  address: '0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2',
+  address: '0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B',
   symbol: 'NEOFLW',
   name: 'NEOFlowOFF',
   decimals: 18,
-  chainId: 137,
-  chain: 'polygon',
+  chainId: 8453,
+  chain: 'base',
 };
 
 describe('WalletManager', () => {
@@ -261,7 +261,7 @@ describe('WalletManager', () => {
       manager.viewOnExplorer();
 
       expect(window.open).toHaveBeenCalledWith(
-        'https://polygonscan.com/address/0x1234567890abcdef1234567890abcdef12345678',
+        'https://basescan.org/address/0x1234567890abcdef1234567890abcdef12345678',
         '_blank'
       );
     });
@@ -392,12 +392,12 @@ describe('WalletManager', () => {
 describe('TOKEN_CONFIG', () => {
   it('deve ter configurações corretas do token', () => {
     expect(TOKEN_CONFIG.address).toBe(
-      '0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2'
+      '0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B'
     );
     expect(TOKEN_CONFIG.symbol).toBe('NEOFLW');
     expect(TOKEN_CONFIG.decimals).toBe(18);
-    expect(TOKEN_CONFIG.chainId).toBe(137);
-    expect(TOKEN_CONFIG.chain).toBe('polygon');
+    expect(TOKEN_CONFIG.chainId).toBe(8453);
+    expect(TOKEN_CONFIG.chain).toBe('base');
   });
 });
 
@@ -541,7 +541,7 @@ function createWalletManagerMock() {
       if (!this.address) return;
 
       try {
-        const response = await fetch('https://polygon-rpc.com', {
+        const response = await fetch('https://mainnet.base.org', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -591,7 +591,7 @@ function createWalletManagerMock() {
     viewOnExplorer() {
       if (this.address) {
         window.open(
-          `https://polygonscan.com/address/${this.address}`,
+          `https://basescan.org/address/${this.address}`,
           '_blank'
         );
       }
