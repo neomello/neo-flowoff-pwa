@@ -76,19 +76,30 @@ O token $NEOFLW utiliza o padrão **NeoTokenV2**, desenvolvido pela NEØ SMART F
 - [x] Banco de dados (10 tabelas SQL)
 - [x] 5 APIs REST completas
 - [x] Frontend integrado
+- [x] **Pool Uniswap V3 CRIADA na BASE** 🎉
+- [x] **Trading ATIVO** 🚀
 
 ### 🔄 Em Progresso
 
-- [ ] Adicionar liquidez no Uniswap V3 (BASE)
-- [ ] Indexação no DexScreener
+- [ ] Adicionar mais liquidez (em andamento hoje)
+- [ ] Indexação no DexScreener (aguardando volume)
 - [ ] Logo IPFS verificado
 
-### 🎯 Próximos Passos
+### 🎯 Lançamento Público
 
-1. Adicionar liquidez inicial (1 ETH + 10,000 NEOFLW)
-2. Ativar trading no Uniswap V3
-3. Indexar no DexScreener
-4. Lançamento público
+**STATUS: 🟢 PRONTO PARA LANÇAMENTO**
+
+Pool Uniswap V3:
+- Tx de criação: `0xeb700565f74b510e5b713c7066b646033132c9552c8722130c14556b7e4b3d23`
+- Ver no BaseScan: https://basescan.org/tx/0xeb700565f74b510e5b713c7066b646033132c9552c8722130c14556b7e4b3d23
+- Data: 28/01/2026
+- Trading: ✅ ATIVO
+
+Próximos passos (não bloqueantes):
+1. Adicionar mais liquidez (hoje)
+2. Indexação DexScreener (automática após volume)
+3. Marketing e divulgação
+4. Airdrop para early adopters
 
 ---
 
