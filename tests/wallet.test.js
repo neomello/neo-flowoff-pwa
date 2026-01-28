@@ -28,8 +28,8 @@ beforeEach(() => {
     </button>
   `;
 
-  // Mock do THIRDWEB_CLIENT_ID
-  window.THIRDWEB_CLIENT_ID = 'test-client-id';
+  // Mock de configurações globais (não mais necessário THIRDWEB)
+  window.WEB3AUTH_CLIENT_ID = 'test-web3auth-client-id';
 });
 
 // Configuração do TOKEN_CONFIG para testes

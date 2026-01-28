@@ -1,7 +1,11 @@
 #!/usr/bin/env node
 /**
  * Token Info Script - $NEOFLW
- * Busca informações do token NEOFlowOFF na Polygon via Thirdweb API
+ * Busca informações do token NEOFlowOFF na BASE (Chain ID: 8453)
+ * Token oficial da NEØ SMART FACTORY
+ * 
+ * Contrato: 0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B
+ * Organização: https://github.com/neo-smart-token-factory
  *
  * Uso:
  *   node scripts/token-info.js
@@ -37,7 +41,7 @@ function formatTokenAmount(value, decimals = 18) {
   return `${intPart.toLocaleString()}.${decStr}`;
 }
 
-// Busca dados do contrato via RPC direto (Polygon)
+// Busca dados do contrato via RPC direto (BASE Network)
 async function fetchContractData(config) {
   const { rpcUrl } = config.network;
   const { token } = config.contracts;
@@ -125,9 +129,8 @@ async function main() {
   console.log('');
 
   console.log('🔗 LINKS');
-  console.log(
-    `   PolygonScan: ${config.links.polygonscan || config.links.contract}`
-  );
+  console.log(`   BaseScan: ${config.links.basescan || config.links.contract}`);
+  console.log(`   NEØ SMART FACTORY: ${config.links.factory || 'N/A'}`);
   console.log('');
 
   console.log('⚙️  FEATURES');
