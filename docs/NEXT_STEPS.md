@@ -50,7 +50,7 @@
    - ✅ Token $NEOFLW migrado de Polygon para BASE (chainId: 8453)
    - ✅ Contrato validado e verificado: `0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B`
    - ✅ Todos os arquivos atualizados (wallet.js, wallet-provider.js, tests)
-   - ✅ Web3Auth configurado para BASE RPC
+   - ✅ Web3Auth preparado para BASE RPC (opcional) — hoje fica em modo **pending** se `WEB3AUTH_CLIENT_ID` não estiver configurado (sem quebrar MetaMask).
    - ✅ Links de explorer atualizados (BaseScan, DexScreener)
    - ✅ Ver documentação: `docs/BASE_MIGRATION.md`
    - ✅ Ver auditoria: `docs/WALLET_TOKEN_AUDIT.md`
@@ -128,6 +128,7 @@
 ---
 
 **✅ Últimas atualizações (2026-01-28)**:
+
 - Migração para BASE Network concluída
 - Token $NEOFLW validado e verificado na BASE
 - CSS mobile/desktop 100% corrigido

@@ -7,13 +7,13 @@
 
 ## ✅ CONCLUÍDO HOJE
 
-- [x] Sistema de Swap ETH → $NEOFLW (js/token-swap.js)
-- [x] Interface de Swap (js/swap-ui.js)
-- [x] Sistema de Registro de Usuário (js/user-registration.js)
-- [x] API de Registro (api/register.js)
-- [x] Schema SQL completo (migrations/001_create_users_tables.sql)
-- [x] Documentação completa (docs/SWAP_REGISTRATION_GUIDE.md)
-- [x] Dependências instaladas (@uniswap/sdk-core, @uniswap/v3-sdk, ethers@5)
+-[x] Sistema de Swap ETH → $NEOFLW (js/token-swap.js)
+-[x] Interface de Swap (js/swap-ui.js)
+-[x] Sistema de Registro de Usuário (js/user-registration.js)
+-[x] API de Registro (api/register.js)
+-[x] Schema SQL completo (migrations/001_create_users_tables.sql)
+-[x] Documentação completa (docs/SWAP_REGISTRATION_GUIDE.md)
+-[x] Dependências instaladas (@uniswap/sdk-core, @uniswap/v3-sdk, ethers@5)
 
 **Total**: 6 arquivos novos, 2,135 linhas de código
 
@@ -47,6 +47,7 @@ psql $DATABASE_URL
 ```
 
 **Validação**:
+
 ```sql
 -- Testar insert
 INSERT INTO users (email, username) 
@@ -70,30 +71,31 @@ DELETE FROM users WHERE email = 'test@neoflowoff.eth';
 
 #### Passo a passo:
 
-1. **Acessar Uniswap**: https://app.uniswap.org/pools
+1.**Acessar Uniswap**: https://app.uniswap.org/pools
 2. **Conectar wallet** na rede BASE
 3. **Criar novo pool**:
-   - Token A: ETH
-   - Token B: $NEOFLW (`0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B`)
-   - Fee tier: **0.3%** (3000 basis points)
-   
-4. **Definir range de preço**:
-   - Exemplo: Se 1 ETH = 10,000 NEOFLW
-   - Min: 8,000 NEOFLW (±20%)
-   - Max: 12,000 NEOFLW (±20%)
-   
-5. **Adicionar liquidez**:
-   - Exemplo conservador: 0.1 ETH + 1,000 NEOFLW
-   - Exemplo produção: 1 ETH + 10,000 NEOFLW
-   
-6. **Obter endereço do pool**:
-   - Após criar, copiar endereço do pool
-   - Anotar em `docs/POOL_ADDRESS.txt`
+-Token A: ETH
+-Token B: $NEOFLW (`0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B`)
+-Fee tier: **0.3%** (3000 basis points)
+ 
+4.**Definir range de preço**:
+
+-Exemplo: Se 1 ETH = 10,000 NEOFLW
+-Min: 8,000 NEOFLW (±20%)
+-Max: 12,000 NEOFLW (±20%)
+  
+5.**Adicionar liquidez**:
+-Exemplo conservador: 0.1 ETH + 1,000 NEOFLW
+-Exemplo produção: 1 ETH + 10,000 NEOFLW
+
+6.**Obter endereço do pool**:
+-Após criar, copiar endereço do pool
+-Anotar em `docs/POOL_ADDRESS.txt`
 
 **Resultado esperado**:
-- Pool ETH/NEOFLW ativo na BASE
-- Endereço do pool documentado
-- Liquidez suficiente para testes
+-Pool ETH/NEOFLW ativo na BASE
+-Endereço do pool documentado
+-Liquidez suficiente para testes
 
 ---
 

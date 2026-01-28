@@ -266,23 +266,39 @@ async function initWeb3Auth() {
   if (web3authInstance) return web3authInstance;
 
   try {
-    // Import dinâmico via esm.sh (resolve dependências e exports corretamente)
-    const web3authModule = await importWithFallback(
-      '@web3auth/modal',
-      `https://esm.sh/@web3auth/modal@${WEB3AUTH_MODAL_VERSION}`
-    );
-    // ESM.sh geralmente exporta como default ou named exports corretamente
-    const Web3AuthModalClass = web3authModule.Web3AuthModal || web3authModule.default?.Web3AuthModal || web3authModule.default;
-    Web3AuthModal = Web3AuthModalClass;
-
     // Obtém configuração dinamicamente (para pegar valores atualizados de window)
     const config = getWeb3AuthConfig();
 
+    // Se não houver CLIENT_ID configurado, não tentar carregar SDK pesado
     if (!config.clientId) {
       console.warn(
-        '⚠️ WEB3AUTH_CLIENT_ID não configurado. Configure a variável no Vercel.'
+        '⚠️ WEB3AUTH_CLIENT_ID não configurado. Configure a variável no Vercel. Web3Auth será desativado por enquanto.'
       );
+      WALLET_SYSTEM_STATUS.web3auth = 'pending';
+      return null;
     }
+
+    // Import dinâmico via esm.sh (resolve dependências e exports corretamente)
+    const web3authModule = await importWithFallback(
+      '@web3auth/modal',
+      `https://esm.sh/@WEB3AUTH_MODAL_VERSION`
+    );
+    // ESM.sh geralmente exporta como default ou named exports corretamente
+    const Web3AuthModalClass =
+      web3authModule.Web3AuthModal ||
+      web3authModule.default?.Web3AuthModal ||
+      web3authModule.default;
+
+    // Se não houver classe/constructor válido, não prosseguir
+    if (!Web3AuthModalClass || typeof Web3AuthModalClass !== 'function') {
+      console.warn(
+        '⚠️ Web3AuthModal não está disponível ou não é um construtor válido. Web3Auth será mantido como pending.'
+      );
+      WALLET_SYSTEM_STATUS.web3auth = 'pending';
+      return null;
+    }
+
+    Web3AuthModal = Web3AuthModalClass;
 
     web3authInstance = new Web3AuthModal(config);
 

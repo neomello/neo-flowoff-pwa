@@ -1819,7 +1819,7 @@ main {
   position: fixed;
   bottom: 100px;
   right: 20px;
-  z-index: 99; /* Abaixo de bottom bar (101) e sidebar (1000) */
+  z-index: 1000;
   font-family:
     -apple-system,
     BlinkMacSystemFont,
@@ -1828,14 +1828,6 @@ main {
     Segoe UI,
     Roboto,
     Ubuntu;
-}
-
-/* Em desktop, posicionar melhor quando sidebar está aberta */
-@media (min-width: 769px) {
-  .agent-widget {
-    right: 40px;
-    bottom: 40px;
-  }
 }
 
 .agent-widget-toggle {
@@ -2302,6 +2294,7 @@ main {
 
   main {
     padding-top: 140px; /* Mais espaço para mobile */
+    padding-bottom: calc(90px + env(safe-area-inset-bottom)); /* Espaço para bottom bar mobile */
   }
 }
 
@@ -2344,7 +2337,34 @@ main {
   }
 }
 
-/* Botão de teste - REMOVIDO (duplicado em styles.css) */
+/* Botão de teste */
+.test-button {
+  position: fixed;
+  bottom: 100px; /* Acima do bottom bar */
+  right: 20px;
+  z-index: 100; /* Abaixo do bottom bar (z-index: 101) */
+  background: var(--blue);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 14px;
+  box-shadow: var(--shadow);
+  transition: all 0.3s ease;
+}
+
+.test-button:hover {
+  background: var(--vio);
+  transform: translateY(-2px);
+}
+
+/* Esconder em mobile para evitar conflito com bottom bar */
+@media (max-width: 768px) {
+  .test-button {
+    display: none;
+  }
+}
 
 /* Status de validação */
 .validation-success {
