@@ -1,35 +1,41 @@
-# 🚀 NEØ FlowOFF - Progressive Web App
+# 🚀 NEØ FlowOFF - Agência Digital Web3
 
 [![Status](https://img.shields.io/badge/status-LIVE-success)](https://neoflowoff.xyz)
 [![Network](https://img.shields.io/badge/network-BASE-blue)](https://base.org)
 [![Pool](https://img.shields.io/badge/pool-Uniswap%20V3-ff007a)](https://app.uniswap.org)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-**Token oficial da NEØ SMART FACTORY** - Sistema completo de gamificação Web3 com pontos, referral e trading na BASE Network.
+**Agência digital especializada em soluções Web3** - Oferecemos serviços completos de desenvolvimento, tokenização e gamificação para projetos descentralizados. O token $NEOFLW é nossa moeda nativa, negociada na BASE Network.
 
 ---
 
-## 🏭 NEØ SMART FACTORY
+## 🎯 Sobre a NEØ FlowOFF
 
-Este token é parte do ecossistema **NEØ SMART FACTORY**, nossa fábrica descentralizada de tokens Web3.
+A **NEØ FlowOFF** é uma agência digital especializada em Web3, oferecendo:
 
-- **Organização**: https://github.com/neo-smart-token-factory
-- **Documentação**: https://github.com/neo-smart-token-factory/docs
-- **Padrão**: NeoTokenV2 (multichain + AA-ready)
+- 🔧 **Desenvolvimento Full-Stack** — DApps, PWAs, Smart Contracts
+- 🪙 **Tokenização** — Criação e gestão de tokens ERC-20
+- 🎮 **Gamificação** — Sistemas de pontos, recompensas e engajamento
+- 📊 **Consultoria Web3** — Estratégias de lançamento e crescimento
+- 🚀 **Integração DeFi** — Pools de liquidez, swaps, staking
+
+### Ecossistema
+
+Desenvolvido pela **[NEØ SMART FACTORY](https://github.com/neo-smart-token-factory)**, nossa organização open-source focada em ferramentas e padrões Web3.
 
 ---
 
-## 💎 Token $NEOFLW
+## 💎 Token $NEOFLW - Moeda Nativa da Agência
 
 ### Informações Oficiais
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  Contrato: 0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B          │
-│  Rede: BASE (Chain ID: 8453)                                   │
-│  Símbolo: NEOFLW                                               │
-│  Decimals: 18                                                  │
-│  Padrão: NeoTokenV2 (ERC-20 compatível)                       │
+│  Contrato: 0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B           │
+│  Rede: BASE (Chain ID: 8453)                                    │
+│  Símbolo: NEOFLW                                                │
+│  Decimals: 18                                                   │
+│  Padrão: NeoTokenV2 (ERC-20 compatível)                         │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -42,9 +48,9 @@ Este token é parte do ecossistema **NEØ SMART FACTORY**, nossa fábrica descen
 
 ---
 
-## ✨ Funcionalidades
+## ✨ Soluções Oferecidas
 
-### 🎮 Sistema de Gamificação Completo
+### 🎮 Plataforma de Gamificação Completa
 
 - ✅ **Sistema de Pontos** — 9 ações configuradas (cadastro, wallet, compartilhamento, etc)
 - ✅ **Sistema de Referral** — Código único + compartilhamento social (Twitter, Facebook)
@@ -444,9 +450,19 @@ npm run lint           # Verificar código
 
 ---
 
-## 🤝 Contribuindo
+## 🤝 Trabalhe Conosco
 
-Este é um projeto da **NEØ SMART FACTORY**. Para contribuir:
+Interessado em nossos serviços ou quer contribuir? Entre em contato:
+
+### Para Clientes
+
+- 💼 **Consultoria Web3** — Agende uma conversa
+- 🚀 **Desenvolvimento** — Solicite um orçamento
+- 🎯 **Tokenização** — Crie seu próprio token
+
+### Para Desenvolvedores
+
+Quer contribuir com nosso ecossistema open-source?
 
 1. Fork o repositório
 2. Crie uma branch: `git checkout -b feature/nova-feature`
@@ -456,12 +472,19 @@ Este é um projeto da **NEØ SMART FACTORY**. Para contribuir:
 
 ---
 
-## 📞 Suporte
+## 📞 Contato
 
-- **GitHub**: https://github.com/neo-smart-token-factory
-- **Docs**: https://github.com/neo-smart-token-factory/docs
-- **Twitter**: https://twitter.com/neoflw_on_chain
-- **Email**: neosmart.factory@gmail.com
+### Agência NEØ FlowOFF
+
+- 🌐 **Site**: https://neoflowoff.xyz
+- 🐦 **Twitter**: https://twitter.com/neoflw_on_chain
+- 📧 **Email**: neosmart.factory@gmail.com
+- 💬 **Discord**: [Em breve]
+
+### Open Source
+
+- **GitHub Factory**: https://github.com/neo-smart-token-factory
+- **Documentação**: https://github.com/neo-smart-token-factory/docs
 
 ---
 
@@ -505,6 +528,28 @@ Este projeto está licenciado sob a licença MIT. Veja o arquivo [LICENSE](LICEN
 
 ---
 
-**Desenvolvido com ❤️ pela NEØ SMART FACTORY**
+---
 
-*Let's go to the moon!* 🌙🚀
+## 🎨 Portfólio
+
+### Projetos da Agência NEØ FlowOFF
+
+- ✅ **NEØ FlowOFF Token** — $NEOFLW na BASE (este projeto)
+- 🔄 **DeFi Solutions** — Pools, Swaps, Staking
+- 🎮 **Gamification Engine** — Sistema de pontos reutilizável
+- 🔗 **Multi-chain Bridge** — Em desenvolvimento
+
+### Tecnologias Utilizadas
+
+- **Blockchain**: Ethereum, BASE, Polygon
+- **Frontend**: PWA, HTML5, JavaScript (Vanilla)
+- **Backend**: Node.js, Vercel Serverless
+- **Database**: PostgreSQL (Neon)
+- **DeFi**: Uniswap V3, 0x Protocol
+- **Wallet**: MetaMask, WalletConnect, Web3Auth
+
+---
+
+**Desenvolvido com ❤️ pela Agência NEØ FlowOFF**
+
+*Transformando ideias em realidade Web3* 🚀
