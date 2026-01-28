@@ -12,6 +12,7 @@
 **Localização**: `css/modules/responsive.css` linha ~308
 
 ❌ **PROBLEMA**:
+
 ```css
 .test-button {
   position: fixed;
@@ -24,6 +25,7 @@
 **Por que é crítico**: O botão de teste aparece POR CIMA do glass-morphism-tabbar mobile, bloqueando o botão "Miniapp" que fica no canto direito.
 
 ✅ **CORREÇÃO**:
+
 ```css
 .test-button {
   position: fixed;
@@ -56,6 +58,7 @@
 **Localização**: `css/modules/responsive.css` linha ~213-266
 
 ❌ **PROBLEMA**:
+
 ```css
 @media (max-width: 768px) {
   main {
@@ -68,6 +71,7 @@
 **Por que é crítico**: Em mobile, o conteúdo pode ficar coberto pelo glass-morphism-tabbar que está em `bottom: 8px` (mobile) e tem altura de ~70px.
 
 ✅ **CORREÇÃO**:
+
 ```css
 @media (max-width: 768px) {
   main {
@@ -139,10 +143,10 @@ main {
 
 ## 🎯 RESULTADO
 
-- ✅ Zero conflitos de z-index
-- ✅ Conteúdo sempre visível acima do bottom bar
-- ✅ Safe-area consistente em todos os devices
-- ✅ `.test-button` não interfere com navegação mobile
+-✅ Zero conflitos de z-index
+-✅ Conteúdo sempre visível acima do bottom bar
+-✅ Safe-area consistente em todos os devices
+-✅ `.test-button` não interfere com navegação mobile
 
 ---
 

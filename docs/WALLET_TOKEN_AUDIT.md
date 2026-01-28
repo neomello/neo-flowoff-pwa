@@ -24,6 +24,7 @@ const TOKEN_CONFIG = {
 ```
 
 **wallet-provider.js** (linha 11, 68-77):
+
 ```javascript
 // Linha 11: "Token: $NEOFLW na Polygon Network"
 // ✅ E de fato:

@@ -99,7 +99,7 @@
 
 ## Ordem sugerida
 
-1. ENS (rápido; garante .eth correto).
+1.ENS (rápido; garante .eth correto).
 2. Lighthouse em prod + atualizar doc de métricas.
 3. Do backlog: começar por **log estruturado** e **feedback visual**.
 
