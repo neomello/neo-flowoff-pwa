@@ -1,198 +1,469 @@
-# NEOFlowOFF PWA - Token Integration
+# 🚀 NEØ FlowOFF - Progressive Web App
 
-Integração completa do token **NEOFlowOFF (NEOFLW)** com Account Abstraction usando MetaMask Smart
-Accounts.
+[![Status](https://img.shields.io/badge/status-LIVE-success)](https://neoflowoff.xyz)
+[![Network](https://img.shields.io/badge/network-BASE-blue)](https://base.org)
+[![Pool](https://img.shields.io/badge/pool-Uniswap%20V3-ff007a)](https://app.uniswap.org)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-## 📦 Stack Tecnológica
-
-- **Web3Auth**: Autenticação de usuários + RPC e Bundler próprios
-- **IPFS.io + Storacha**: Armazenamento de dados
-- **Infura**: RPC e Bundler (opcional - fallback se não usar Web3Auth)
-- **MetaMask Smart Accounts**: Account Abstraction para o token
-
-## 🎯 Token NEOFlowOFF
-
-- **Endereço:** `0xece94d3719fc6fde7275051a54caf1f7d5098d59`
-- **Símbolo:** NEOFLW
-- **Rede:** Polygon
-- **Link:** [PolygonScan](https://polygonscan.com/token/0xece94d3719fc6fde7275051a54caf1f7d5098d59)
-
-## 📋 Instalação
-
-### 1. Instalar Dependências
-
-```bash
-npm install @metamask/smart-accounts-kit viem @web3auth/modal @web3auth/base
-# ou
-yarn add @metamask/smart-accounts-kit viem @web3auth/modal @web3auth/base
-```
-
-### 2. Backend Neon SQL (serverless)
-
-**Variáveis obrigatórias para banco:**
-
-- `DATABASE_URL` (pooler do Neon)
-- Opcional: `DATABASE_URL_UNPOOLED` / `POSTGRES_URL_NON_POOLING`
-
-**Migrações:**
-
-- `npm run db:migrate` (aplica `migrations/` e registra em `schema_migrations`)
-
-**Endpoints serverless:**
-
-- `api/health-db.js` — `GET /api/health-db` (ping no Neon)
-- `api/leads.js` — `POST /api/leads` (salva lead)
-- `api/wallet-sessions.js` — `POST/GET` sessões de wallet
-- `api/tx-logs.js` — `POST/GET` logs de transação
-
-### 3. Configurar Variáveis de Ambiente
-
-Crie um arquivo `.env` na raiz do projeto (veja `env-example.txt`):
-
-```bash
-# Neon Postgres (Backend Database - OBRIGATÓRIO para backend)
-DATABASE_URL=postgresql://user:password@ep-xxx.region.aws.neon.tech/neondb?sslmode=require
-
-# Web3Auth (Autenticação)
-WEB3AUTH_CLIENT_ID=seu_web3auth_client_id
-NEXT_PUBLIC_WEB3AUTH_CLIENT_ID=seu_web3auth_client_id
-
-# DRPC (RPC Pago - RECOMENDADO)
-# ⚠️ IMPORTANTE: Use a URL completa
-DRPC_RPC_KEY=https://lb.drpc.live/polygon/sua_chave_aqui
-
-# Storacha (IPFS)
-STORACHA_DID=seu_agent_did
-STORACHA_UCAN=seu_ucan_token
-NEXT_PUBLIC_STORACHA_ENDPOINT=https://api.storacha.com
-
-# Wallet (para scripts de teste - opcional)
-# PRIVATE_KEY=sua_private_key
-```
-
-**Configure no Vercel:**
-
-```bash
-npm run check:env  # Verifica variáveis configuradas na Vercel
-```
-
-## 🚀 Scripts Disponíveis
-
-### Database (Backend)
-
-```bash
-# Aplicar migrações SQL ao banco Neon
-npm run db:migrate
-
-# Verificar variáveis de ambiente na Vercel
-npm run check:env
-```
-
-### Teste Básico
-
-```bash
-npx tsx examples/integrate-token-smart-accounts.ts
-```
-
-### Integração Completa
-
-```bash
-npx tsx examples/integrate-token-full-stack.ts
-```
-
-## 📚 Documentação
-
-- **Guia Completo:** `docs/integracao/GUIA_INTEGRACAO_STACK_COMPLETA.md`
-- **Guia Básico:** `docs/integracao/GUIA_INTEGRACAO_TOKEN_SMART_ACCOUNTS.md`
-- **Resumo:** `docs/integracao/RESUMO_INTEGRACAO_STACK.md`
-
-## 💻 Uso no Website
-
-### Exemplo Básico
-
-```typescript
-import { NEOFlowOFFIntegration } from './examples/integrate-token-website-example';
-
-const integration = new NEOFlowOFFIntegration();
-await integration.initializeSmartAccount(signer, walletAddress);
-
-// Obter saldo
-const balance = await integration.getBalance(walletAddress);
-
-// Transferir
-const hash = await integration.transfer(recipientAddress, '100');
-```
-
-### Exemplo Completo (Web3Auth + IPFS)
-
-```typescript
-import { NEOFlowOFFFullStackIntegration } from './examples/integrate-token-full-stack';
-
-const integration = new NEOFlowOFFFullStackIntegration();
-await integration.initializeWeb3Auth();
-await integration.initializeSmartAccount(web3AuthSigner, address);
-
-// Transferir e salvar no IPFS
-const { txHash, ipfsHash } = await integration.transferAndSave(recipientAddress, '100');
-```
-
-## 📁 Estrutura de Arquivos
-
-```text
-neo-flowoff-pwa/
-├── examples/
-│   ├── integrate-token-smart-accounts.ts      # Script básico de teste
-│   ├── integrate-token-full-stack.ts          # Classe completa de integração
-│   ├── integrate-token-website-example.ts     # Exemplo básico para website
-│   └── integrate-token-website-full-stack.tsx # Componente React/Next.js
-├── docs/
-│   └── integracao/
-│       ├── GUIA_INTEGRACAO_STACK_COMPLETA.md
-│       ├── GUIA_INTEGRACAO_TOKEN_SMART_ACCOUNTS.md
-│       └── RESUMO_INTEGRACAO_STACK.md
-└── README.md
-```
-
-## 🔗 Links Úteis
-
-- **Token:** [PolygonScan](https://polygonscan.com/token/0xece94d3719fc6fde7275051a54caf1f7d5098d59)
-- **Web3Auth:** [Documentação](https://web3auth.io/docs)
-- **IPFS Gateway:** [IPFS.io](https://ipfs.io)
-- **MetaMask Smart Accounts:** [Documentação](https://docs.gator.metamask.io)
-- **Infura:** [Documentação](https://infura.io/docs)
-
-## 📝 Próximos Passos
-
-1.  Configure as variáveis de ambiente
-2.  Instale as dependências
-3.  Execute os scripts de teste
-4.  Integre no seu website
-5.  Deploy em produção
+**Token oficial da NEØ SMART FACTORY** - Sistema completo de gamificação Web3 com pontos, referral e trading na BASE Network.
 
 ---
 
-## 🚀 Pronto para Integrar
+## 🏭 NEØ SMART FACTORY
 
-O projeto está configurado e pronto para uso.
+Este token é parte do ecossistema **NEØ SMART FACTORY**, nossa fábrica descentralizada de tokens Web3.
 
-## Contact
+- **Organização**: https://github.com/neo-smart-token-factory
+- **Documentação**: https://github.com/neo-smart-token-factory/docs
+- **Padrão**: NeoTokenV2 (multichain + AA-ready)
 
-[neo@neoprotocol.space](mailto:neo@neoprotocol.space)
+---
 
-</div>
+## 💎 Token $NEOFLW
 
-<div align="center">
-  <a href="https://x.com/node_mello">
-    <img src="https://img.shields.io/badge/-@node_mello-ff008e?style=flat-square&logo=twitter&logoColor=white" alt="Twitter @node_mello" />
-  </a>
-  <a href="https://www.instagram.com/neoprotocol.eth/">
-    <img src="https://img.shields.io/badge/-@neoprotocol.eth-ff008e?style=flat-square&logo=instagram&logoColor=white" alt="Instagram @neoprotocol.eth" />
-  </a>
-  <a href="https://etherscan.io/">
-    <img src="https://img.shields.io/badge/-neomello.eth-ff008e?style=flat-square&logo=ethereum&logoColor=white" alt="Ethereum neomello.eth" />
-  </a>
-</div>
+### Informações Oficiais
 
-<div align="center">
-  <i>"Expand until silence becomes structure."</i>
-</div>
+```
+Contrato: 0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B
+Rede: BASE (Chain ID: 8453)
+Símbolo: NEOFLW
+Decimals: 18
+Padrão: NeoTokenV2 (ERC-20 compatível)
+```
+
+### Links Importantes
+
+- **BaseScan**: https://basescan.org/token/0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B
+- **Uniswap V3**: https://app.uniswap.org/explore/pools/8453
+- **DexScreener**: https://dexscreener.com/base/0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B
+- **Pool Tx**: https://basescan.org/tx/0xeb700565f74b510e5b713c7066b646033132c9552c8722130c14556b7e4b3d23
+
+---
+
+## ✨ Funcionalidades
+
+### 🎮 Sistema de Gamificação Completo
+
+- ✅ **Sistema de Pontos** — 9 ações configuradas (cadastro, wallet, compartilhamento, etc)
+- ✅ **Sistema de Referral** — Código único + compartilhamento social (Twitter, Facebook)
+- ✅ **Leaderboard** — Ranking em tempo real (top 100)
+- ✅ **Tiers Automáticos** — Bronze → Silver → Gold → Platinum → Diamond
+- ✅ **Toast Notifications** — Feedback visual animado
+
+### 💰 Trading & DeFi
+
+- ✅ **Pool Uniswap V3** — Par NEOFLW/WETH na BASE
+- ✅ **Swap Integrado** — Troca ETH → $NEOFLW direto no site
+- ✅ **Slippage Control** — Proteção contra front-running
+- ✅ **Auto Network Switch** — Detecta e muda para BASE automaticamente
+
+### 🔗 Wallet Integration
+
+- ✅ **MetaMask** — Suporte nativo
+- ✅ **WalletConnect** — Carteiras móveis
+- ✅ **Web3Auth** — Login social (configurável)
+- ✅ **Onboarding Modal** — Experiência pós-conexão
+
+### 📊 Backend Completo
+
+- ✅ **10 Tabelas SQL** — Neon Database (users, wallets, points, referrals, etc)
+- ✅ **8 APIs REST** — Otimizadas para Vercel Hobby
+- ✅ **3 Views Automáticas** — Queries pré-calculadas
+- ✅ **3 Triggers** — Atualização automática de totais
+
+---
+
+## 🎯 Sistema de Pontos
+
+### Ações Configuradas
+
+| Ação | Pontos | Limite |
+|------|--------|--------|
+| Cadastro | 10 | 1x |
+| Conectar Wallet | 20 | 1x |
+| Compartilhar (Twitter/Facebook) | 15 | 5x |
+| Convidar Amigo | 50 | ∞ |
+| Tutorial Completo | 30 | 1x |
+| Primeira Compra | 100 | 1x |
+| Login Diário | 5 | 1x/dia |
+| Perfil Completo | 25 | 1x |
+
+### Tiers Automáticos
+
+- 🥉 **Bronze**: 0-99 pontos
+- 🥈 **Silver**: 100-249 pontos
+- 🥇 **Gold**: 250-499 pontos
+- 💎 **Platinum**: 500-999 pontos
+- 💠 **Diamond**: 1000+ pontos
+
+---
+
+## 🚀 Quick Start
+
+### 1. Clone o Repositório
+
+```bash
+git clone https://github.com/neomello/neo-flowoff-pwa.git
+cd neo-flowoff-pwa
+```
+
+### 2. Instalar Dependências
+
+```bash
+npm install
+```
+
+### 3. Configurar Variáveis de Ambiente
+
+Crie um arquivo `.env` na raiz:
+
+```bash
+# Neon Database (obrigatório)
+DATABASE_URL=postgresql://user:password@ep-xxx.region.aws.neon.tech/neondb?sslmode=require
+
+# Web3Auth (opcional - para login social)
+WEB3AUTH_CLIENT_ID=seu_client_id
+
+# APIs Externas (configuradas)
+RESEND_API_KEY=seu_api_key
+CLOUDINARY_API_KEY=seu_api_key
+```
+
+### 4. Executar Migrações SQL
+
+```bash
+# Via psql direto
+PGPASSWORD='sua_senha' psql -h host.neon.tech -U user -d neondb -f migrations/001_create_users_tables.sql
+PGPASSWORD='sua_senha' psql -h host.neon.tech -U user -d neondb -f migrations/002_create_points_system.sql
+```
+
+### 5. Build & Deploy
+
+```bash
+# Build local
+npm run build
+
+# Deploy na Vercel
+vercel --prod
+```
+
+---
+
+## 📡 APIs Disponíveis
+
+### Sistema de Pontos
+
+```bash
+# Consultar saldo
+GET /api/points?wallet_address=0x...
+
+# Registrar ação
+POST /api/points
+{
+  "wallet_address": "0x...",
+  "action_type": "wallet_connect",
+  "metadata": {}
+}
+```
+
+### Sistema de Referral
+
+```bash
+# Criar código
+POST /api/referral?action=create
+{
+  "wallet_address": "0x..."
+}
+
+# Usar código
+POST /api/referral?action=use
+{
+  "referral_code": "NEOFLW1234ABC",
+  "referee_wallet": "0x..."
+}
+```
+
+### Leaderboard
+
+```bash
+# Top 100 usuários
+GET /api/leaderboard?limit=100
+```
+
+### Health Check
+
+```bash
+# Status básico
+GET /api/health
+
+# Status + banco de dados
+GET /api/health?check=db
+```
+
+---
+
+## 🏗️ Arquitetura
+
+### Frontend
+
+```
+/
+├── index.html — Homepage mobile
+├── desktop.html — Homepage desktop
+├── js/
+│   ├── wallet.js — Gerenciador de wallets
+│   ├── wallet-provider.js — SDKs (MetaMask, WalletConnect, Web3Auth)
+│   ├── wallet-onboarding.js — Experiência pós-conexão
+│   ├── points-system.js — Sistema de pontos
+│   ├── referral-system.js — Sistema de referral
+│   ├── leaderboard-widget.js — Widget de ranking
+│   ├── token-swap.js — Lógica de swap Uniswap V3
+│   ├── swap-ui.js — Interface de swap
+│   └── user-registration.js — Registro de usuário
+└── css/ — Estilos modulares
+```
+
+### Backend (Vercel Serverless)
+
+```
+api/
+├── health.js — Health check (básico + db)
+├── lead.js — Captura de leads
+├── leaderboard.js — Ranking de pontos
+├── points.js — Pontos (balance + record)
+├── referral.js — Referral (create + use)
+├── register.js — Registro de usuário
+├── tx-logs.js — Logs de transações
+├── wallet-sessions.js — Sessões de wallet
+├── db.js — Conexão Neon Database
+└── utils.js — Utilitários (CORS, validação, rate limiting)
+```
+
+### Database (Neon PostgreSQL)
+
+```sql
+-- Tabelas Principais
+users                    -- Usuários cadastrados
+user_wallets             -- Wallets vinculadas
+user_sessions            -- Sessões de login
+user_points              -- Histórico de pontos
+user_totals              -- Cache de totais
+referrals                -- Sistema de convites
+token_claims             -- Resgates de tokens
+leaderboard_snapshots    -- Snapshots do ranking
+points_config            -- Configuração de pontos
+airdrop_whitelist        -- Lista de elegíveis
+
+-- Views
+v_users_with_wallets     -- Usuários com wallets
+v_leaderboard            -- Ranking ativo
+v_referral_stats         -- Estatísticas de referral
+```
+
+---
+
+## 🎯 Fluxo do Usuário
+
+### 1. Primeiro Acesso
+
+```
+Usuário acessa https://neoflowoff.xyz
+     ↓
+Clica em "ACESSAR"
+     ↓
+Conecta MetaMask/WalletConnect
+     ↓
+Sistema detecta primeira conexão
+     ↓
+✅ Ganha 20 pontos (wallet_connect)
+     ↓
+Modal de boas-vindas aparece
+```
+
+### 2. Ações Disponíveis
+
+```
+Modal de Boas-Vindas:
+┌─────────────────────────────┐
+│ 💰 Comprar $NEOFLW          │ → Swap ETH/NEOFLW
+│ 📝 Criar Conta              │ → Registro completo
+│ 🎁 Convidar Amigos          │ → Código de referral
+│ 🏆 Ver Ranking              │ → Leaderboard
+└─────────────────────────────┘
+```
+
+### 3. Sistema Viral
+
+```
+Usuário compartilha código: NEOFLW1234ABC
+     ↓
+Amigo acessa com ?ref=NEOFLW1234ABC
+     ↓
+Amigo conecta wallet
+     ↓
+✅ Usuário ganha 50 pontos (referral)
+     ↓
+Usuário sobe no ranking
+```
+
+---
+
+## 📊 Otimização Vercel
+
+Este projeto está otimizado para o **plano Hobby** da Vercel:
+
+- **Limite**: 12 Serverless Functions
+- **Uso atual**: 8 funções
+- **Margem**: 4 funções (33%)
+- **Custo**: $0/mês
+
+### Consolidação Realizada
+
+- ✅ `api/points.js` — Balance + Record (antes: 2 funções)
+- ✅ `api/referral.js` — Create + Use (antes: 2 funções)
+- ✅ `api/health.js` — Basic + DB (antes: 2 funções)
+
+---
+
+## 🔐 Segurança
+
+### Contratos Verificados
+
+- ✅ Token verificado no BaseScan
+- ✅ Pool Uniswap V3 oficial
+- ✅ Código auditável no GitHub
+
+### Backend
+
+- ✅ Rate limiting (por IP)
+- ✅ Input sanitization
+- ✅ SQL injection protection (prepared statements)
+- ✅ CORS configurado
+- ✅ Content Security Policy
+
+### Frontend
+
+- ✅ Detecção de rede automática
+- ✅ Validação de endereços Ethereum
+- ✅ Proteção contra double-spending
+- ✅ Slippage control
+
+---
+
+## 📈 Métricas & Analytics
+
+### KPIs Iniciais
+
+- **Wallets conectadas**: Tracking via `user_wallets`
+- **Pontos distribuídos**: Tracking via `user_points`
+- **Referrals ativos**: Tracking via `referrals`
+- **Volume de trading**: Tracking via Uniswap events
+
+### Queries SQL Úteis
+
+```sql
+-- Total de usuários
+SELECT COUNT(*) FROM users;
+
+-- Top 10 ranking
+SELECT * FROM v_leaderboard LIMIT 10;
+
+-- Estatísticas de referral
+SELECT * FROM v_referral_stats ORDER BY total_referrals DESC;
+
+-- Pontos distribuídos por ação
+SELECT action_type, SUM(points) FROM user_points GROUP BY action_type;
+```
+
+---
+
+## 🛠️ Desenvolvimento
+
+### Scripts Disponíveis
+
+```bash
+npm run build          # Build de produção
+npm run dev            # Servidor de desenvolvimento
+npm run test           # Rodar testes
+npm run lint           # Verificar código
+```
+
+### Estrutura de Branches
+
+- `main` — Produção (auto-deploy Vercel)
+- `develop` — Desenvolvimento
+- `feature/*` — Novas funcionalidades
+
+---
+
+## 📚 Documentação Adicional
+
+- **[NEO_SMART_FACTORY.md](docs/NEO_SMART_FACTORY.md)** — Info oficial do token
+- **[LAUNCH_READY.md](docs/LAUNCH_READY.md)** — Guia de lançamento
+- **[LAUNCH_STRATEGY.md](docs/LAUNCH_STRATEGY.md)** — Estratégia de marketing
+- **[VERCEL_OPTIMIZATION.md](docs/VERCEL_OPTIMIZATION.md)** — Otimização de funções
+- **[SWAP_REGISTRATION_GUIDE.md](docs/SWAP_REGISTRATION_GUIDE.md)** — Guia técnico swap/registro
+- **[BASE_MIGRATION.md](docs/BASE_MIGRATION.md)** — Migração para BASE
+
+---
+
+## 🤝 Contribuindo
+
+Este é um projeto da **NEØ SMART FACTORY**. Para contribuir:
+
+1. Fork o repositório
+2. Crie uma branch: `git checkout -b feature/nova-feature`
+3. Commit: `git commit -m 'feat: adicionar nova feature'`
+4. Push: `git push origin feature/nova-feature`
+5. Abra um Pull Request
+
+---
+
+## 📞 Suporte
+
+- **GitHub**: https://github.com/neo-smart-token-factory
+- **Docs**: https://github.com/neo-smart-token-factory/docs
+- **Twitter**: https://twitter.com/neoflw_on_chain
+- **Email**: neosmart.factory@gmail.com
+
+---
+
+## 📄 Licença
+
+Este projeto está licenciado sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+---
+
+## ⚠️ Contratos Descontinuados
+
+**ATENÇÃO**: Os seguintes contratos NÃO devem mais ser usados:
+
+- ❌ `0x6575933669e530dC25aaCb496cD8e402B8f26Ff5` (ThirdWeb — descontinuado)
+- ❌ `0x59aa4EaE743d608FBDd4205ebA59b38DCA755Dd2` (Polygon — descontinuado)
+
+**ÚNICO CONTRATO VÁLIDO**: `0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B` (BASE)
+
+---
+
+## 🎉 Status do Projeto
+
+```
+✅ Token deployado (BASE)
+✅ Pool Uniswap V3 ativa
+✅ Trading funcionando
+✅ Sistema de pontos completo
+✅ Sistema de referral completo
+✅ Leaderboard em tempo real
+✅ 10 tabelas SQL operacionais
+✅ 8 APIs REST otimizadas
+✅ Frontend totalmente integrado
+✅ Documentação completa
+
+STATUS: 🟢 LIVE — READY TO SCALE
+```
+
+---
+
+**Desenvolvido com ❤️ pela NEØ SMART FACTORY**
+
+*Let's go to the moon!* 🌙🚀
