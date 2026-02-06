@@ -30,5 +30,4 @@ jobs:
           # Comentar no PR
           comment-summary-in-pr: always
           # Configurações
-          deny-licenses: GPL-3.0, AGPL-3.0
           allow-licenses: MIT, Apache-2.0, BSD-3-Clause, ISC
