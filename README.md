@@ -1,108 +1,214 @@
-# 🚀 NEØ FlowOFF - Agência Digital Web3
+# 🚀 NEØ FlowOFF - Progressive Web App
 
 [![Status](https://img.shields.io/badge/status-LIVE-success)](https://neoflowoff.xyz)
 [![Network](https://img.shields.io/badge/network-BASE-blue)](https://base.org)
-[![Pool](https://img.shields.io/badge/pool-Uniswap%20V3-ff007a)](https://app.uniswap.org)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-**Agência digital especializada em soluções Web3** - Oferecemos serviços completos de desenvolvimento, tokenização e gamificação para projetos descentralizados. O token $NEOFLW é nossa moeda nativa, negociada na BASE Network.
+**PWA completa com gamificação Web3** - Sistema de pontos, referral, leaderboard e integração DeFi. Desenvolvido pela **Agência NEØ FlowOFF** como showcase de nossas capacidades técnicas.
+
+> 🎮 **Gamificação**: 9 ações, 5 tiers, sistema de referral  
+> 🔗 **Web3**: MetaMask, WalletConnect, Web3Auth  
+> 💱 **DeFi**: Swap Uniswap V3, Pool de liquidez  
+> 📊 **Backend**: PostgreSQL, Vercel Serverless, APIs REST
 
 ---
 
-## 🎯 Sobre a NEØ FlowOFF
+## ✨ O Que Este Projeto Faz
 
-A **NEØ FlowOFF** é uma agência digital especializada em Web3, oferecendo:
-
-- 🔧 **Desenvolvimento Full-Stack** — DApps, PWAs, Smart Contracts
-- 🪙 **Tokenização** — Criação e gestão de tokens ERC-20
-- 🎮 **Gamificação** — Sistemas de pontos, recompensas e engajamento
-- 📊 **Consultoria Web3** — Estratégias de lançamento e crescimento
-- 🚀 **Integração DeFi** — Pools de liquidez, swaps, staking
-
-### Ecossistema
-
-Desenvolvido pela **[NEØ SMART FACTORY](https://github.com/neo-smart-token-factory)**, nossa organização open-source focada em ferramentas e padrões Web3.
-
----
-
-## 💎 Token $NEOFLW - Moeda Nativa da Agência
-
-### Informações Oficiais
+### 🎮 Sistema de Gamificação Completo
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Contrato: 0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B           │
-│  Rede: BASE (Chain ID: 8453)                                    │
-│  Símbolo: NEOFLW                                                │
-│  Decimals: 18                                                   │
-│  Padrão: NeoTokenV2 (ERC-20 compatível)                         │
-└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│  🎯 Sistema de Pontos                                        │
+│  • 9 ações configuradas (cadastro, wallet, share, etc)      │
+│  • Limites por ação (daily, lifetime)                       │
+│  • Toast notifications animados                             │
+│                                                              │
+│  👥 Sistema de Referral                                      │
+│  • Código único por usuário                                 │
+│  • Share social (Twitter, Facebook)                         │
+│  • 50 pontos para referrer + referee                        │
+│                                                              │
+│  🏆 Leaderboard em Tempo Real                                │
+│  • Top 100 usuários                                         │
+│  • Ranking dinâmico                                         │
+│  • Stats gerais (total pontos, usuários)                   │
+│                                                              │
+│  💎 Tiers Automáticos                                        │
+│  • Bronze → Silver → Gold → Platinum → Diamond              │
+│  • Atualização automática via trigger SQL                  │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-### Links Importantes
+### 🔗 Integração Web3 Multi-Wallet
 
-- **BaseScan**: https://basescan.org/token/0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B
-- **Uniswap V3**: https://app.uniswap.org/explore/pools/8453
-- **DexScreener**: https://dexscreener.com/base/0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B
-- **Pool Tx**: https://basescan.org/tx/0xeb700565f74b510e5b713c7066b646033132c9552c8722130c14556b7e4b3d23
+```
+┌─────────────────────────────────────────────────────────────┐
+│  🔌 Wallets Suportadas                                       │
+│  • MetaMask (desktop + mobile)                              │
+│  • WalletConnect (70+ wallets)                              │
+│  • Web3Auth (login social - opcional)                      │
+│                                                              │
+│  🎨 UX Completa                                              │
+│  • Auto-detecção de wallet instalada                       │
+│  • Network switch automático (BASE)                        │
+│  • Onboarding modal pós-conexão                            │
+│  • Persistência de sessão                                  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### 💱 DeFi & Trading Integrado
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  🦄 Uniswap V3 Integration                                   │
+│  • Swap ETH → $NEOFLW direto no site                        │
+│  • Slippage control (0.5% - 5%)                             │
+│  • Quote em tempo real                                      │
+│  • Preço atualizado dinamicamente                          │
+│                                                              │
+│  💧 Pool de Liquidez                                         │
+│  • Par: NEOFLW/WETH na BASE                                 │
+│  • Protocolo: Uniswap V3                                    │
+│  • Trading ativo                                            │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### 📊 Backend Robusto (PostgreSQL + Serverless)
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  🗄️ Database (Neon PostgreSQL)                              │
+│  • 10 tabelas (users, wallets, points, referrals, etc)     │
+│  • 3 views automáticas (leaderboard, stats, etc)           │
+│  • 3 triggers (auto-update totals, tiers)                  │
+│                                                              │
+│  🚀 APIs (Vercel Serverless)                                │
+│  • 8 endpoints REST otimizados                              │
+│  • CORS configurado                                         │
+│  • Rate limiting (in-memory)                                │
+│  • Validação de entrada                                     │
+│  • Security headers                                         │
+└─────────────────────────────────────────────────────────────┘
+```
 
 ---
 
-## ✨ Soluções Oferecidas
+## 🎯 Tabela de Ações & Pontos
 
-### 🎮 Plataforma de Gamificação Completa
+| Ação | Pontos | Limite | Descrição |
+|------|--------|--------|-----------|
+| `signup` | 10 | 1x | Primeiro registro no sistema |
+| `wallet_connect` | 20 | 1x | Conectar carteira pela primeira vez |
+| `share` | 15 | 5x | Compartilhar nas redes sociais |
+| `referral` | 50 | ∞ | Cada amigo convidado (ambos ganham) |
+| `first_purchase` | 100 | 1x | Primeira compra de $NEOFLW |
+| `daily_login` | 5 | 1x/dia | Login diário |
+| `profile_complete` | 25 | 1x | Completar perfil |
+| `tutorial_complete` | 30 | 1x | Completar tutorial |
 
-- ✅ **Sistema de Pontos** — 9 ações configuradas (cadastro, wallet, compartilhamento, etc)
-- ✅ **Sistema de Referral** — Código único + compartilhamento social (Twitter, Facebook)
-- ✅ **Leaderboard** — Ranking em tempo real (top 100)
-- ✅ **Tiers Automáticos** — Bronze → Silver → Gold → Platinum → Diamond
-- ✅ **Toast Notifications** — Feedback visual animado
+### 💎 Sistema de Tiers
 
-### 💰 Trading & DeFi
+| Tier | Pontos Necessários | Badge |
+|------|-------------------|-------|
+| Bronze | 0 - 99 | 🥉 |
+| Silver | 100 - 249 | 🥈 |
+| Gold | 250 - 499 | 🥇 |
+| Platinum | 500 - 999 | 💎 |
+| Diamond | 1000+ | 💠 |
 
-- ✅ **Pool Uniswap V3** — Par NEOFLW/WETH na BASE
-- ✅ **Swap Integrado** — Troca ETH → $NEOFLW direto no site
-- ✅ **Slippage Control** — Proteção contra front-running
-- ✅ **Auto Network Switch** — Detecta e muda para BASE automaticamente
-
-### 🔗 Wallet Integration
-
-- ✅ **MetaMask** — Suporte nativo
-- ✅ **WalletConnect** — Carteiras móveis
-- ✅ **Web3Auth** — Login social (configurável)
-- ✅ **Onboarding Modal** — Experiência pós-conexão
-
-### 📊 Backend Completo
-
-- ✅ **10 Tabelas SQL** — Neon Database (users, wallets, points, referrals, etc)
-- ✅ **8 APIs REST** — Otimizadas para Vercel Hobby
-- ✅ **3 Views Automáticas** — Queries pré-calculadas
-- ✅ **3 Triggers** — Atualização automática de totais
 
 ---
 
-## 🎯 Sistema de Pontos
+## 🛠️ Tech Stack
 
-### Ações Configuradas
+### Frontend
 
-| Ação | Pontos | Limite |
-|------|--------|--------|
-| Cadastro | 10 | 1x |
-| Conectar Wallet | 20 | 1x |
-| Compartilhar (Twitter/Facebook) | 15 | 5x |
-| Convidar Amigo | 50 | ∞ |
-| Tutorial Completo | 30 | 1x |
-| Primeira Compra | 100 | 1x |
-| Login Diário | 5 | 1x/dia |
-| Perfil Completo | 25 | 1x |
+- **Vanilla JavaScript** (módulos ES6)
+- **CSS Custom Properties** (design system)
+- **ethers.js v5** (Web3 interactions)
+- **Web3Modal** (wallet connections)
+- **Responsive Design** (mobile-first)
 
-### Tiers Automáticos
+### Backend
 
-- 🥉 **Bronze**: 0-99 pontos
-- 🥈 **Silver**: 100-249 pontos
-- 🥇 **Gold**: 250-499 pontos
-- 💎 **Platinum**: 500-999 pontos
-- 💠 **Diamond**: 1000+ pontos
+- **Node.js** (Vercel Serverless)
+- **PostgreSQL** (Neon Database)
+- **@neondatabase/serverless** (database driver)
+- **REST APIs** (JSON)
+
+### Infrastructure
+
+- **Vercel** (hosting + serverless functions)
+- **Neon** (PostgreSQL serverless)
+- **GitHub Actions** (CI/CD)
+- **Uniswap V3** (DEX integration)
+- **BASE Network** (L2 Ethereum)
+
+### Smart Contracts
+
+- **Uniswap V3** (swap router, pool factory)
+- **ERC-20** (token padrão)
+- **BASE Chain** (deployment)
+
+---
+
+## 🏢 Sobre a Agência NEØ FlowOFF
+
+Somos uma **agência digital especializada em Web3**, oferecendo serviços completos:
+
+### Serviços
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│  🔧 Desenvolvimento Full-Stack                                │
+│  • DApps (Decentralized Applications)                        │
+│  • PWAs (Progressive Web Apps)                               │
+│  • Smart Contracts (Solidity)                                │
+│  • APIs REST + GraphQL                                       │
+│                                                               │
+│  🪙 Tokenização & DeFi                                        │
+│  • Criação e deploy de tokens ERC-20                         │
+│  • Pools de liquidez (Uniswap, PancakeSwap)                  │
+│  • Staking & Farming                                         │
+│  • Integração com DEXs                                       │
+│                                                               │
+│  🎮 Gamificação Web3                                          │
+│  • Sistemas de pontos e recompensas                          │
+│  • Referral programs                                         │
+│  • NFT rewards                                               │
+│  • Leaderboards e achievements                               │
+│                                                               │
+│  📊 Consultoria & Estratégia                                  │
+│  • Tokenomics design                                         │
+│  • Go-to-market strategy                                     │
+│  • Community building                                        │
+│  • Marketing Web3                                            │
+└──────────────────────────────────────────────────────────────┘
+```
+
+### Ecossistema Open-Source
+
+Parte da **[NEØ SMART FACTORY](https://github.com/neo-smart-token-factory)** — organização dedicada a criar ferramentas, padrões e templates Web3 de código aberto.
+
+---
+
+## 📸 Screenshots
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                              │
+│  [Homepage]              [Wallet Connect]     [Gamification] │
+│                                                              │
+│  • Hero section          • Multi-wallet       • Points modal│
+│  • Features              • Network switch     • Leaderboard │
+│  • Token info            • Onboarding         • Referral    │
+│  • Swap interface        • Session persist    • Tiers       │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+> 🎨 **Demo Live**: [neoflowoff.xyz](https://neoflowoff.xyz)
 
 ---
 
@@ -447,6 +553,39 @@ npm run lint           # Verificar código
 - **[VERCEL_OPTIMIZATION.md](docs/VERCEL_OPTIMIZATION.md)** — Otimização de funções
 - **[SWAP_REGISTRATION_GUIDE.md](docs/SWAP_REGISTRATION_GUIDE.md)** — Guia técnico swap/registro
 - **[BASE_MIGRATION.md](docs/BASE_MIGRATION.md)** — Migração para BASE
+
+---
+
+## 💎 Token $NEOFLW
+
+O token nativo da plataforma, negociado na BASE Network.
+
+### Informações Oficiais
+
+```
+Contrato:  0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B
+Rede:      BASE (Chain ID: 8453)
+Símbolo:   NEOFLW
+Decimals:  18
+Padrão:    NeoTokenV2 (ERC-20 compatível)
+```
+
+### Links
+
+- **BaseScan**: [Token Explorer](https://basescan.org/token/0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B)
+- **Uniswap**: [Swap $NEOFLW](https://app.uniswap.org/explore/pools/8453)
+- **DexScreener**: [Charts & Stats](https://dexscreener.com/base/0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B)
+
+### Utilidade
+
+O token $NEOFLW é usado para:
+
+- ✅ **Recompensas** — Usuários ganham pontos que podem ser trocados por tokens
+- ✅ **Acesso VIP** — Holders têm acesso a benefícios exclusivos
+- ✅ **Pagamento de Serviços** — Desconto em serviços da agência
+- ✅ **Trading** — Negociado no Uniswap V3 (par NEOFLW/WETH)
+
+> 📚 **Documentação Completa**: [NEO_SMART_FACTORY.md](docs/NEO_SMART_FACTORY.md)
 
 ---
 
